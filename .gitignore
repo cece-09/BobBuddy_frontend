@@ -35,9 +35,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# vscode
-.vscode/
-
 # PWA files
 **/public/service-worker.js
 **/public/workbox-***.js
