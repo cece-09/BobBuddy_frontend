@@ -40,3 +40,6 @@ next-env.d.ts
 **/public/workbox-***.js
 **/public/worker-***.js
 **/public/service-worker.js.map
+
+# envrionment variables
+.env.*

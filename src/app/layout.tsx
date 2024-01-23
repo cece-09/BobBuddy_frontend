@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -43,7 +44,9 @@ export default function RootLayout({
         <link rel='icon' href='/assets/icons/icon-48x48.png' />
         <link rel='apple-touch-icon' href='/assets/icons/icon-192x192.png' />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+      </body>
     </html>
   )
 }
