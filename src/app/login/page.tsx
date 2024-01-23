@@ -1,5 +1,5 @@
 "use client"
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -7,33 +7,48 @@ import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { isValidEmail } from '../utils/validation';
+
+const MIN_PASSWORD_LENGTH = 9;
+const SIGNIN_API = 'http://localhost:3000/signin';
 
 export default function SigninPage() {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [isFormValid, setIsFormValid] = React.useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isFormValid, setIsFormValid] = useState(false);
 
   // 로그인 버튼 클릭 시
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (isValidEmail(email) && password.length >= 9) {
-      console.log({
-        email,
-        password,
-      });
-      // 백엔드 요청 로직 추가
+
+    try {
+      const res = await fetch(SIGNIN_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (res.ok) {
+      // 로그인 성공(메인페이지 리다이렉트)
+      window.location.href = '/'
     } else {
-      alert('올바른 로그인 정보를 입력하세요');
+      // 로그인 실패
+      alert('올바른 로그인 정보를 입력하세요')
+    }
+    } catch (error) {
+      // 네트워크 오류 등
+      alert('로그인 요청 중 오류가 발생했습니다. 다시 시도하세요')
     }
   };
 
-  // 이메일 형식 검증
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    return emailRegex.test(email);
-  };
+  // 로그인 버튼 활성화 여부 판단
+  useEffect(() => {
+    setIsFormValid(isValidEmail(email) && password.length >= MIN_PASSWORD_LENGTH);
+  }, [email, password]);
 
-  // 사용자 입력 시 state 재설정
+  // 사용자 입력 시 값 재설정
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     if (name === 'email') {
@@ -41,13 +56,9 @@ export default function SigninPage() {
     } else if (name === 'password') {
       setPassword(value);
     }
-    validateForm();
   };
 
-  // 이메일과 비밀번호 알맞게 입력한 경우 true로 설정
-  const validateForm = () => {
-    setIsFormValid(isValidEmail(email) && password.length >= 9);
-  };
+  
 
   return (
     <Container component="main" maxWidth="xs">
