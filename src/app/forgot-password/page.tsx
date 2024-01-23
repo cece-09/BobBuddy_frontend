@@ -1,5 +1,5 @@
 "use client"
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -7,33 +7,51 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Link } from '@mui/material';
+import { isValidEmail } from '../utils/validation';
 
-export default function ResetPassword() {
-  const [email, setEmail] = React.useState('');
-  const [isEmailValid, setIsEmailValid] = React.useState(false);
+const FORGOT_PASSWORD_API = 'http://localhost:3000/mypassword';
+
+export default function ForgotPassword() {
+  const [email, setEmail] = useState('');
+  const [isEmailValid, setIsEmailValid] = useState(false);
   
+  // 이메일 상태가 변경될 때마다 유효성 검사
+  useEffect(() => {
+    setIsEmailValid(isValidEmail(email));
+  }, [email]);
+
   // 이메일 전송 버튼 클릭 시
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isEmailValid) {
-      // 이메일 전송 로직 추가
-      console.log('이메일을 전송합니다.');
+      try {
+        const res = await fetch(FORGOT_PASSWORD_API, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({email}),
+        })
+
+        if (res.ok) {
+          // 이메일 전송 성공
+          alert('가입 이메일을 확인하세요')
+        } else {
+          // 이메일 전송 실패
+          alert('올바른 이메일을 입력하세요')
+        }
+      } catch (error) {
+        // 네트워크 오류 등
+        alert('이메일 요청 중 오류가 발생했습니다. 다시 시도하세요')
+      }
     } else {
-      alert('올바른 이메일을 입력하세요.');
+      alert('올바른 이메일을 입력하세요')
     }
   };
 
-  // 이메일 형식 검증
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    return emailRegex.test(email);
-  };
-
-  // 사용자 입력 시 state 재설정
+  // 사용자 입력 시 이메일 상태 업데이트
   const handleEmailChange = (event: { target: { value: any; }; }) => {
-    const newEmail = event.target.value;
-    setEmail(newEmail);
-    setIsEmailValid(validateEmail(newEmail));
+    setEmail(event.target.value);
   };
 
   return (
