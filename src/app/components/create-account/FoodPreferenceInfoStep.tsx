@@ -3,16 +3,15 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { FoodPreference, FoodPreferenceInfoProps } from '@/app/utils/types';
 
-export default function FoodPreferenceInfo() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+const FOOD_OPTIONS: FoodPreference[] = ['족발,보쌈', '돈까스', '회,초밥', '회,초밥', '고기,구이', '피자', '치킨', '버거', '샌드위치, 샐러드', '찜,탕,찌개', '짜장면, 짬뽕', '마라탕', '쌀국수', '백반,죽', '국수', '분식', '카페,디저트'];
+
+export default function FoodPreferenceInfo({ userData, onUserDataChange }: FoodPreferenceInfoProps) {
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const { name, value } = event.target;
+    onUserDataChange({ [name]: value });
   };
 
   return (
@@ -32,7 +31,7 @@ export default function FoodPreferenceInfo() {
           <Box
             width={250}
             component="form"
-            noValidate onSubmit={handleSubmit}
+            noValidate
             sx={{
               display:"flex",
               flexDirection:"column",
@@ -41,25 +40,33 @@ export default function FoodPreferenceInfo() {
               }}
           >
             <FormControl fullWidth>
-              <InputLabel id="select">좋아하는 음식</InputLabel>
+              <InputLabel id="likefood">좋아하는 음식</InputLabel>
               <Select
-                labelId="select"
-                id="select"
+                labelId="likefood"
+                id="likefood"
+                name="likefood"
                 label="좋아하는 음식"
+                value={userData.likefood || ""}
+                onChange={handleSelectChange}
               >
-                <MenuItem value={0}>초밥</MenuItem>
-                <MenuItem value={1}>삼겹살 </MenuItem>
+                {FOOD_OPTIONS.map((option) => (
+                  <MenuItem key={option} value={option}>{option}</MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel id="select">싫어하는 음식</InputLabel>
+              <InputLabel id="hatefood">싫어하는 음식</InputLabel>
               <Select
-                labelId="select"
-                id="select"
+                labelId="hatefood"
+                id="hatefood"
+                name="hatefood"
                 label="싫어하는 음식"
+                value={userData.hatefood || ""}
+                onChange={handleSelectChange}
               >
-                <MenuItem value={0}>파스타</MenuItem>
-                <MenuItem value={1}>돈까스</MenuItem>
+                {FOOD_OPTIONS.map((option) => (
+                  <MenuItem key={option} value={option}>{option}</MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>

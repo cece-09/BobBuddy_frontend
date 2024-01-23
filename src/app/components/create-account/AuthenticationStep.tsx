@@ -1,39 +1,62 @@
 "use client"
-import * as React from 'react';
+import { useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { AuthenticationProps } from '@/app/utils/types';
 
-export default function Authentication({onNext}:any) {
-  const [verificationCode, setVerificationCode] = React.useState('');
-  const [phonenumber, setPhonenumber] = React.useState('');
-  const [showVerification, setShowVerification] = React.useState(false);
+const AUTHENTICATION_API = 'http://localhost:3000/user/signup/authentication';
+const PHONENUMBER_API = 'http://localhost:3000/user/signup/phone';
 
-  // SMS 전송 버튼 클릭 시
-  const handleSMSSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+export default function Authentication({ onNext, onAuthenticate }: AuthenticationProps) {
+  const [verificationCode, setVerificationCode] = useState<string>('');
+  const [phonenumber, setPhonenumber] = useState<string>('');
+  const [showVerification, setShowVerification] = useState<boolean>(false);  
+
+  // 1) SMS 전송 버튼 클릭 시
+  const handleSMSSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      phonenumber: data.get('phonenumber'),
-    });
-    // SMS 전송 로직 처리 후
-    // 인증번호 입력 필드를 보이도록 상태 업데이트
-    setShowVerification(true);
+    
+    const SMSres = await fetch (PHONENUMBER_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ phonenumber }),
+    })
+
+    // if (SMSres.ok) {
+      setShowVerification(true);
+    // } else {
+    //   alert('올바른 휴대폰 번호를 입력하세요')
+    // }
   };
 
-  // 인증번호 확인 버튼 클릭 시
-  const handleVerificationSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  // 2) 인증번호 확인 버튼 클릭 시
+  const handleVerificationSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({
-      verificationCode,
-    });
-    // 인증번호 검증 로직 처리 후
-    // 다음 단계로 이동
+    try {
+      const res = await fetch (AUTHENTICATION_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ verificationCode }),
+      })
+
+      if (res.ok) {
+        onAuthenticate(true);
+        onNext();
+      } else {
+        alert('올바른 인증번호를 입력하세요')
+      }
+    } catch (error) {
+      alert('올바른 인증번호를 입력하세요')
+    }
   };
 
   // 재전송 버튼 클릭 시
   const handleResend = () => {
-    // 전화번호 입력 폼 제외 비활성화
     setShowVerification(false);
   };
 
@@ -66,6 +89,7 @@ export default function Authentication({onNext}:any) {
             fullWidth
             name="phonenumber"
             label="전화번호"
+            placeholder="숫자만 입력하세요 ex.010xxxxxxxx"
             type="text"
             id="phonenumber"
             autoComplete="current-phonenumber"
@@ -116,13 +140,10 @@ export default function Authentication({onNext}:any) {
               </Grid>
               <Grid item xs>
                 <Button
-                  type="button"
+                  type="submit"
                   fullWidth
                   variant="contained"
                   disabled={isVerificationDisabled}
-                  onClick={() => {
-                    onNext();
-                  }}
                 >
                   확인
                 </Button>
