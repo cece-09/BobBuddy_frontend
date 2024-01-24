@@ -5,6 +5,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import { Button, styled } from '@mui/material';
+import { UserData } from '@/app/utils/types';
+
+const SIGNUP_API = 'http://localhost:3000/user/signup';
 
 const Item = styled(Paper)({
   display: 'flex',
@@ -15,14 +18,27 @@ const Item = styled(Paper)({
   height: 40,
 });
 
-export default function UserInfo() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+const UserInfo: React.FC<{ userData: UserData }> = ({ userData }) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    try {
+      const res = await fetch(SIGNUP_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userData })
+      });
+
+      if (res.ok) {
+        window.location.href = '/login';
+      } else {
+        alert('회원가입에 실패했습니다. 정보를 추가로 입력하세요');
+      }
+    } catch (error) {
+      alert('네트워크 오류로 회원가입에 실패했습니다. 다시 시도하세요');
+    }
   };
 
   return (
@@ -39,25 +55,25 @@ export default function UserInfo() {
           밥버디 회원정보 확인
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Item variant="outlined">이름</Item>
-          <Item variant="outlined">성별</Item>
-          <Item variant="outlined">이메일</Item>
-          <Item variant="outlined">전화번호</Item>
-          <Item variant="outlined">MBTI</Item>
-          <Item variant="outlined">지역</Item>
-          <Item variant="outlined">구</Item>
-          <Item variant="outlined">좋아하는 음식</Item>
-          <Item variant="outlined">싫어하는 음식</Item>
-        </Box>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3 }}
-        >
-          회원가입
-        </Button>
+          <Item variant="outlined">{userData.name}</Item>
+          <Item variant="outlined">{userData.gender}</Item>
+          <Item variant="outlined">{userData.email}</Item>
+          <Item variant="outlined">{userData.phonenumber}</Item>
+          <Item variant="outlined">{userData.mbti}</Item>
+          <Item variant="outlined">{userData.likefood}</Item>
+          <Item variant="outlined">{userData.hatefood}</Item>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3 }}
+            >
+            회원가입
+          </Button>
+          </Box>
       </Box>
     </Container>
   );
 }
+
+export default UserInfo;

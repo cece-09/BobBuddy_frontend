@@ -1,61 +1,51 @@
-import * as React from 'react';
-import Image from 'next/image';
+import { useCallback, useEffect, useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Avatar, Button, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { Avatar, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { blueGrey } from '@mui/material/colors';
+import { isValidEmail, isValidPhoneNumber } from '@/app/utils/validation';
+import { BasicInfoProps } from '@/app/utils/types';
 
-export default function BasicInfo() {
-  const [formData, setFormData] = React.useState({
-    avatar: '',
-    name: '',
-    gender: '',
-    email: '',
-    phonenumber: '',
-    password: '',
-    repassword: '',
-  });
+export default function BasicInfo({ userData, onUserDataChange, onBasicInfoFilled }: BasicInfoProps) {
+  const [passwordError, setPasswordError] = useState(false);
 
-  // 로그인 버튼 활성화 여부
-  const isSubmitDisabled = () => {
-    const { name, gender, email, phonenumber, password, repassword } = formData;
+  // Input 입력값 업데이트
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    onUserDataChange({ [name]: value });
 
-    // 모든 필수 입력 필드에 값이 있는지 확인
-    return (
-      !name || !gender || !email || !phonenumber || !password || !repassword
-    );
-  };
-
-  // 다음 버튼 클릭 시
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!isSubmitDisabled()) {
-      console.log(formData);
+  // 비밀번호 검증 로직
+  if (name === 'password' || name === 'repassword') {
+    // Check if "repassword" field is being changed
+    if (name === 'repassword') {
+      setPasswordError(userData.password !== value);
     } else {
-      alert('모든 필수 입력 필드를 작성해주세요.');
+      setPasswordError(userData.repassword !== value);
     }
-  };
+  }
+  }, [onUserDataChange, userData.password, userData.repassword]);
 
-  // Input 입력값 설정
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Select 입력값 업데이트
+  const handleSelectChange = useCallback((event: SelectChangeEvent) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+    onUserDataChange({ [name]: value });
+  }, [onUserDataChange]);
 
-  // Select 입력값 설정
-  const handleSelectChange = (event: SelectChangeEvent<string>) => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  // 필수 입력 폼 확인
+  useEffect(() => {
+    const isFilled = !!userData.name &&
+      !!userData.gender &&
+      !!isValidEmail(userData.email) &&
+      !!isValidPhoneNumber(userData.phonenumber) &&
+      userData.password.length >= 9 &&
+      userData.repassword === userData.password &&
+      !passwordError;
+
+    onBasicInfoFilled(isFilled);
+  }, [userData, onBasicInfoFilled, passwordError]);
 
   return (
       <Container component="main" maxWidth="xs">
@@ -74,7 +64,6 @@ export default function BasicInfo() {
           <Box
             noValidate
             component="form"
-            onSubmit={handleSubmit}
             sx={{
               marginTop: 1,
               display: 'flex',
@@ -84,23 +73,15 @@ export default function BasicInfo() {
             }}
           >
             <Avatar sx={{ bgcolor: blueGrey, width: 64, height: 64, cursor: 'pointer' }}>
-            {formData.avatar ? (
-              <Image
-                src={formData.avatar}
-                alt="Image"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            ) : (
-              '업로드'
-            )}
             </Avatar>
             <Box sx={{ display:"flex", marginTop:"30px", gap: "10px" }}>
               <TextField
+                fullWidth
                 name="name"
                 required
                 id="name"
                 label="이름"
-                value={formData.name}
+                value={userData.name}
                 onChange={handleInputChange}
               />
               <FormControl fullWidth>
@@ -110,8 +91,9 @@ export default function BasicInfo() {
                   id="gender"
                   label="성별"
                   name="gender"
-                  value={formData.gender}
+                  value={userData.gender}
                   onChange={handleSelectChange}
+                  sx={{ width: 100 }}
                 >
                   <MenuItem value="남">남</MenuItem>
                   <MenuItem value="여">여</MenuItem>
@@ -122,13 +104,15 @@ export default function BasicInfo() {
               margin="normal"
               required
               fullWidth
-              name="email"
-              label="이메일"
-              type="email"
               id="email"
-              autoComplete="current-email"
-              value={formData.email}
+              label="이메일"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={userData.email}
               onChange={handleInputChange}
+              error={!isValidEmail(userData.email) && userData.email.length > 0}
+              helperText={!isValidEmail(userData.email) && userData.email.length > 0 ? '올바른 이메일 형식을 입력하세요.' : ''}
             />
             <TextField
               margin="normal"
@@ -136,11 +120,14 @@ export default function BasicInfo() {
               fullWidth
               name="phonenumber"
               label="전화번호"
+              placeholder="숫자만 입력하세요 ex.010xxxxxxxx"
               type="text"
               id="phonenumber"
               autoComplete="current-phonenumber"
-              value={formData.phonenumber}
+              value={userData.phonenumber}
               onChange={handleInputChange}
+              error={!isValidPhoneNumber(userData.phonenumber) && userData.phonenumber.length > 0}
+              helperText={!isValidPhoneNumber(userData.phonenumber) && userData.phonenumber.length > 0 ? '올바른 휴대전화 번호 형식을 입력하세요.' : ''}
             />
             <TextField
               margin="normal"
@@ -151,8 +138,10 @@ export default function BasicInfo() {
               type="password"
               id="password"
               autoComplete="current-password"
-              value={formData.password}
+              value={userData.password}
               onChange={handleInputChange}
+              error={userData.password.length > 0 && userData.password.length < 9}
+              helperText={userData.password.length > 0 && userData.password.length < 9 ? '비밀번호는 9자 이상이어야 합니다.' : ''}
             />
             <TextField
               margin="normal"
@@ -163,8 +152,10 @@ export default function BasicInfo() {
               type="password"
               id="repassword"
               autoComplete="current-repassword"
-              value={formData.repassword}
+              value={userData.repassword}
               onChange={handleInputChange}
+              error={passwordError}
+              helperText={passwordError ? '비밀번호가 일치하지 않습니다.' : ''}
             />
           </Box>
         </Box>

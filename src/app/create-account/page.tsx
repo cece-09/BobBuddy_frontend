@@ -1,82 +1,84 @@
 "use client"
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Authentication from '../components/create-account/AuthenticationStep';
 import BasicInfo from '../components/create-account/BasicInfoStep';
 import MBTIInfo from '../components/create-account/MBTIInfoStep';
-import LocationInfo from '../components/create-account/LocationInfoStep';
 import FoodPreferenceInfo from '../components/create-account/FoodPreferenceInfoStep';
 import UserInfo from '../components/create-account/UserInfoStep';
 import { Box, Button } from '@mui/material';
+import { UserData } from '../utils/types';
 
 export default function SignupPage() {
   const [activeStep, setActiveStep] = useState(1);
-  
-  // 다음 단계로 진행하는 함수
-  const handleNextStep = () => {
-    if (activeStep < 6) {
-      setActiveStep(activeStep + 1);
-    }
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [basicCompleted, setBasicCompleted] = useState(false);
+  const [userData, setUserData] = useState({
+    name: '',
+    gender: '',
+    email: '',
+    phonenumber: '',
+    password: '',
+    repassword: '',
+    mbti: '',
+    likefood: '',
+    hatefood: '',
+  });
+
+  const handleUserDataChange = (newData: UserData) => {
+    setUserData(prevData => ({ ...prevData, ...newData }));
   };
 
-  // 이전 단계로 돌아가는 함수
-  const handlePreviousStep = () => {
-    if (activeStep > 1) {
-      setActiveStep(activeStep - 1);
-    }
+  // 이전 혹은 다음 버튼 작동
+  const handleStepChange = (increment: number) => {
+    setActiveStep(prevStep => prevStep + increment);
   };
 
   // 조건을 확인하여 다음으로 넘어갈 수 있는지 여부를 반환
   const canProceedToNextStep = () => {
-    switch (activeStep) {
-      case 1:
-        // 필요한 조건
-        return true; // 현재는 무조건 다음으로 진행 가능
-      case 2:
-        // 필요한 조건
-        return true;
-      case 3:
-        // 필요한 조건
-        return true;
-      case 4:
-        // 필요한 조건
-        return true;
-      case 5:
-        // 필요한 조건
-        return true;
-      default:
-        return false;
-    }
+    // if (activeStep === 1) return isAuthenticated;
+    if (activeStep === 2) return basicCompleted;
+    return true;
+  };
+
+  const commonBoxStyle = {
+    marginTop: 8,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   };
 
   return (
     <>
-      <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-        {activeStep === 1 && <Authentication onNext={handleNextStep} />}
-        {activeStep === 2 && <BasicInfo />}
-        {activeStep === 3 && <MBTIInfo />}
-        {activeStep === 4 && <LocationInfo />}
-        {activeStep === 5 && <FoodPreferenceInfo />}
-        {activeStep === 6 && <UserInfo />}
-        <Box
-          sx={{
-            marginTop: 3,
-            display: 'flex',
-          }}
-        >
-        {activeStep > 1 && (
-          <Button onClick={handlePreviousStep}>이전</Button>
-          
-        )}
-        {activeStep < 6 && (
-          <Button onClick={handleNextStep} disabled={!canProceedToNextStep()}>다음</Button>
-        )}
+      <Box sx={commonBoxStyle}>
+        {activeStep === 1 &&
+          <Authentication
+            onNext={() => handleStepChange(1)}
+            onAuthenticate={setIsAuthenticated}
+          />
+        }
+        {activeStep === 2 &&
+          <BasicInfo
+            userData={userData}
+            onUserDataChange={(newData) => handleUserDataChange(newData as UserData)}
+            onBasicInfoFilled={setBasicCompleted}
+          />
+        }
+        {activeStep === 3 &&
+          <MBTIInfo
+            userData={userData}
+            onUserDataChange={(newData) => handleUserDataChange(newData as UserData)}
+          />
+        }
+        {activeStep === 4 &&
+          <FoodPreferenceInfo
+            userData={userData}
+            onUserDataChange={(newData) => handleUserDataChange(newData as UserData)}
+          />
+        }
+        {activeStep === 5 && <UserInfo userData={userData} />}
+        <Box sx={{ mt: 3 }}>
+          {activeStep > 1 && <Button variant='contained' sx={{ mx:1 }} onClick={() => handleStepChange(-1)}>이전</Button>}
+          {activeStep < 5 && <Button variant='contained' sx={{ mx:1 }} onClick={() => handleStepChange(1)} disabled={!canProceedToNextStep()}>다음</Button>}
         </Box>
       </Box>
     </>
