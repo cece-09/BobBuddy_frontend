@@ -29,7 +29,7 @@ export default function ChatViewClient({
   const [message, setMessage] = useState<string>("")
   const lastChat = useRef<HTMLDivElement>(null)
 
-  const CURRENT_USER_ID = "1"
+  const CURRENT_USER_ID = "1" // TODO: 전역유저상태로 교체 필요
   const chatUsers: ChatUser[] = JSON.parse(users)
 
   const getUserInfo = (id: string) => {

@@ -1,9 +1,11 @@
-import ChatViewClient from "./_view"
+import ChatViewClient from "./_view.client"
 import ChatViewServer from "./_view.server"
 import { Chat, ChatRoom, ChatUser } from "@/model/chat.model"
+import "@/styles/globals.css"
 
 /**
- * 개별 채팅방 화면
+ * 개별 채팅방 데이터 가져오기
+ * TODO: 실제 서버 API로 교체 필요
  * @param {string} id
  * @return {*}
  */
