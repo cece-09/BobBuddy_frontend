@@ -43,6 +43,10 @@ export default function RootLayout({
       <head>
         <link rel='icon' href='/assets/icons/icon-48x48.png' />
         <link rel='apple-touch-icon' href='/assets/icons/icon-192x192.png' />
+        <link
+          rel='stylesheet'
+          href='https://fonts.googleapis.com/icon?family=Material+Icons'
+        />
       </head>
       <body className={inter.className}>
         <AppRouterCacheProvider>
