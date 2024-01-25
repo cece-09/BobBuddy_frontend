@@ -5,7 +5,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "styles/reset.css";
+@import "./reset.css";
 
 :root {
   background-color: var(--color-white);
@@ -33,9 +33,9 @@
 }
 
 body {
-  margin: 100px auto;
-  padding: 16px;
-  width: 540px;
-  height: 960px;
+  /* margin: 100px auto; */
+  /* padding: 16px; */
+  /* width: 540px; */
+  /* height: 960px; */
   background-color: var(--color-background);
 }

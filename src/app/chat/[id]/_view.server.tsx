@@ -1,80 +1,53 @@
-import { Chat } from "@/model/chat.model"
+import { Chat, ChatUser } from "@/model/chat.model"
 import { Paged } from "@/model/paged.model"
 import { Box, Stack } from "@mui/material"
 import ChatMessage from "./_message"
 
 /**
- * Server-Side Function
- * 채팅방 아이디를 인자로 받아
- * 해당 채팅방의 최근 채팅 목록을 가져옵니다
- * @param chatId
- * @returns
- */
-async function getChats(chatId: string): Promise<Paged<Chat>> {
-  //   const res = await fetch(`${process.env.SERVER_URI}/chat/${chatId}`)
-  //   const json = await res.json()
-  //   return Paged.fromJson<Chat>(json)
-  const dummy: Paged<Chat> = {
-    page: 1,
-    size: 100,
-    totalPage: 1,
-    totalCount: 5,
-    data: [],
-  }
-
-  dummy.data = []
-  const now = new Date()
-  dummy.data.push(new Chat("1", "1", "hello", now.toISOString(), false))
-  dummy.data.push(new Chat("1", "2", "hey", now.toISOString(), false))
-  dummy.data.push(new Chat("2", "3", "hola", now.toISOString(), false))
-  dummy.data.push(new Chat("1", "4", "안녕", now.toISOString(), false))
-
-  return dummy
-}
-
-/**
- * 메시지 목록을 제공하는 채팅방 화면
- *
+ * 채팅방의 채팅 데이터를 받아
+ * 초기 채팅방 화면을 SSR로 구성합니다
  * @server
  * @param {{ id: string }} { id }
  * @return {*}
  */
-export default async function ChatViewServer({ id }: { id: string }) {
-  const chat: Paged<Chat> = await getChats(id)
+export default function ChatViewServer({
+  chats,
+  users,
+}: {
+  chats: Paged<Chat>[]
+  users: ChatUser[]
+}): JSX.Element {
+  const getUserInfo = (id: string) => {
+    const filtered = users.filter(user => user.id === id)
+    return filtered[0]
+  }
+
   return (
     <>
-      {chat.data.map(c => {
-        const date: Date = new Date(c.timestamp)
+      {chats.map(chat =>
+        chat.data.map((each, idx) => {
+          const date: Date = new Date(each.timestamp)
+          const prevUser = idx === 0 ? null : chat.data[idx - 1]
+          const prevGap =
+            prevUser == null
+              ? null
+              : date.getSeconds() - new Date(prevUser.timestamp).getSeconds()
 
-        return (
-          <Stack
-            key={c.chatId}
-            direction='row'
-            alignItems='end'
-            gap='0.5rem'
-            sx={{ width: "100%", padding: "0.5rem 0rem" }}
-          >
-            <Box
-              sx={{
-                borderRadius: "0.5rem",
-                backgroundColor: "#eee",
-                padding: "0.5rem 0.8rem",
-              }}
-            >
-              {c.message}
-            </Box>
-
-            <Box
-              sx={{
-                color: "#444",
-                fontSize: "0.9rem",
-              }}
-            >
-              {date.getHours()}:{date.getMinutes()}
-            </Box>
-          </Stack>
-        )
-      })}
+          return (
+            <ChatMessage
+              content={each.content}
+              time={`${date.getHours()}:${date.getMinutes()}`}
+              user={
+                each.userId === null || each.userId === "1"
+                  ? null
+                  : getUserInfo(each.userId!)
+              }
+              prevGap={prevGap}
+              prevUserId={prevUser?.userId ?? null}
+            />
+          )
+        }),
+      )}
     </>
   )
 }
