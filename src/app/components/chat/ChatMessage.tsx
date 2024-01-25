@@ -15,7 +15,7 @@ interface ChatMessageProps {
  * user 필드가 null인 경우 내가 보낸 메시지로 처리
  * 추후 유저정보 접근 가능할 경우 수정예정 // TODO
  *
- * @export
+ * @server
  * @param {ChatMessageProps} {
  *   user,
  *   time,

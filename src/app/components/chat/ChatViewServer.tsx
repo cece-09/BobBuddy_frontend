@@ -1,7 +1,7 @@
 import { Chat, ChatUser } from "@/model/chat.model"
 import { Paged } from "@/model/paged.model"
-import { Box, Stack } from "@mui/material"
 import ChatMessage from "./ChatMessage"
+import "server-only"
 
 /**
  * 채팅방의 채팅 데이터를 받아
@@ -35,6 +35,7 @@ export default function ChatViewServer({
 
           return (
             <ChatMessage
+              key={idx}
               content={each.content}
               time={`${date.getHours()}:${date.getMinutes()}`}
               user={
