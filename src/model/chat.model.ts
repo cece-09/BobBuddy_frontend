@@ -1,8 +1,7 @@
 import { Paged } from "./paged.model"
 
 /**
- * Single Chat Object
- * 개별 채팅 메시지 한 개를 가리킵니다.
+ * 개별 채팅 메시지 정보
  * @class Chat
  */
 export class Chat {
@@ -52,8 +51,7 @@ export class Chat {
 }
 
 /**
- *
- *
+ * 채팅방 내 개별 유저 정보
  * @export
  * @class ChatUser
  */
@@ -80,8 +78,7 @@ export class ChatUser {
 }
 
 /**
- *
- *
+ * 개별 채팅방 한 개 정보
  * @class ChatRoom
  */
 export class ChatRoom {

@@ -1,5 +1,5 @@
-import ChatViewClient from "./_view.client"
-import ChatViewServer from "./_view.server"
+import ChatViewClient from "../../components/chat/ChatViewClient"
+import ChatViewServer from "../../components/chat/ChatViewServer"
 import { Chat, ChatRoom, ChatUser } from "@/model/chat.model"
 import "@/styles/globals.css"
 

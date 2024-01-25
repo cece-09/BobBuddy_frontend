@@ -1,7 +1,7 @@
 import { Chat, ChatUser } from "@/model/chat.model"
 import { Paged } from "@/model/paged.model"
 import { Box, Stack } from "@mui/material"
-import ChatMessage from "./_message"
+import ChatMessage from "./ChatMessage"
 
 /**
  * 채팅방의 채팅 데이터를 받아

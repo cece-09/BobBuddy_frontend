@@ -1,12 +1,11 @@
 "use client"
 
 import { Chat, ChatUser } from "@/model/chat.model"
-import { Paged } from "@/model/paged.model"
-import { Box, Icon, Input, Paper, Stack } from "@mui/material"
+import { Box, Icon, Input, Stack } from "@mui/material"
 import { ReactNode, useEffect, useRef, useState } from "react"
 import { Socket, io } from "socket.io-client"
-import ChatMessage from "./_message"
-import ClientWrapper from "@/components/client-wrapper"
+import ChatMessage from "./ChatMessage"
+import ClientWrapper from "@/app/components/common/ClientWrapper"
 
 /**
  * 개별 채팅방의 화면입니다
@@ -51,13 +50,13 @@ export default function ChatViewClient({
     })
 
     // 새로운 채팅 수신
-    // TODO: 서버 소켓 엔드포인트 수정시 변경 필요
     socket?.on("new-chat", (message: any) => {
       const chat = Chat.fromJson(message)
       setNewChat(prevChats => [...prevChats, chat])
     })
 
     // 발송한 채팅에 대한 결과 수신
+    // TODO: 서버 소켓 엔드포인트 수정시 변경 필요
     socket?.on("send-chat-response", (message: string) => {
       const { chatId, status } = JSON.parse(message)
       if (status !== "OK") {
@@ -85,7 +84,6 @@ export default function ChatViewClient({
   const sendChat = () => {
     if (message == "") return
     const chat = Chat.fromContent(message)
-
     socket?.emit("send-chat", chat)
     setMessage("")
   }
@@ -156,6 +154,7 @@ export default function ChatViewClient({
             <div ref={lastChat} />
           </Box>
           {/* ========== type ========== */}
+          {/*// TODO:  분리 */}
           <Box
             sx={{
               backgroundColor: "white",

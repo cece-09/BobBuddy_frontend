@@ -1,6 +1,5 @@
 /**
- *
- *
+ * 페이지네이션 래퍼 클래스
  * @class Paged
  * @template T
  */
@@ -11,11 +10,7 @@ export class Paged<T> {
   totalCount: number
   data: T[] = []
 
-  /**
-   * Creates an instance of Paged.
-   * @param {Paged<T>} { page, size, totalPage, totalCount, data }
-   * @memberof Paged
-   */
+  // 생성자
   constructor({ page, size, totalPage, totalCount, data }: Paged<T>) {
     this.page = page
     this.size = size
@@ -24,15 +19,7 @@ export class Paged<T> {
     this.data = data ?? [] // shallow
   }
 
-  /**
-   *
-   *
-   * @static
-   * @template T
-   * @param {string} json
-   * @return {*}
-   * @memberof Paged
-   */
+  // JSON 스트링으로부터 객체 생성
   static fromJson<T>(json: string) {
     const obj = JSON.parse(json)
     return new Paged<T>({
