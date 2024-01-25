@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
-import "@/styles/globals.css"
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -50,7 +49,9 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+        <AppRouterCacheProvider>
+          {children}
+        </AppRouterCacheProvider>
       </body>
     </html>
   )
