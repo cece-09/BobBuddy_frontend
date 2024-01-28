@@ -5,31 +5,28 @@ import { Paged } from "./paged.model"
  * @class Chat
  */
 export class Chat {
-  userId: string | null
+  userId: string
   chatId: string | null
   content: string
-  timestamp: string
-  isNotice: boolean
+  timestamp: number
 
   // 생성자
   constructor(
-    userId: string | null,
+    userId: string,
     chatId: string | null,
     content: string,
-    timestamp: string,
-    isNotice: boolean = false,
+    timestamp: number,
   ) {
     this.userId = userId
     this.chatId = chatId
     this.content = content
     this.timestamp = timestamp
-    this.isNotice = isNotice
   }
 
   // 메시지로부터 현재 유저의 채팅 객체 생성
-  // user id 필드는 서버에서 무시되어야 합니다
+  // user id, chat id, timestamp 필드는 서버에서 무시되어야 합니다
   static fromContent(content: string): Chat {
-    return new Chat(null, null, content, new Date().toISOString(), false)
+    return new Chat("1", null, content, new Date().getTime())
   }
 
   // json string으로부터 Chat 객체 생성
@@ -40,13 +37,7 @@ export class Chat {
       obj["chatId"],
       obj["content"],
       obj["timestamp"],
-      obj["isNotice"] ?? false,
     )
-  }
-
-  // Chat 객체를 json string으로 변환
-  static toJson() {
-    return JSON.stringify(this)
   }
 }
 
@@ -59,19 +50,21 @@ export class ChatUser {
   id: string
   name: string
   profile: string
+  currUser?: boolean
   createdAt: string
   deletedAt: string | null
 
   constructor(
     id: string,
     name: string,
-    profile: string = "/assets/icons/icon-48x48.png", // default profile pic
+    profile: string, // default profile pic
     createdAt: string = new Date().toISOString(),
     deletedAt: string | null = null,
   ) {
     this.id = id
     this.name = name
     this.profile = profile
+    this.currUser = false
     this.createdAt = createdAt
     this.deletedAt = deletedAt
   }
@@ -84,8 +77,9 @@ export class ChatUser {
 export class ChatRoom {
   title: string
   time: string
-  users: any[]
+  users: ChatUser[]
   chats: Paged<Chat>[]
+  userId: string
 
   constructor(
     title: string,
@@ -97,5 +91,6 @@ export class ChatRoom {
     this.time = time
     this.users = users
     this.chats = chats
+    this.userId = "1"
   }
 }
