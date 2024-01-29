@@ -2,6 +2,7 @@ import { Chat, ChatUser } from "@/model/chat.model"
 import ChatEntry from "./ChatEntry"
 import {
   CHAT_SHOW_MINE,
+  CHAT_SHOW_NOTI,
   CHAT_SHOW_TIME,
   CHAT_SHOW_USER,
   CHAT_STD_TIME,
@@ -69,13 +70,14 @@ export default function ChatList({
   // 렌더링
   return (
     <>
-      {chats.map(({ content, timestamp, userId }, idx) => {
+      {chats.map(({ content, timestamp, userId, chatId }, idx) => {
         if (!userId || users[userId] === undefined) {
           return <></>
         }
         return (
           <ChatEntry
             key={idx}
+            chatId={chatId!}
             content={content}
             timestamp={timestamp}
             user={users[userId]}

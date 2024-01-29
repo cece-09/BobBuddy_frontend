@@ -5,6 +5,7 @@ import ProfilePic from "../../common/ProfilePic"
 import ChatLinkThumb from "../client/ChatLinkThumb"
 import { ChatText } from "./ChatText"
 import { CHAT_SHOW_TIME, CHAT_SHOW_USER, CHAT_SHOW_MINE } from "../constants"
+import ChatShowOptionModal from "../client/ChatOptionModal"
 
 /**
  * 하나의 채팅 엔트리를 렌더링하는 레이아웃 컴포넌트
@@ -28,14 +29,16 @@ import { CHAT_SHOW_TIME, CHAT_SHOW_USER, CHAT_SHOW_MINE } from "../constants"
  * @return {JSX.Element}
  */
 export default function ChatEntry({
+  chatId,
+  user,
   content,
   timestamp,
-  user,
   options = CHAT_SHOW_TIME | CHAT_SHOW_USER,
 }: {
+  chatId: string
+  user: ChatUser
   content: string
   timestamp: number
-  user: ChatUser
   options?: number
 }): JSX.Element {
   // 텍스트 파싱
@@ -131,7 +134,9 @@ export default function ChatEntry({
               padding: "0.5rem 0.8rem",
             }}
           >
-            <ChatText content={content} parsed={parsed} />
+            <ChatShowOptionModal {...{ chatId, content, options }}>
+              <ChatText {...{ content, parsed }} />
+            </ChatShowOptionModal>
           </Box>
           {sentTime}
         </Stack>

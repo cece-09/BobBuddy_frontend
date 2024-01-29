@@ -1,16 +1,23 @@
 "use client"
 
 import { Chat, ChatUser } from "@/model/chat.model"
-import { ChangeEvent, ReactNode, useEffect, useRef, useState } from "react"
-import { useRecoilValue } from "recoil"
+import {
+  ChangeEvent,
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { userState } from "../../common/UserProvider"
 import {
   Box,
+  Chip,
+  CircularProgress,
   Drawer,
   Icon,
-  Input,
   Stack,
-  TextField,
   TextareaAutosize,
   Typography,
 } from "@mui/material"
@@ -19,11 +26,17 @@ import ProfilePic from "../../common/ProfilePic"
 import useChats from "../hooks/useChat"
 import useSocket from "../hooks/useSocket"
 import chatLoadingState from "../ChatLoadingState"
+import ChatNoticeState from "../ChatNoticeState"
+import { fetchPrevChats } from "../action/chat.actions"
+import { Paged } from "@/model/paged.model"
+import useInfiniteScroll from "../hooks/usePrevChat"
 
 export interface ChatRoomProps {
   name: string
   time: string
+  jsonNotice: string
   jsonUsers: string // json
+  currPage: number // 현재 로드된 페이지 번호
   children: ReactNode
 }
 
@@ -43,7 +56,9 @@ export interface ChatRoomProps {
 export default function ChatRoomUI({
   name,
   time,
+  jsonNotice,
   jsonUsers,
+  currPage,
   children, // server chat list
 }: ChatRoomProps): JSX.Element {
   const user = useRecoilValue(userState)
@@ -58,12 +73,19 @@ export default function ChatRoomUI({
     return <div>unauthorized</div>
   }
 
-  // status
+  // 상태
   const SERVER_URI = process.env.NEXT_PUBLIC_SERVER_URI as string
   const [sidebar, setSidebar] = useState<boolean>(false)
   const [input, setInput] = useState<string>("")
   const { socket, connect } = useSocket(SERVER_URI)
   const { chats } = useChats(socket)
+
+  // 현재 보고 있는 채팅방의 공지 상태 업데이트
+  const notice: Chat | null = JSON.parse(jsonNotice)
+  const setChatNotice = useSetRecoilState(ChatNoticeState)
+  useEffect(() => {
+    setChatNotice(notice)
+  })
 
   // 사이드바 토글 함수
   const toggle = () => {
@@ -91,9 +113,9 @@ export default function ChatRoomUI({
           onBackClick={() => {}}
           onMenuClick={toggle}
         />
-        <ChatRoomContentArea chats={chats} users={users}>
+        <ChatRoomContentArea {...{ chats, users, currPage }}>
+          <ChatRoomNotice />
           {children}
-          {/* <div ref={scroll} /> */}
         </ChatRoomContentArea>
         <ChatRoomInput
           message={input}
@@ -110,6 +132,51 @@ export default function ChatRoomUI({
 
 /* ===== Sub Components ===== */
 // TODO: 코드가 길어지면 파일을 나눕니다
+
+/**
+ * 공지로 설정된 채팅이 있으면
+ * 상단에 표시합니다.
+ *
+ * @param {{ chat: Chat }} { chat }
+ * @return {JSX.Element}
+ */
+function ChatRoomNotice(): JSX.Element {
+  const chat = useRecoilValue(ChatNoticeState)
+  if (chat === null) {
+    return <></>
+  } else {
+    // TODO: onclick 전체보기 기능 추가해야함
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          position: "fixed",
+          padding: "0.5rem",
+          top: "5vh",
+          left: 0,
+        }}
+      >
+        <Stack
+          direction='row'
+          sx={{
+            width: "100%",
+            maxHeight: "10vh",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            backgroundColor: "white",
+            borderRadius: "0.5rem",
+            padding: "0.5rem",
+            gap: "0.5rem",
+          }}
+        >
+          <Chip size='small' label='공지' />
+          <Icon sx={{ color: "gray" }}>campaign_rounded</Icon>
+          <div>{chat.content}</div>
+        </Stack>
+      </Box>
+    )
+  }
+}
 
 /**
  * 채팅방 사이드바에 유저 목록 등을 렌더링합니다
@@ -171,25 +238,47 @@ function ChatRoomSidebar({ users }: { users: ChatUser[] }): JSX.Element {
 function ChatRoomContentArea({
   children,
   chats,
+  currPage,
   users,
 }: {
   children: ReactNode
-  chats: Chat[]
+  chats: Chat[] // 클라이언트에 새로 추가되는 채팅
+  currPage: number
   users: { [key: string]: ChatUser }
 }): JSX.Element {
-  // ref
+  const [enterTime, setEnterTime] = useState<number>(0)
+  const [pageNo, setPageNo] = useState<number>(currPage)
+  useEffect(() => {
+    // 마운트 시 현재 시각 정보 저장
+    setEnterTime(new Date().getTime())
+  })
+
+  // 역방향 스크롤시 불러오는 이전 채팅 데이터
+  const {
+    loadingRef,
+    data: prevChats,
+    isLoading: prevChatLoading,
+  } = useInfiniteScroll(enterTime, fetchPrevChats)
+
   const scroll = useRef<HTMLDivElement>(null)
+  const container = useRef<HTMLDivElement>(null)
   const loading = useRecoilValue(chatLoadingState)
+  useLayoutEffect(() => {
+    if (container.current) {
+      container.current.scrollTop = container.current.scrollHeight
+    }
+  }, [])
   useEffect(() => {
     if (scroll.current != null) {
       scroll.current.scrollIntoView({
-        behavior: "smooth",
+        // behavior: "smooth",
       })
     }
   }, [loading, chats])
 
   return (
     <Box
+      ref={container}
       sx={{
         height: "100%",
         overflowY: "auto",
@@ -197,6 +286,12 @@ function ChatRoomContentArea({
         padding: "0rem 0.5rem",
       }}
     >
+      <div style={{ height: "50px" }} ref={loadingRef} />
+      {prevChatLoading ? (
+        <CircularProgress />
+      ) : (
+        <ChatList chats={prevChats} users={users} />
+      )}
       {children}
       <ChatList chats={chats} users={users} />
       <div ref={scroll} />
@@ -235,6 +330,7 @@ function ChatRoomAppBar({
         justifyContent: "space-between",
         alignItems: "center",
         padding: "0.5rem",
+        height: "5vh",
       }}
     >
       <Icon onClick={() => onBackClick()}>arrow_back_ios_rounded</Icon>
