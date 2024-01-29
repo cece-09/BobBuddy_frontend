@@ -11,12 +11,3 @@ export const isValidEmail = (email: string) => {
 // \\.[A-Z]{2,}: 점(.) 뒤에 대문자 A-Z가 최소 2개 이상 있어야 함
 // $: 문자열의 끝
 // i: 대소문자 구분 없이 검사
-
-// 휴대폰 번호 형식 검증
-export const isValidPhoneNumber = (phoneNumber: string) => {
-  const phoneNumberRegex = /^[0-9]{11}$/;
-  return phoneNumberRegex.test(phoneNumber); // boolean 값으로 반환
-};
-// ^: 문자열의 시작
-// [0-9]{11}: 숫자 0-9가 정확히 11개 있어야 함
-// $: 문자열의 끝

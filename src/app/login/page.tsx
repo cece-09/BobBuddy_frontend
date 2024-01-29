@@ -10,7 +10,8 @@ import Container from '@mui/material/Container';
 import { isValidEmail } from '../utils/validation';
 
 const MIN_PASSWORD_LENGTH = 9;
-const SIGNIN_API = 'http://localhost:3000/signin';
+const SIGNIN_API = 'http://yousayrun.store:8080/auth/sign-in';
+const SIGNIN_KAKAO_API = 'http://yousayrun.store:8080/auth/sign-in/kakao';
 
 export default function SigninPage() {
   const [email, setEmail] = useState('');
@@ -27,12 +28,15 @@ export default function SigninPage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({
+        userEmail: email,
+        pwd: password,
+      }),
     });
 
     if (res.ok) {
       // 로그인 성공(메인페이지 리다이렉트)
-      window.location.href = '/'
+      console.log(res.json())
     } else {
       // 로그인 실패
       alert('올바른 로그인 정보를 입력하세요')
@@ -57,8 +61,6 @@ export default function SigninPage() {
       setPassword(value);
     }
   };
-
-  
 
   return (
     <Container component="main" maxWidth="xs">
