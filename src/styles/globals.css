@@ -38,4 +38,8 @@ body {
   /* width: 540px; */
   /* height: 960px; */
   background-color: var(--color-background);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
