@@ -80,17 +80,20 @@ export class ChatRoom {
   users: ChatUser[]
   chats: Paged<Chat>[]
   userId: string
+  notice: Chat | null
 
   constructor(
     title: string,
     time: string,
     users: ChatUser[] = [],
     chats: Paged<Chat>[],
+    notice?: Chat | null,
   ) {
     this.title = title
     this.time = time
     this.users = users
     this.chats = chats
     this.userId = "1"
+    this.notice = null
   }
 }

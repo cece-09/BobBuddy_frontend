@@ -4,7 +4,16 @@ import { Chat, ChatUser } from "@/model/chat.model"
 import { ChangeEvent, ReactNode, useEffect, useRef, useState } from "react"
 import { useRecoilValue } from "recoil"
 import { userState } from "../../common/UserProvider"
-import { Box, Drawer, Icon, Input, Stack, Typography } from "@mui/material"
+import {
+  Box,
+  Drawer,
+  Icon,
+  Input,
+  Stack,
+  TextField,
+  TextareaAutosize,
+  Typography,
+} from "@mui/material"
 import ChatList from "../server/ChatList"
 import ProfilePic from "../../common/ProfilePic"
 import useChats from "../hooks/useChat"
@@ -269,24 +278,34 @@ function ChatRoomInput({
       <Stack
         direction='row'
         sx={{
-          border: "1px solid #eee",
-          borderRadius: "3em",
+          border: "1px solid black",
+          borderRadius: "1em",
           width: "100%",
+          minHeight: "5vh",
           alignItems: "center",
+          padding: "0.5rem",
+          gap: "0.3rem",
         }}
       >
-        <Input
-          sx={{ width: "100%", padding: "0rem", outline: "none" }}
+        <TextareaAutosize
+          maxRows={4}
+          style={{
+            width: "100%",
+            backgroundColor: "transparent",
+            outline: "none",
+          }}
           value={message}
           onChange={onChange}
           onKeyDown={e => {
-            if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+            if (e.key !== "Enter") return
+            if (!e.shiftKey && !e.nativeEvent.isComposing) {
+              e.preventDefault()
               e.stopPropagation()
               sendChat()
             }
           }}
-        />
-        <Icon onClick={() => sendChat()}>send</Icon>
+        ></TextareaAutosize>
+        <Icon onClick={() => sendChat()}>send_rounded</Icon>
       </Stack>
     </Box>
   )

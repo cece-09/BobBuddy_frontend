@@ -4,7 +4,7 @@ import findOpenGraph from "@/app/utils/findOpenGraph"
 import { OpenGraph } from "@/types/chat.types"
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import fetchOpenGraph from "../action/fetchOpenGraph"
+import fetchHTMLFromURL from "../action/fetchHTMLFromURL"
 import { useRecoilState } from "recoil"
 import chatLoadingState from "../ChatLoadingState"
 
@@ -21,7 +21,7 @@ const ChatLinkThum = React.memo(({ url }: { url: string }) => {
 
   useEffect(() => {
     setLoading(true)
-    fetchOpenGraph(url).then((result: string | null) => {
+    fetchHTMLFromURL(url).then((result: string | null) => {
       if (result === null) {
         setThumb(null)
         setLoading(true)
