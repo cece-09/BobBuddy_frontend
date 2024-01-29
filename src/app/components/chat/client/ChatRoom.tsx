@@ -67,12 +67,6 @@ export default function ChatRoomUI({
   parse.forEach(user => (users[user.id] = user))
   users[user.id].currUser = true // 로그인된 유저 마크
 
-  // 나의 채팅방이 아닙니다.
-  if (!(user.id in Object.keys(users))) {
-    console.error(`not my chatroom!`)
-    return <div>unauthorized</div>
-  }
-
   // 상태
   const SERVER_URI = process.env.NEXT_PUBLIC_SERVER_URI as string
   const [sidebar, setSidebar] = useState<boolean>(false)
@@ -103,6 +97,12 @@ export default function ChatRoomUI({
     const chat = new Chat(user.id, null, input, new Date().getTime())
     socket?.emit("send-chat", chat)
     setInput("")
+  }
+
+  // 나의 채팅방이 아닙니다.
+  if (!(user.id in Object.keys(users))) {
+    console.error(`not my chatroom!`)
+    return <div>unauthorized</div>
   }
 
   return (

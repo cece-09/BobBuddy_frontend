@@ -15,7 +15,7 @@ import chatLoadingState from "../ChatLoadingState"
  * @param {{ url: string }} { url }
  * @return {JSX.Element}
  */
-const ChatLinkThum = React.memo(({ url }: { url: string }) => {
+const ChatLinkThumb = React.memo(({ url }: { url: string }) => {
   const [_, setLoading] = useRecoilState(chatLoadingState)
   const [thumb, setThumb] = useState<null | OpenGraph>(null)
 
@@ -78,4 +78,5 @@ const ChatLinkThum = React.memo(({ url }: { url: string }) => {
   )
 })
 
-export default ChatLinkThum
+ChatLinkThumb.displayName = "ChatLinkThumb"
+export default ChatLinkThumb
