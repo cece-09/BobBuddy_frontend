@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter"
+import RecoilRootProvider from "./recoil/recoilRootProvider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -50,7 +51,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AppRouterCacheProvider>
-          {children}
+          <RecoilRootProvider>{children}</RecoilRootProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
