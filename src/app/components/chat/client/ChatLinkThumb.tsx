@@ -70,7 +70,7 @@ const ChatLinkThumb = React.memo(({ url }: { url: string }) => {
   )
 
   return !thumb ? (
-    <>{UI}</>
+    <></>
   ) : (
     <a href={url} target='_blank'>
       {UI}

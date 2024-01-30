@@ -16,9 +16,11 @@ export default function ProfilePic({
   width?: number
   height?: number
 }) {
-  const [imgSrc, setImgSrc] = useState<string | StaticImport>(src)
+  const defaultSrc = "/assets/image/profile.jpeg"
+  const [imgSrc, setImgSrc] = useState<string | StaticImport>(
+    src === "" ? defaultSrc : src,
+  )
   const handleError = () => {
-    const defaultSrc = "/assets/image/profile.jpeg"
     setImgSrc(defaultSrc)
   }
   return (

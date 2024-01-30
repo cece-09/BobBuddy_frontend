@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from "react"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { useRecoilValue, useSetRecoilState } from "recoil"
 import { userState } from "../../common/UserProvider"
 import {
   Box,
@@ -23,13 +23,12 @@ import {
 } from "@mui/material"
 import ChatList from "../server/ChatList"
 import ProfilePic from "../../common/ProfilePic"
-import useChats from "../hooks/useChat"
-import useSocket from "../hooks/useSocket"
 import chatLoadingState from "../ChatLoadingState"
 import ChatNoticeState from "../ChatNoticeState"
-import { fetchPrevChats } from "../action/chat.actions"
-import { Paged } from "@/model/paged.model"
+import useChats from "../hooks/useChat"
+import useSocket from "../hooks/useSocket"
 import useInfiniteScroll from "../hooks/usePrevChat"
+import { fetchPrevChats } from "../action/chat.actions"
 
 export interface ChatRoomProps {
   name: string
@@ -68,7 +67,7 @@ export default function ChatRoomUI({
   users[user.id].currUser = true // 로그인된 유저 마크
 
   // 상태
-  const SERVER_URI = process.env.NEXT_PUBLIC_SERVER_URI as string
+  const SERVER_URI = process.env.NEXT_PUBLIC_CHAT_SERVER_URI as string
   const [sidebar, setSidebar] = useState<boolean>(false)
   const [input, setInput] = useState<string>("")
   const { socket, connect } = useSocket(SERVER_URI)
@@ -251,7 +250,7 @@ function ChatRoomContentArea({
   useEffect(() => {
     // 마운트 시 현재 시각 정보 저장
     setEnterTime(new Date().getTime())
-  })
+  }, [])
 
   // 역방향 스크롤시 불러오는 이전 채팅 데이터
   const {
