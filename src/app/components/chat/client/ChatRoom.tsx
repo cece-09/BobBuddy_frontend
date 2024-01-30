@@ -67,7 +67,7 @@ export default function ChatRoomUI({
   users[user.id].currUser = true // 로그인된 유저 마크
 
   // 상태
-  const SERVER_URI = process.env.NEXT_PUBLIC_SERVER_URI as string
+  const SERVER_URI = process.env.NEXT_PUBLIC_CHAT_SERVER_URI as string
   const [sidebar, setSidebar] = useState<boolean>(false)
   const [input, setInput] = useState<string>("")
   const { socket, connect } = useSocket(SERVER_URI)
