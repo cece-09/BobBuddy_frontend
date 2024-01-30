@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react';
+import Image from 'next/image'
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,11 +13,52 @@ import { isValidEmail } from '../utils/validation';
 const MIN_PASSWORD_LENGTH = 9;
 const SIGNIN_API = 'http://yousayrun.store:8080/auth/sign-in';
 const SIGNIN_KAKAO_API = 'http://yousayrun.store:8080/auth/sign-in/kakao';
+const SIGNIN_NAVER_API = 'http://yousayrun.store:8080/auth/sign-in/naver';
 
 export default function SigninPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+
+  // 카카오 로그인 버튼 클릭 시
+  const handleKakaoLogin = async () => {
+    try {
+      const res = await fetch(SIGNIN_KAKAO_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (res.ok) {
+        console.log(res.json());
+      } else {
+        alert('카카오 로그인 실패');
+      }
+    } catch (error) {
+      alert('카카오 로그인 요청 중 오류가 발생했습니다. 다시 시도하세요');
+    }
+  };
+
+  // 네이버 로그인 버튼 클릭 시
+  const handleNaverLogin = async () => {
+    try {
+      const res = await fetch(SIGNIN_NAVER_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (res.ok) {
+        console.log(res.json());
+      } else {
+        alert('네이버 로그인 실패');
+      }
+    } catch (error) {
+      alert('네이버 로그인 요청 중 오류가 발생했습니다. 다시 시도하세요');
+    }
+  };
 
   // 로그인 버튼 클릭 시
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -115,6 +157,36 @@ export default function SigninPage() {
           >
             로그인
           </Button>
+          <Box
+            sx={{
+              marginTop: 3,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 3
+            }}
+          >
+            <Button
+              onClick={handleKakaoLogin}
+            >
+              <Image
+                src="/assets/kakao.png"
+                width={50}
+                height={50}
+                alt="Kakao Login"
+              />
+            </Button>
+            <Button
+              onClick={handleNaverLogin}
+            >
+              <Image
+                src="/assets/naver.png"
+                width={57}
+                height={57}
+                alt="Naver Login"
+              />
+            </Button>
+          </Box>
           <Box
             sx={{
               marginTop: 5,
