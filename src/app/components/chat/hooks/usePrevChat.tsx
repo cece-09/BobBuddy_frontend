@@ -1,30 +1,33 @@
 import { Chat } from "@/model/chat.model"
 import { Paged } from "@/model/paged.model"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 function useInfiniteScroll(
   timestamp: number,
   fetchData: (timestamp: number, pageNo: number) => Promise<Paged<Chat>[]>,
+  initialPageNo?: number, // 현재 페이지 번호 초기화
 ) {
-  const [data, setData] = useState<Chat[]>([])
-  const [pageNo, setPageNo] = useState<number>(0)
+  const [data, setData] = useState<Chat[]>([]) // 현재 보이는 채팅 목록
+  const [pageNo, setPageNo] = useState<number>(initialPageNo ?? 0)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const loadingRef = useRef<HTMLDivElement>(null)
-
-  const loadMore = useCallback(() => {
-    setIsLoading(true)
-    fetchData(timestamp, pageNo + 1).then(fetched => {
-      fetched.forEach(each => setData(prev => [...prev, ...each.data]))
-      setPageNo(prev => prev + 1)
-      setIsLoading(false)
-    })
-  }, [fetchData, pageNo])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
         if (entries[0].isIntersecting && !isLoading) {
-          loadMore()
+          setIsLoading(true)
+          fetchData(timestamp, pageNo + 1)
+            .then(fetched => {
+              fetched.forEach(each => setData(prev => [...prev, ...each.data]))
+              setPageNo(prev => prev + 1)
+            })
+            .catch((error: Error) => {
+              console.error(error)
+            })
+            .finally(() => {
+              setIsLoading(false)
+            })
         }
       },
       { threshold: 1.0 },
@@ -39,7 +42,7 @@ function useInfiniteScroll(
         observer.unobserve(loadingRef.current)
       }
     }
-  }, [loadMore, isLoading])
+  }, [])
 
   return { loadingRef, data, isLoading }
 }
