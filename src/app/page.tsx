@@ -4,6 +4,7 @@ import Link from "next/link"
 export default function MainPage() {
   const screens = [
     { href: "/login", name: "로그인" },
+    { href: "/home", name: "매칭 페이지" },
     { href: "/chat/1", name: "채팅방" },
   ]
   return (
