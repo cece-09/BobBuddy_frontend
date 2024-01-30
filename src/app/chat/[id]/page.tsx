@@ -4,7 +4,6 @@ import ChatRoomUI, {
 import { ChatUser } from "@/model/chat.model"
 import ChatList from "@/app/components/chat/server/ChatList"
 import { getChatRoom } from "@/app/components/chat/action/chat.actions"
-import "@/styles/globals.css"
 
 /**
  * 개별 채팅방 페이지
