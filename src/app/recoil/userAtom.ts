@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-interface User {
+export interface User {
   userId: number;
   userImg: string;
   username: string;
@@ -27,13 +27,13 @@ export const userState = atom<{
     userData: {
       userId: 0,
       userImg: '',
-      username: '',
-      email: '',
-      birth: '',
-      gender: '',
-      mbti: '',
-      favoriteFood: '',
-      dislikedFood: '',
+      username: '김초원',
+      email: 'kimfield98@gmail.com',
+      birth: '미입력',
+      gender: '미입력',
+      mbti: '미입력',
+      favoriteFood: '미입력',
+      dislikedFood: '미입력',
     },
     auth: {
       isLoggedIn: false,
