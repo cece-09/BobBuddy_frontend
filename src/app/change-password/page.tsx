@@ -7,8 +7,8 @@ import { Button, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 const MIN_PASSWORD_LENGTH = 9;
-const PASSWORD_VALIDATE_API = 'http://yousayrun:8080/user/validate/password'
-const PASSWORD_UPDATE_API = 'http://yousayrun:8080/user/update/password'
+const PASSWORD_VALIDATE_API = 'http://yousayrun.store:8080/user/validate/password'
+const PASSWORD_UPDATE_API = 'http://yousayrun.store:8080/user/update/password'
 
 export default function ChangePassword() {
   const [password, setPassword] = useState('');

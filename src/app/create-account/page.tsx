@@ -79,16 +79,15 @@ export default function SignupPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ userEmail:email }),
       });
 
       setTimerActive(true); // 타이머 활성화
       console.log("타이머 활성화됨");
   
       if (response.ok) {
-        const data = await response.json();
-        console.log('타이머 정보:', data);
         setIsVerificationSent(true); 
+        alert('인증번호를 입력하세요')
       } else {
         alert('이메일 인증 요청에 실패했습니다.');
       }
@@ -121,19 +120,15 @@ export default function SignupPage() {
       });
   
       if (response.ok) {
-        const data = await response.json();
-        if (data === true) {
-          console.log('인증 성공');
-        } else {
-          alert('인증번호가 일치하지 않습니다.');
-        }
+        setTimerActive(false);
+        alert('이메일 인증이 성공했습니다');
       } else {
         alert('인증 요청에 실패했습니다.');
       }
     } catch (error) {
       alert('네트워크 오류가 발생했습니다.');
     }
-  };  
+  };
 
   // 회원가입 버튼 클릭 시
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -146,7 +141,7 @@ export default function SignupPage() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: email,
+        userEmail: email,
         userName: name,
         pwd: password,
       }),
@@ -154,7 +149,7 @@ export default function SignupPage() {
 
     if (res.ok) {
       alert('회원가입 성공!')
-      // console.log(res.json())
+      window.location.href = '/login'
     } else {
       alert('올바른 회원가입 정보를 입력하세요')
     }
