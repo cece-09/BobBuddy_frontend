@@ -2,7 +2,13 @@ import { Paper, Stack, Icon, Typography } from "@mui/material"
 import Link from "next/link"
 import BottomNavbarItemList from "./constants"
 
-export default function BottomNavbar() {
+export type BottomNavbarKey = "/home" | "match" | "profile" | "/setting"
+
+export default function BottomNavbar({
+  current,
+}: {
+  current: BottomNavbarKey
+}) {
   return (
     <Paper>
       <Stack
