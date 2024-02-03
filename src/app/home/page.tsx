@@ -12,11 +12,12 @@ import {
   Typography,
 } from "@mui/material"
 import { useEffect, useState } from "react"
-import reverseGeocoding from "../components/home/action/reverseGeocoding"
-import getAddrByKeyword, {
-  TextQueryResult,
-} from "../components/home/action/searchAddr"
-import { ModalBackdrop } from "../components/common/ModalBackdrop"
+import { ModalBackdrop } from "../../components/common/ModalBackdrop"
+import {
+  getAddrByKeyword,
+  reverseGeocoding,
+} from "@/server-actions/home.actions"
+import { TextQueryResult } from "@/types/home.types"
 
 export default function HomePage() {
   return (

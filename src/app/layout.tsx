@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter"
-import RecoilRootProvider from "./recoil/recoilRootProvider"
+import RecoilRootProvider from "../providers/recoilRootProvider"
 import "@/styles/globals.css"
 
 const inter = Inter({ subsets: ["latin"] })

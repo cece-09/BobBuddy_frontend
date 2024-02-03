@@ -1,4 +1,4 @@
-import { Chat } from "@/model/chat.model"
+import { Chat } from "@/types/chat.types"
 import { useEffect, useState } from "react"
 import { Socket } from "socket.io-client"
 

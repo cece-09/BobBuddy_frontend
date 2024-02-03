@@ -1,5 +1,5 @@
-import { Chat } from "@/model/chat.model"
-import { Paged } from "@/model/paged.model"
+import { Chat } from "@/types/chat.types"
+import { Paged } from "@/types/paged.types"
 import { useEffect, useRef, useState } from "react"
 
 function useInfiniteScroll(

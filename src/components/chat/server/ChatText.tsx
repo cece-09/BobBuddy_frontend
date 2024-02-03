@@ -1,6 +1,5 @@
 import { ParsedChatMessage } from "@/types/chat.types"
 import { Typography } from "@mui/material"
-import GestureDetector from "../client/GestureDetector"
 
 /**
  * 채팅 엔트리의 텍스트 부분을 렌더링합니다

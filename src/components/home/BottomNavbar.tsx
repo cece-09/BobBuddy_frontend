@@ -1,6 +1,6 @@
 import { Paper, Stack, Icon, Typography } from "@mui/material"
 import Link from "next/link"
-import BottomNavbarItemList from "./constants"
+import BottomNavbarItemList from "../../constants/home.constants"
 
 export type BottomNavbarKey = "/home" | "match" | "profile" | "/setting"
 

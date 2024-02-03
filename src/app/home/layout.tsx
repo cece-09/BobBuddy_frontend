@@ -1,6 +1,6 @@
 import { Box, Stack } from "@mui/material"
 import { ReactNode } from "react"
-import BottomNavbar from "../components/home/BottomNavbar"
+import BottomNavbar from "../../components/home/BottomNavbar"
 
 export default function HomeLayout({ children }: { children: ReactNode }) {
   return (

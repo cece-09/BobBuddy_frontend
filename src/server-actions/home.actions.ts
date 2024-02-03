@@ -1,9 +1,8 @@
 "use server"
 
-export default async function reverseGeocoding(
-  longitude: number,
-  latitude: number,
-) {
+import { TextQueryResult } from "@/types/home.types"
+
+export async function reverseGeocoding(longitude: number, latitude: number) {
   const SERVER_URI = process.env.NEXT_PUBLIC_NAVER_MAP_API
   const CLIENT_ID = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID
   const CLIENT_SECRET = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_SECRET
@@ -62,4 +61,57 @@ type ReverseGeoResult = {
       }
     }
   }
+}
+
+/**
+ *
+ *
+ * @export
+ * @param {string} keyword
+ * @return {*}  {Promise<TextQueryResult>}
+ */
+export async function getAddrByKeyword(
+  keyword: string,
+): Promise<TextQueryResult[]> {
+  // API URI
+  const API_URI = process.env.NEXT_PUBLIC_GOOGLE_MAP_API as string
+  const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY as string
+  // 요청 헤더
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Goog-Api-Key": API_KEY,
+    "X-Goog-FieldMask": "places.displayName,places.formattedAddress",
+  }
+  // 요청 바디
+  const body = {
+    textQuery: keyword.trim(),
+    languageCode: "ko",
+    maxResultCount: 5,
+    locationRestriction: {
+      // 서울특별시로 제한
+      rectangle: {
+        low: {
+          latitude: 37.413294,
+          longitude: 126.734086,
+        },
+        high: {
+          latitude: 37.715133,
+          longitude: 127.269311,
+        },
+      },
+    },
+  }
+
+  const res = await fetch(`${API_URI}`, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(body),
+  })
+  if (res.status === 200) {
+    const json = await res.json()
+    const results: TextQueryResult[] = json["places"]
+    console.log(results)
+    return results
+  }
+  return []
 }

@@ -1,12 +1,12 @@
 "use client"
 
-import findOpenGraph from "@/app/utils/findOpenGraph"
+import { chatLoadingState } from "@/providers/chatAtom"
+import { fetchHTMLFromURL } from "@/server-actions/chat.actions"
 import { OpenGraph } from "@/types/chat.types"
+import { findOpenGraph } from "@/utils/chat.utils"
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import fetchHTMLFromURL from "../action/fetchHTMLFromURL"
 import { useRecoilState } from "recoil"
-import chatLoadingState from "../ChatLoadingState"
 
 /**
  * 채팅 메시지에 포함된 링크를

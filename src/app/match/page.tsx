@@ -1,4 +1,4 @@
-import { Chat, ChatRoom, ChatUser } from "@/model/chat.model"
+import { Chat } from "@/types/chat.types"
 import {
   Box,
   Chip,

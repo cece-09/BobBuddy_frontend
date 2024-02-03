@@ -1,7 +1,7 @@
 // 서버 요청 액션들
 
-import { Chat, ChatRoom, ChatUser } from "@/model/chat.model"
-import { Paged } from "@/model/paged.model"
+import { Chat, ChatRoom, ChatUser } from "@/types/chat.types"
+import { Paged } from "@/types/paged.types"
 
 /**
  * 개별 채팅방 데이터 가져오기
@@ -106,4 +106,14 @@ export async function setChatNotice(chatId: string) {
     status: 200,
     json: () => JSON.stringify(data),
   }
+}
+
+// 링크 URL로부터 HTML문서를 읽어옵니다
+export async function fetchHTMLFromURL(url: string) {
+  const res = await fetch(url)
+  if (res.status !== 200) {
+    console.error(`failed to fetch data from url included chat message`)
+    return null
+  }
+  return await res.text()
 }
