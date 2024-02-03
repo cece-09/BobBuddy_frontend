@@ -28,6 +28,7 @@ export default function SigninPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       });
 
       if (res.ok) {
@@ -48,6 +49,7 @@ export default function SigninPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       });
 
       if (res.ok) {
@@ -77,8 +79,8 @@ export default function SigninPage() {
     });
 
     if (res.ok) {
-      // 로그인 성공(메인페이지 리다이렉트)
-      console.log(res.json())
+      // 로그인 성공 (메인페이지 리다이렉트)
+      window.location.href = '/home'
     } else {
       // 로그인 실패
       alert('올바른 로그인 정보를 입력하세요')
