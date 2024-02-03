@@ -11,7 +11,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
       justifyContent='space-between'
     >
       <Box sx={{ height: "100%" }}>{children}</Box>
-      <BottomNavbar />
+      <BottomNavbar current='/home' />
     </Stack>
   )
 }

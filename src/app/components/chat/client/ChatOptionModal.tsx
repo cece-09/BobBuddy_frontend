@@ -15,6 +15,7 @@ import { Chat } from "@/model/chat.model"
 import { useRecoilState } from "recoil"
 import ChatNoticeState from "../ChatNoticeState"
 import { setChatNotice } from "../action/chat.actions"
+import { ModalBackdrop } from "../../common/ModalBackdrop"
 
 /**
  * 길게 누르면 메뉴를 보여주는
@@ -185,32 +186,5 @@ const ChatOptionModalContent = ({
         <></>
       )}
     </>
-  )
-}
-
-const ModalBackdrop = ({
-  children,
-  onClick,
-}: {
-  children: ReactNode
-  onClick: () => void
-}) => {
-  return (
-    <div onClick={onClick}>
-      <Stack
-        width='100vw'
-        height='100vh'
-        justifyContent='center'
-        alignItems='center'
-        sx={{
-          backgroundColor: "#00000070",
-          position: "absolute",
-          top: 0,
-          left: 0,
-        }}
-      >
-        <div onClick={e => e.stopPropagation()}>{children}</div>
-      </Stack>
-    </div>
   )
 }

@@ -36,6 +36,7 @@ export default async function reverseGeocoding(
         addrString += region[key].name + " "
       }
     })
+    addrString.trim()
     return addrString
   } else {
     return null
