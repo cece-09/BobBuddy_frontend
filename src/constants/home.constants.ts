@@ -1,3 +1,5 @@
+import { BottomNavbarItem } from "@/types/home.types"
+
 const BottomNavbarItemList: BottomNavbarItem[] = [
   { icon: "home_rounded", text: "랜덤매칭", link: "/home" },
   { icon: "graphic_eq_rounded", text: "매칭방", link: "/home" },

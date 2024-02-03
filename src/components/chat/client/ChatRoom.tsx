@@ -1,6 +1,5 @@
 "use client"
 
-import { Chat, ChatUser } from "@/model/chat.model"
 import {
   ChangeEvent,
   ReactNode,
@@ -10,7 +9,7 @@ import {
   useState,
 } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
-import { userState } from "../../common/UserProvider"
+import { userState } from "../../../providers/UserProvider"
 import {
   Box,
   Chip,
@@ -23,12 +22,12 @@ import {
 } from "@mui/material"
 import ChatList from "../server/ChatList"
 import ProfilePic from "../../common/ProfilePic"
-import chatLoadingState from "../ChatLoadingState"
-import ChatNoticeState from "../ChatNoticeState"
-import useChats from "../hooks/useChat"
-import useSocket from "../hooks/useSocket"
-import useInfiniteScroll from "../hooks/usePrevChat"
-import { fetchPrevChats } from "../action/chat.actions"
+import useChats from "../../../hooks/useChat"
+import useSocket from "../../../hooks/useSocket"
+import useInfiniteScroll from "../../../hooks/usePrevChat"
+import { fetchPrevChats } from "../../../server-actions/chat.actions"
+import { chatNoticeState, chatLoadingState } from "@/providers/chatAtom"
+import { Chat, ChatUser } from "@/types/chat.types"
 
 export interface ChatRoomProps {
   name: string
@@ -75,7 +74,7 @@ export default function ChatRoomUI({
 
   // 현재 보고 있는 채팅방의 공지 상태 업데이트
   const notice: Chat | null = JSON.parse(jsonNotice)
-  const setChatNotice = useSetRecoilState(ChatNoticeState)
+  const setChatNotice = useSetRecoilState(chatNoticeState)
   useEffect(() => {
     setChatNotice(notice)
   })
@@ -140,7 +139,7 @@ export default function ChatRoomUI({
  * @return {JSX.Element}
  */
 function ChatRoomNotice(): JSX.Element {
-  const chat = useRecoilValue(ChatNoticeState)
+  const chat = useRecoilValue(chatNoticeState)
   if (chat === null) {
     return <></>
   } else {

@@ -1,6 +1,6 @@
 "use client"
 import { ReactNode, useState } from "react"
-import GestureDetector from "./GestureDetector"
+import GestureDetector from "../../common/GestureDetector"
 import {
   Box,
   Button,
@@ -11,11 +11,11 @@ import {
   Stack,
   Typography,
 } from "@mui/material"
-import { Chat } from "@/model/chat.model"
 import { useRecoilState } from "recoil"
-import ChatNoticeState from "../ChatNoticeState"
-import { setChatNotice } from "../action/chat.actions"
+import { setChatNotice } from "../../../server-actions/chat.actions"
 import { ModalBackdrop } from "../../common/ModalBackdrop"
+import { chatNoticeState } from "@/providers/chatAtom"
+import { Chat } from "@/types/chat.types"
 
 /**
  * 길게 누르면 메뉴를 보여주는
@@ -68,7 +68,7 @@ const ChatOptionModalContent = ({
 }) => {
   // 공지등록, 이미 등록된 공지라면 공지해제
   const [confirmMsg, setConfirmMsg] = useState<ReactNode | null>(null)
-  const [notice, setNotice] = useRecoilState(ChatNoticeState)
+  const [notice, setNotice] = useRecoilState(chatNoticeState)
   const isNotice = notice?.chatId === chatId
 
   const menu = [

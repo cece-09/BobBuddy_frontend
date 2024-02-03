@@ -1,4 +1,3 @@
-import { Chat, ChatUser } from "@/model/chat.model"
 import ChatEntry from "./ChatEntry"
 import {
   CHAT_SHOW_MINE,
@@ -6,7 +5,8 @@ import {
   CHAT_SHOW_TIME,
   CHAT_SHOW_USER,
   CHAT_STD_TIME,
-} from "../constants"
+} from "../../../constants/chat.constants"
+import { Chat, ChatUser } from "@/types/chat.types"
 
 /**
  * 채팅 목록을 렌더링합니다

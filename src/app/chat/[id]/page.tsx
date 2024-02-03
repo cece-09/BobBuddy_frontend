@@ -1,9 +1,7 @@
-import ChatRoomUI, {
-  ChatRoomProps,
-} from "@/app/components/chat/client/ChatRoom"
-import { ChatUser } from "@/model/chat.model"
-import ChatList from "@/app/components/chat/server/ChatList"
-import { getChatRoom } from "@/app/components/chat/action/chat.actions"
+import ChatRoomUI, { ChatRoomProps } from "@/components/chat/client/ChatRoom"
+import ChatList from "@/components/chat/server/ChatList"
+import { getChatRoom } from "@/server-actions/chat.actions"
+import { ChatUser } from "@/types/chat.types"
 
 /**
  * 개별 채팅방 페이지
