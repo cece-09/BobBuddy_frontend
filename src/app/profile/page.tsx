@@ -68,7 +68,7 @@ const ProfilePage = () => {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 10,
+          my: 10,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
