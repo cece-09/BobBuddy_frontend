@@ -18,6 +18,8 @@ import {
   reverseGeocoding,
 } from "@/server-actions/home.actions"
 import { TextQueryResult } from "@/types/home.types"
+import { useRouter } from "next/router"
+import { fetchWithToken } from "@/utils/fetchWithToken"
 
 export default function HomePage() {
   return (
@@ -51,10 +53,13 @@ const PRIMARY_COLOR = "#5E1EE7"
 const MatchButton = () => {
   const GRADIENT_COLOR = `linear-gradient(95deg, #5E1EE7 13.09%, #7718C1 100%)`
   const handleClick = () => {
-    // TODO: 매칭 API 콜
+    fetchWithToken("/match/request").then(async res => {
+      console.log(await res.text())
+    })
   }
   return (
     <Button
+      onClick={handleClick}
       sx={{
         alignSelf: "center",
         background: GRADIENT_COLOR,
@@ -72,13 +77,33 @@ const MatchButton = () => {
 
 const MatchNumInput = () => {
   const [focus, setFocus] = useState<number>(0)
-  const matchOption = ["Large", "Medium", "Small"]
+
+  // TODO: contants로 빼기
+  type matchOptionType = {
+    text: string
+    subtext: string
+    image?: string
+  }
+  const matchOption: matchOptionType[] = [
+    {
+      text: "Small",
+      subtext: "2-3명의 소규모 모임",
+    },
+    {
+      text: "Medium",
+      subtext: "4-6명의 즐거운 식사",
+    },
+    {
+      text: "Large",
+      subtext: "7명이상의 파티",
+    },
+  ]
 
   // 좌우 이동 버튼 클릭시
   const handleClick = (option: "prev" | "next") => {
     if (option === "prev" && focus > 0) {
       setFocus(focus - 1)
-    } else if (focus < matchOption.length - 1) {
+    } else if (option === "next" && focus < matchOption.length - 1) {
       setFocus(focus + 1)
     }
   }
@@ -93,7 +118,12 @@ const MatchNumInput = () => {
     >
       <IconButton
         onClick={() => handleClick("prev")}
-        sx={{ backgroundColor: PRIMARY_COLOR }}
+        sx={{
+          backgroundColor: PRIMARY_COLOR,
+          ":hover": {
+            backgroundColor: PRIMARY_COLOR,
+          },
+        }}
       >
         <Icon sx={{ color: "white" }}>remove_rounded</Icon>
       </IconButton>
@@ -107,11 +137,21 @@ const MatchNumInput = () => {
           aspectRatio: "1 / 1",
         }}
       >
-        {matchOption[focus]}
+        <Typography sx={{ fontWeight: 600 }}>
+          {matchOption[focus].text}
+        </Typography>
+        <Typography sx={{ fontSize: "0.8rem", color: "gray" }}>
+          {matchOption[focus].subtext}
+        </Typography>
       </Stack>
       <IconButton
         onClick={() => handleClick("next")}
-        sx={{ backgroundColor: PRIMARY_COLOR }}
+        sx={{
+          backgroundColor: PRIMARY_COLOR,
+          ":hover": {
+            backgroundColor: PRIMARY_COLOR,
+          },
+        }}
       >
         <Icon sx={{ color: "white" }}>add_rounded</Icon>
       </IconButton>
@@ -128,10 +168,10 @@ const LocationSearchBar = (): JSX.Element => {
   // 상태관리
   const [open, setOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  //   const [input, setInput] = useState<string>("") // 검색창에 입력되는값
   const [location, setLocation] = useState<string>("") // 서버로 넘길 주소문자열
 
   // 우측 트레일링 버튼 리스트 상수
+  // TODO: 분리
   const searchbarButtons = [
     { icon: "my_location_rounded", onClick: () => getCurrAddr() },
     { icon: "search_rounded", onClick: () => toggle() },
@@ -159,7 +199,6 @@ const LocationSearchBar = (): JSX.Element => {
       reverseGeocoding(longitude, latitude)
         .then(addr => {
           setLocation(addr ?? "")
-          //   setInput(addr ?? "")
         })
         .catch((error: Error) => console.error(error))
         .finally(() => setLoading(false))
@@ -190,8 +229,10 @@ const LocationSearchBar = (): JSX.Element => {
         direction='row'
         padding='0.5rem 0.8rem'
         sx={{
+          width: "100%",
           borderRadius: "1rem",
           backgroundColor: "white",
+          justifyContent: "end",
           alignItems: "center",
         }}
         gap={1}
@@ -199,23 +240,30 @@ const LocationSearchBar = (): JSX.Element => {
         {loading ? (
           <Skeleton width='100%' />
         ) : (
-          <div onClick={toggle} style={{ width: "100%" }}>
-            <Box
-              sx={{
-                width: "100%",
-                margin: 0,
-                color: location === "" ? "gray" : "inherit",
-              }}
-            >
-              {location === "" && !loading ? "어디에서 만날까요?" : location}
-            </Box>
+          <div
+            onClick={toggle}
+            style={{
+              width: "100%",
+              margin: 0,
+              color: location === "" ? "gray" : "inherit",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {location === "" && !loading ? "어디에서 만날까요?" : location}
           </div>
         )}
         {searchbarButtons.map(({ icon, onClick }, idx) => (
           <IconButton
             key={idx}
             onClick={onClick}
-            sx={{ backgroundColor: PRIMARY_COLOR }}
+            sx={{
+              backgroundColor: PRIMARY_COLOR,
+              ":hover": {
+                backgroundColor: PRIMARY_COLOR,
+              },
+            }}
           >
             <Icon sx={{ color: "white" }}>{icon}</Icon>
           </IconButton>
