@@ -18,7 +18,6 @@ import {
   reverseGeocoding,
 } from "@/server-actions/home.actions"
 import { TextQueryResult } from "@/types/home.types"
-import { useRouter } from "next/router"
 import { fetchWithToken } from "@/utils/fetchWithToken"
 
 export default function HomePage() {

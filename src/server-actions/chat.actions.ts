@@ -1,5 +1,5 @@
 // 서버 요청 액션들
-
+"use server"
 import { Chat, ChatRoom, ChatUser } from "@/types/chat.types"
 import { Paged } from "@/types/paged.types"
 
@@ -47,6 +47,7 @@ export async function getChatRoom(id: string): Promise<ChatRoom> {
     ],
   } as ChatRoom
 
+  dummy.users.push(new ChatUser("0", "김초원", ""))
   dummy.users.push(new ChatUser("1", "pikachu", ""))
   dummy.users.push(new ChatUser("2", "ggobugi", ""))
   dummy.chats[0].data = chats
