@@ -1,13 +1,20 @@
 import { Chat } from "@/types/chat.types"
 import {
+  Avatar,
+  AvatarGroup,
   Box,
+  Button,
   Chip,
   Divider,
   LinearProgress,
+  List,
+  ListItem,
   Paper,
   Stack,
   Typography,
+  styled,
 } from "@mui/material"
+import Link from "next/link"
 
 class Match {
   id: string
@@ -39,6 +46,7 @@ class Match {
 type MatchPageData = {
   point: number
   match: Match[]
+  history: Match[]
 }
 
 // server action
@@ -49,14 +57,32 @@ async function getData(): Promise<MatchPageData> {
     match: [
       new Match("2월 18일 저녁", new Date().toISOString(), ["", "", "", ""]),
     ],
+    history: [
+      new Match("2월 16일 저녁", new Date().toISOString(), ["", "", ""]),
+      new Match("2월 16일 저녁", new Date().toISOString(), ["", "", ""]),
+      new Match("2월 16일 저녁", new Date().toISOString(), ["", "", ""]),
+      new Match("2월 16일 저녁", new Date().toISOString(), ["", "", ""]),
+      new Match("2월 16일 저녁", new Date().toISOString(), ["", "", ""]),
+      new Match("2월 16일 저녁", new Date().toISOString(), ["", "", ""]),
+      new Match("2월 16일 저녁", new Date().toISOString(), ["", "", ""]),
+      new Match("2월 16일 저녁", new Date().toISOString(), ["", "", ""]),
+    ],
   }
 }
 
 export default async function MatchPage() {
-  const { point, match } = await getData()
+  const { point, match, history } = await getData()
 
   return (
-    <Stack sx={{ padding: "2rem 1rem" }}>
+    <Stack
+      sx={{
+        padding: "2rem 1rem",
+        height: "100vh",
+        overflowX: "hidden",
+        overflowY: "scroll",
+        pb: "10vh",
+      }}
+    >
       <Typography mb={2} sx={{ fontSize: "1.5rem", fontWeight: 600 }}>
         매칭방
       </Typography>
@@ -64,31 +90,128 @@ export default async function MatchPage() {
         나의 매너온도
       </Typography>
       <MyPointView {...{ point }} />
-      <Typography my={1} sx={{ fontSize: "1.2rem", fontWeight: 600 }}>
-        오늘의 밥버디 매칭
+      <Typography mt={4} mb={1} sx={{ fontSize: "1.2rem", fontWeight: 600 }}>
+        현재 참여중인 매칭방
       </Typography>
-      {match.map((mat, idx) => (
-        <MatchCard key={idx} match={mat} />
-      ))}
+      <MatchList match={match} />
+      <Typography mt={4} mb={1} sx={{ fontSize: "1.2rem", fontWeight: 600 }}>
+        매칭 히스토리
+      </Typography>
+      <List>
+        {history.map((each, idx) => {
+          return (
+            <Stack
+              key={idx}
+              padding='0.5rem'
+              direction='row'
+              justifyContent='space-between'
+              alignItems='center'
+              sx={{ backgroundColor: "white", mb: 1, borderRadius: "0.5rem" }}
+            >
+              <Typography>{each.title}</Typography>
+              <ProfileBox profiles={each.userProfiles} />
+            </Stack>
+          )
+        })}
+      </List>
     </Stack>
   )
 }
 
-const MatchCard = ({ match }: { match: Match }) => {
-  const { title, time, userProfiles, recentChat } = match
+const ProfileBox = ({ profiles }: { profiles: string[] }) => {
+  // 4개로 맞추기
+  if (profiles.length < 4) {
+    const tmp = Array.from({ length: 4 - profiles.length }, () => "")
+    profiles = profiles.concat(tmp)
+  } else if (profiles.length > 4) {
+    profiles = profiles.slice(0, 5)
+  }
   return (
     <Stack
       direction='column'
-      sx={{
-        backgroundColor: "white",
-        borderRadius: "0.5rem",
-        padding: "0.5rem 1rem",
-      }}
+      sx={{ borderRadius: "0.2rem", overflow: "hidden" }}
     >
-      <Stack direction='row'>
-        <Typography fontWeight={600}>{title}</Typography>
-      </Stack>
+      {profiles.map((_, idx) =>
+        idx % 2 === 0 ? (
+          <Stack direction='row'>
+            {profiles.slice(idx, idx + 2).map((url, k) => (
+              <Avatar
+                key={k}
+                variant='square'
+                alt={url}
+                src={url}
+                sx={{
+                  width: "30px",
+                  height: "30px",
+                }}
+              />
+            ))}
+          </Stack>
+        ) : (
+          <></>
+        ),
+      )}
     </Stack>
+  )
+}
+
+const MatchList = ({ match }: { match: Match[] }) => {
+  const placeholder = (
+    <Stack
+      justifyContent='center'
+      alignItems='center'
+      height='10vh'
+      borderRadius='0.5rem'
+      sx={{ backgroundColor: "white" }}
+    >
+      <Typography fontSize='0.9rem' color='#666'>
+        매칭이 없습니다
+      </Typography>
+    </Stack>
+  )
+  return (
+    <>
+      {match
+        ? match.map((each, idx) => <MatchCard key={idx} match={each} />)
+        : placeholder}
+    </>
+  )
+}
+
+const MatchCard = ({ match }: { match: Match }) => {
+  const { id, title, time, userProfiles, recentChat } = match
+  const formatDate = (date: Date) => {
+    const MM = date.getMonth()
+    const dd = date.getDate()
+    const hh = date.getHours()
+    const ee = hh > 12 ? "오후" : "오전"
+    const mm = date.getMinutes()
+    return `${MM + 1}월 ${dd}일 ${ee} ${hh > 12 ? hh - 12 : hh}시 ${mm}분`
+  }
+
+  return (
+    <Link href={`/chat/${id}`}>
+      <Stack
+        direction='column'
+        sx={{
+          backgroundColor: "white",
+          borderRadius: "0.5rem",
+          padding: "0.5rem 1rem",
+        }}
+      >
+        <Stack direction='column'>
+          <Typography fontWeight={600}>{`${formatDate(
+            new Date(time),
+          )} 모임`}</Typography>
+          <Typography fontSize='0.8rem'>{recentChat?.content}</Typography>
+        </Stack>
+        <AvatarGroup max={3} total={userProfiles.length}>
+          {userProfiles.map((url, idx) => (
+            <Avatar key={idx} alt={url} src={url} sizes='sm' />
+          ))}
+        </AvatarGroup>
+      </Stack>
+    </Link>
   )
 }
 

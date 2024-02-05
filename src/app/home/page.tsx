@@ -10,6 +10,7 @@ import {
   Skeleton,
   Stack,
   Typography,
+  styled,
 } from "@mui/material"
 import { useEffect, useState } from "react"
 import { ModalBackdrop } from "../../components/common/ModalBackdrop"
@@ -19,39 +20,39 @@ import {
 } from "@/server-actions/home.actions"
 import { TextQueryResult } from "@/types/home.types"
 import { fetchWithToken } from "@/utils/fetchWithToken"
+import { theme } from "@/styles/theme"
 
 export default function HomePage() {
   return (
     <Stack
       direction='column'
       padding='2rem 1rem'
-      justifyContent='space-around'
       height='100vh'
+      pb='10vh'
+      sx={{
+        overflowX: "hidden",
+        overflowY: "scroll",
+      }}
     >
-      <Stack direction='column' gap={8}>
-        <div style={{ marginBottom: 8 }}>
-          <Typography mb={2} sx={{ fontSize: "1.5rem", fontWeight: 600 }}>
-            위치 설정
-          </Typography>
-          <LocationSearchBar />
-        </div>
-        <div style={{ marginBottom: 8 }}>
-          <Typography mb={2} sx={{ fontSize: "1.5rem", fontWeight: 600 }}>
-            인원 설정
-          </Typography>
-          <MatchNumInput />
-        </div>
+      <Stack direction='column' mb={15}>
+        <Typography mb={2} sx={{ fontSize: "1.5rem", fontWeight: 600 }}>
+          위치 설정
+        </Typography>
+        <LocationSearchBar />
+        <Typography mt={8} mb={4} sx={{ fontSize: "1.5rem", fontWeight: 600 }}>
+          인원 설정
+        </Typography>
+        <MatchNumInput />
       </Stack>
       <MatchButton />
     </Stack>
   )
 }
 
-const PRIMARY_COLOR = "#5E1EE7"
-
 const MatchButton = () => {
   const GRADIENT_COLOR = `linear-gradient(95deg, #5E1EE7 13.09%, #7718C1 100%)`
   const handleClick = () => {
+    // TODO: match api 연결
     fetchWithToken("/match/request").then(async res => {
       console.log(await res.text())
     })
@@ -115,17 +116,9 @@ const MatchNumInput = () => {
       gap={1}
       width='100%'
     >
-      <IconButton
-        onClick={() => handleClick("prev")}
-        sx={{
-          backgroundColor: PRIMARY_COLOR,
-          ":hover": {
-            backgroundColor: PRIMARY_COLOR,
-          },
-        }}
-      >
-        <Icon sx={{ color: "white" }}>remove_rounded</Icon>
-      </IconButton>
+      <PrimaryIconButton onClick={() => handleClick("prev")}>
+        <Icon>remove_rounded</Icon>
+      </PrimaryIconButton>
       <Stack
         alignItems='center'
         justifyContent='center'
@@ -143,17 +136,9 @@ const MatchNumInput = () => {
           {matchOption[focus].subtext}
         </Typography>
       </Stack>
-      <IconButton
-        onClick={() => handleClick("next")}
-        sx={{
-          backgroundColor: PRIMARY_COLOR,
-          ":hover": {
-            backgroundColor: PRIMARY_COLOR,
-          },
-        }}
-      >
-        <Icon sx={{ color: "white" }}>add_rounded</Icon>
-      </IconButton>
+      <PrimaryIconButton onClick={() => handleClick("next")}>
+        <Icon>add_rounded</Icon>
+      </PrimaryIconButton>
     </Stack>
   )
 }
@@ -254,18 +239,9 @@ const LocationSearchBar = (): JSX.Element => {
           </div>
         )}
         {searchbarButtons.map(({ icon, onClick }, idx) => (
-          <IconButton
-            key={idx}
-            onClick={onClick}
-            sx={{
-              backgroundColor: PRIMARY_COLOR,
-              ":hover": {
-                backgroundColor: PRIMARY_COLOR,
-              },
-            }}
-          >
-            <Icon sx={{ color: "white" }}>{icon}</Icon>
-          </IconButton>
+          <PrimaryIconButton key={idx} onClick={onClick}>
+            <Icon>{icon}</Icon>
+          </PrimaryIconButton>
         ))}
       </Stack>
       {open ? (
@@ -417,3 +393,13 @@ const useAutoComplete = (keyword: string) => {
 
   return queryResult
 }
+
+/* ======= Styling ======= */
+// TODO: 파일 분리?
+const PrimaryIconButton = styled(IconButton)(() => ({
+  backgroundColor: theme.palette.primary.main,
+  color: "#fff",
+  "&:hover": {
+    backgroundColor: theme.palette.primary.main,
+  },
+}))

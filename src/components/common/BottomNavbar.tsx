@@ -17,13 +17,17 @@ export default function BottomNavbar(): JSX.Element {
   if (!found) return <></>
 
   return (
-    <Paper sx={{ position: "absolute", bottom: 0, width: "100%" }}>
+    <Paper
+      sx={{ position: "absolute", bottom: 0, width: "100%", height: "10vh" }}
+    >
       <Stack
         direction='row'
         width='100%'
-        sx={{ backgroundColor: "white" }}
+        height='100%'
         padding='0.5rem'
         justifyContent='space-around'
+        alignItems='center'
+        sx={{ backgroundColor: "white" }}
       >
         {BottomNavbarItemList.map(({ icon, text, link }, idx) => (
           <Link key={idx} href={link}>

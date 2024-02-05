@@ -9,8 +9,6 @@ export const theme = createTheme({
     },
   },
   typography: {
-    h1: {
-      color: "red",
-    },
+    h1: {},
   },
 })
