@@ -56,7 +56,7 @@ export default async function MatchPage() {
   const { point, match } = await getData()
 
   return (
-    <Stack sx={{ width: "100%", height: "100vh", padding: "2rem 1rem" }}>
+    <Stack sx={{ padding: "2rem 1rem" }}>
       <Typography mb={2} sx={{ fontSize: "1.5rem", fontWeight: 600 }}>
         매칭방
       </Typography>

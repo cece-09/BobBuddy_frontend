@@ -2,7 +2,10 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter"
 import RecoilRootProvider from "../providers/recoilRootProvider"
+import BottomNavbar from "@/components/common/BottomNavbar"
 import "@/styles/globals.css"
+import { ThemeProvider } from "@mui/material"
+import { theme } from "@/styles/theme"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -52,7 +55,11 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AppRouterCacheProvider>
-          <RecoilRootProvider>{children}</RecoilRootProvider>
+          <RecoilRootProvider>
+            <ThemeProvider theme={theme}>
+              {children} <BottomNavbar />
+            </ThemeProvider>
+          </RecoilRootProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

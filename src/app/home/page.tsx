@@ -26,7 +26,7 @@ export default function HomePage() {
       direction='column'
       padding='2rem 1rem'
       justifyContent='space-around'
-      height='100%'
+      height='100vh'
     >
       <Stack direction='column' gap={8}>
         <div style={{ marginBottom: 8 }}>
