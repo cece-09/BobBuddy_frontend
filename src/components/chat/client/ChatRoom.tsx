@@ -9,7 +9,6 @@ import {
   useState,
 } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
-import { userState } from "../../../providers/UserProvider"
 import {
   Box,
   Chip,
@@ -28,6 +27,7 @@ import useInfiniteScroll from "../../../hooks/usePrevChat"
 import { fetchPrevChats } from "../../../server-actions/chat.actions"
 import { chatNoticeState, chatLoadingState } from "@/providers/chatAtom"
 import { Chat, ChatUser } from "@/types/chat.types"
+import { userState } from "@/providers/userAtom"
 
 export interface ChatRoomProps {
   name: string
@@ -63,7 +63,7 @@ export default function ChatRoomUI({
   const users: { [key: string]: ChatUser } = {}
   const parse: ChatUser[] = JSON.parse(jsonUsers)
   parse.forEach(user => (users[user.id] = user))
-  users[user.id].currUser = true // 로그인된 유저 마크
+  users[user.userData.userId.toString()].currUser = true // 로그인된 유저 마크
 
   // 상태
   const SERVER_URI = process.env.NEXT_PUBLIC_CHAT_SERVER_URI as string
@@ -92,13 +92,18 @@ export default function ChatRoomUI({
   const sendChat = () => {
     // socket
     if (input === "") return
-    const chat = new Chat(user.id, null, input, new Date().getTime())
+    const chat = new Chat(
+      user.userData.userId.toString(),
+      null,
+      input,
+      new Date().getTime(),
+    )
     socket?.emit("send-chat", chat)
     setInput("")
   }
 
   // 나의 채팅방이 아닙니다.
-  if (!(user.id in Object.keys(users))) {
+  if (!(user.userData.userId.toString() in Object.keys(users))) {
     console.error(`not my chatroom!`)
     return <div>unauthorized</div>
   }
@@ -202,7 +207,11 @@ function ChatRoomSidebar({ users }: { users: ChatUser[] }): JSX.Element {
             >
               <ProfilePic src={user.profile} />
               <div>{user.name}</div>
-              {user.id === me.id ? <div>나</div> : <></>}
+              {user.id === me.userData.userId.toString() ? (
+                <div>나</div>
+              ) : (
+                <></>
+              )}
             </Stack>
           ))
         }
