@@ -8,10 +8,8 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { isValidEmail } from "../../utils/validation"
+import { MIN_PASSWORD_LENGTH, SIGNUP_API, SIGNUP_SEND_API, SIGNUP_VERIFY_API } from "../../constants/user.constants"
 import Timer from "../../components/create-account/Timer"
-
-const MIN_PASSWORD_LENGTH = 9
-const SIGNUP_API = "http://yousayrun.store:8080/user/signup"
 
 export default function SignupPage() {
   // 상태 변수 선언
@@ -83,7 +81,7 @@ export default function SignupPage() {
   const handleVerifyClick = async () => {
     try {
       const response = await fetch(
-        "http://yousayrun.store:8080/user/signup/send",
+        SIGNUP_SEND_API,
         {
           method: "POST",
           headers: {
@@ -123,7 +121,7 @@ export default function SignupPage() {
   const handleConfirmClick = async () => {
     try {
       const response = await fetch(
-        "http://yousayrun.store:8080/user/signup/verify",
+        SIGNUP_VERIFY_API,
         {
           method: "POST",
           headers: {

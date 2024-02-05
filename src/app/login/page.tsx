@@ -9,11 +9,7 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { isValidEmail } from "../../utils/validation"
-
-const MIN_PASSWORD_LENGTH = 9
-const SIGNIN_API = "http://yousayrun.store:8080/auth/sign-in"
-const SIGNIN_KAKAO_API = "http://yousayrun.store:8080/auth/sign-in/kakao"
-const SIGNIN_NAVER_API = "http://yousayrun.store:8080/auth/sign-in/naver"
+import { MIN_PASSWORD_LENGTH, SIGNIN_API, SIGNIN_KAKAO_API, SIGNIN_NAVER_API } from "../../constants/user.constants"
 
 export default function SigninPage() {
   const [email, setEmail] = useState("")
