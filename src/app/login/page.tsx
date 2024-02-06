@@ -28,7 +28,7 @@ export default function SigninPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        // credentials: "include",
       })
 
       if (res.ok) {
