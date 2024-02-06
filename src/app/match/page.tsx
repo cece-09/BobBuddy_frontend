@@ -133,7 +133,7 @@ const ProfileBox = ({ profiles }: { profiles: string[] }) => {
     >
       {profiles.map((_, idx) =>
         idx % 2 === 0 ? (
-          <Stack direction='row'>
+          <Stack key={idx} direction='row'>
             {profiles.slice(idx, idx + 2).map((url, k) => (
               <Avatar
                 key={k}
