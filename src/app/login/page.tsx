@@ -11,9 +11,9 @@ import Container from "@mui/material/Container"
 import { isValidEmail } from "../../utils/validation"
 
 const MIN_PASSWORD_LENGTH = 9
-const SIGNIN_API = "https://yousayrun.store:8080/auth/sign-in"
-const SIGNIN_KAKAO_API = "https://yousayrun.store:8080/auth/sign-in/kakao"
-const SIGNIN_NAVER_API = "https://yousayrun.store:8080/auth/sign-in/naver"
+const SIGNIN_API = "https://yousayrun.store/auth/sign-in"
+const SIGNIN_KAKAO_API = "https://yousayrun.store/auth/sign-in/kakao"
+const SIGNIN_NAVER_API = "https://yousayrun.store/auth/sign-in/naver"
 
 export default function SigninPage() {
   const [email, setEmail] = useState("")
