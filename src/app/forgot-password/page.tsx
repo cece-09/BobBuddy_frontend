@@ -8,8 +8,7 @@ import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { Link } from "@mui/material"
 import { isValidEmail } from "../../utils/validation"
-
-const FORGOT_PASSWORD_API = "http://localhost:3000/mypassword"
+import { FORGOT_PASSWORD_API } from "../../constants/user.constants"
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("")
