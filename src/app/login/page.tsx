@@ -16,46 +16,6 @@ export default function SigninPage() {
   const [password, setPassword] = useState("")
   const [isFormValid, setIsFormValid] = useState(false)
 
-  // 카카오 로그인 버튼 클릭 시
-  const handleKakaoLogin = async () => {
-    try {
-      const res = await fetch(SIGNIN_KAKAO_API, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-
-      if (res.ok) {
-        console.log(res.json())
-      } else {
-        alert("카카오 로그인 실패")
-      }
-    } catch (error) {
-      alert("카카오 로그인 요청 중 오류가 발생했습니다. 다시 시도하세요")
-    }
-  }
-
-  // 네이버 로그인 버튼 클릭 시
-  const handleNaverLogin = async () => {
-    try {
-      const res = await fetch(SIGNIN_NAVER_API, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-
-      if (res.ok) {
-        console.log(res.json())
-      } else {
-        alert("네이버 로그인 실패")
-      }
-    } catch (error) {
-      alert("네이버 로그인 요청 중 오류가 발생했습니다. 다시 시도하세요")
-    }
-  }
-
   // 로그인 버튼 클릭 시
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -172,22 +132,22 @@ export default function SigninPage() {
               gap: 3,
             }}
           >
-            <Button onClick={handleKakaoLogin}>
+            <a href="https://yousayrun.store/auth/sign-in/kakao">
               <Image
                 src='/assets/kakao.png'
                 width={50}
                 height={50}
                 alt='Kakao Login'
               />
-            </Button>
-            <Button onClick={handleNaverLogin}>
+            </a>
+            <a href="https://yousayrun.store/auth/sign-in/naver">
               <Image
-                src='/assets/naver.png'
-                width={57}
-                height={57}
-                alt='Naver Login'
+              src='/assets/naver.png'
+              width={57}
+              height={57}
+              alt='Naver Login'
               />
-            </Button>
+            </a>
           </Box>
           <Box
             sx={{
