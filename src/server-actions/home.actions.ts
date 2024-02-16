@@ -27,6 +27,7 @@ export async function reverseGeocoding(longitude: number, latitude: number) {
     let addrString = ""
     const results: ReverseGeoResult[] = json["results"]
     const { region } = results[0]
+    // TODO: use reduce method
     Object.keys(region).forEach((key, idx) => {
       if (key === "area0") return
       if (idx === Object.keys(region).length - 1) {
