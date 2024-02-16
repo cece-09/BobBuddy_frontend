@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  Box,
   Button,
   Divider,
   Icon,
@@ -12,15 +11,15 @@ import {
   Typography,
   styled,
 } from "@mui/material"
-import { useEffect, useState } from "react"
-import { ModalBackdrop } from "../../components/common/ModalBackdrop"
 import {
   getAddrByKeyword,
   reverseGeocoding,
 } from "@/server-actions/home.actions"
+import { useEffect, useState } from "react"
+import { ModalBackdrop } from "@/components/common/ModalBackdrop"
 import { TextQueryResult } from "@/types/home.types"
-import { fetchWithToken } from "@/utils/fetchWithToken"
 import { theme } from "@/styles/theme"
+import { createInterceptor } from "@/utils/interceptor"
 
 export default function HomePage() {
   return (
@@ -51,11 +50,17 @@ export default function HomePage() {
 
 const MatchButton = () => {
   const GRADIENT_COLOR = `linear-gradient(95deg, #5E1EE7 13.09%, #7718C1 100%)`
-  const handleClick = () => {
+  // 버튼 클릭에서 에러 발생시 실행
+  const handleError = (msg?: string) => {
+    alert(msg ?? "match error!")
+    // window.location.href = "/"
+  }
+
+  // 버튼 클릭 시 실행
+  const handleClick = async () => {
     // TODO: match api 연결
-    fetchWithToken("/match/request").then(async res => {
-      console.log(await res.text())
-    })
+    const interceptor = createInterceptor<any>()
+    const data = interceptor({ url: `/match/request`, method: "POST" })
   }
   return (
     <Button
