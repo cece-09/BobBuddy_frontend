@@ -26,7 +26,7 @@ export default function SettingPage() {
   )
 }
 
-export const signout = () => {
+const signout = () => {
   if (!getAccessToken()) return
   document.cookie = "token=;max-age=-1;path=/"
 }
