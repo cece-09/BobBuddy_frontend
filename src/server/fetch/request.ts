@@ -5,24 +5,30 @@ import {
 } from "@/types/server"
 import { serverFetch } from "./server"
 import { clientFetch } from "./client"
+import { ACCESS_TOKEN_KEY, ACCESS_TOKEN_MAX_AGE } from "./constants"
 
 const DEFAULT_HEADER: HeadersInit = {
   "Content-Type": "application/json",
 }
+
+const PUBLIC_REQUEST_PREFIX = ["/user/signup", "/auth/sign-in"]
+
+const isPublic = (uri: string) =>
+  PUBLIC_REQUEST_PREFIX.findIndex(prefix => uri.includes(prefix)) > 0
 
 const request = async (
   uri: string,
   init: RequestInit,
 ): Promise<FetchResponse> => {
   const prefix = getServerUri()
-  const isUserRequest = !uri.includes("auth")
-  const token = isUserRequest ? getAccessToken() : undefined
+  const isPublicRequest = isPublic(uri)
+  const token = !isPublicRequest ? getAccessToken() : undefined
 
   const newInit: RequestInit = (() => {
     const newHeader: HeadersInit = token
       ? {
           ...DEFAULT_HEADER,
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         }
       : DEFAULT_HEADER
     return { ...init, headers: { ...init.headers, ...newHeader } }
@@ -37,7 +43,6 @@ const request = async (
   })()
 
   console.debug(`[${init.method}] ${uri}`)
-  console.debug(`${JSON.stringify(newInit)}`)
 
   if (process.env.NODE_ENV === "development") {
     const result: SeverFetchResponse = await serverFetch(requesetUri, newInit)
@@ -64,9 +69,17 @@ export const getNextUri = (): string => {
 
 export const getAccessToken = (): string | undefined => {
   const value = `; ${document.cookie}`
-  const parts = value.split(`; token=`)
+  const parts = value.split(`; ${ACCESS_TOKEN_KEY}=`)
   if (parts.length === 2) {
     return parts.pop()?.split(`;`).shift()
   }
   return undefined
+}
+
+export const setAccessToken = (token: string): void => {
+  document.cookie = `${ACCESS_TOKEN_KEY}=${token};max-age=${ACCESS_TOKEN_MAX_AGE}`
+}
+
+export const removeAccessToken = (): void => {
+  document.cookie = `${ACCESS_TOKEN_KEY}=;max-age=-1`
 }

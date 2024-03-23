@@ -9,12 +9,7 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { isValidEmail } from "../../utils/validation"
-import {
-  MIN_PASSWORD_LENGTH,
-  SIGNIN_API,
-  SIGNIN_KAKAO_API,
-  SIGNIN_NAVER_API,
-} from "../../constants/user.constants"
+import { MIN_PASSWORD_LENGTH } from "../../constants/user.constants"
 import { requestSignIn } from "@/server/auth"
 
 export default function SigninPage() {

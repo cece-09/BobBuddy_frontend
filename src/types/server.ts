@@ -1,5 +1,3 @@
-import { ServerCode } from "@/server/code"
-
 export interface FetchResponse {
   ok: boolean
   status: number
@@ -18,9 +16,14 @@ export interface ClientFetchReponse {
   json: () => Promise<any>
 }
 
-export type ErrorResponse = {
+export type BaseResponse = {
   code: string
   msg: string
+}
+
+export enum AuthProvider {
+  kakao = "kakao",
+  naver = "naver",
 }
 
 export interface SignInRequest {
@@ -28,13 +31,9 @@ export interface SignInRequest {
   pwd: string
 }
 
-export type SignInResponse =
-  | {
-      code: ServerCode.SIGN_IN_SUCCESS
-      msg: string
-      token: string
-    }
-  | ErrorResponse
+export interface SignInResponse extends BaseResponse {
+  token?: string
+}
 
 export interface SignUpRequest {
   userEmail: string
@@ -44,4 +43,20 @@ export interface SignUpRequest {
 
 export interface MatchRequest {
   location: string
+}
+
+export interface UserInfoResponse {
+  provider: string // TODO: make enum type
+  name: string
+  email: string
+}
+
+export interface UserUpdateRequest {
+  userName: string
+  gender: string
+}
+
+export interface UserUpdateResponse {
+  userName: string
+  gender: string
 }
