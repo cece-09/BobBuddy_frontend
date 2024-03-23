@@ -1,5 +1,7 @@
 import { OpenGraph } from "@/types/chat.types"
 import { ParsedChatMessage } from "@/types/chat.types"
+import { getStompClient } from "./stomp"
+import { IMessage } from "@stomp/stompjs"
 
 /**
  * text로부터 open graph 태그를 찾아
@@ -117,4 +119,62 @@ export function parseChatLinks(str: string): ParsedChatMessage {
     strs.data.push({ index: end, length: str.length - end, type: "text" })
   }
   return strs
+}
+
+export const publishChat = (chatRoomId: string, chatMsg: string) => {
+  const client = getStompClient()
+  if (!client.connected) {
+    client.activate()
+  }
+  client.publish({
+    destination: `/chatroom/${chatRoomId}`,
+    body: chatMsg,
+    headers: {},
+  })
+}
+
+export const subscribeChatRoomForeground = (
+  chatRoomId: string,
+  callbackFn: (message: IMessage) => void,
+) => {
+  const client = getStompClient()
+  if (!client.connected) {
+    client.activate()
+  }
+  const subscriptionId = `F/${chatRoomId}`
+  client.subscribe(`/chatroom/${chatRoomId}`, callbackFn, {
+    id: subscriptionId,
+  })
+}
+
+export const subscribeChatRoomBackground = (
+  chatRoomId: string,
+  callbackFn: (message: IMessage) => void,
+) => {
+  const client = getStompClient()
+  if (!client.connected) {
+    client.activate()
+  }
+  const subscriptionId = `B/${chatRoomId}`
+  client.subscribe(`/chatroom/${chatRoomId}`, callbackFn, {
+    id: subscriptionId,
+  })
+}
+
+export const unsubscribeChatRoomForeground = (chatRoomId: string) => {
+  const client = getStompClient()
+  if (!client.connected) {
+    client.activate()
+  }
+  const subscriptionId = `F/${chatRoomId}`
+  client.unsubscribe(subscriptionId)
+}
+
+export const unsubscribeChatRoomBackground = (chatRoomId: string) => {
+  const client = getStompClient()
+  if (!client.connected) {
+    client.activate()
+  }
+  const subscriptionId = `B/${chatRoomId}`
+  client.unsubscribe(subscriptionId)
 }

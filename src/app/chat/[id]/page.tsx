@@ -1,4 +1,6 @@
-import ChatRoomUI, { ChatRoomProps } from "@/components/chat/client/ChatRoom"
+import ChatRoomWrapper, {
+  ChatRoomProps,
+} from "@/components/chat/client/ChatRoom"
 import ChatList from "@/components/chat/server/ChatList"
 import { getChatRoom } from "@/server-actions/chat.actions"
 import { ChatUser } from "@/types/chat.types"
@@ -17,6 +19,7 @@ export default async function ChatPage({
 }): Promise<JSX.Element> {
   const chatroom = await getChatRoom(params.id)
   const room: ChatRoomProps = {
+    id: "chat room id",
     name: "",
     time: "",
     jsonNotice: JSON.stringify(chatroom.notice),
@@ -30,11 +33,11 @@ export default async function ChatPage({
 
   return (
     <>
-      <ChatRoomUI {...room}>
+      <ChatRoomWrapper {...room}>
         {chatroom.chats.map(({ page, data }) => (
           <ChatList key={page} chats={data} users={users} />
         ))}
-      </ChatRoomUI>
+      </ChatRoomWrapper>
     </>
   )
 }

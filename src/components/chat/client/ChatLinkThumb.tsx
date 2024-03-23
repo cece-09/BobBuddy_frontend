@@ -31,7 +31,7 @@ const ChatLinkThumb = React.memo(({ url }: { url: string }) => {
       setThumb(opengraph)
       setLoading(false)
     })
-  }, [])
+  }, [setLoading, url])
 
   const UI = (
     <Stack

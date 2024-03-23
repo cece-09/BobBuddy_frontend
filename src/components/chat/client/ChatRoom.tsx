@@ -21,15 +21,23 @@ import {
 } from "@mui/material"
 import ChatList from "../server/ChatList"
 import ProfilePic from "../../common/ProfilePic"
-import useChats from "../../../hooks/useChat"
-import useSocket from "../../../hooks/useSocket"
 import useInfiniteScroll from "../../../hooks/usePrevChat"
 import { fetchPrevChats } from "../../../server-actions/chat.actions"
 import { chatNoticeState, chatLoadingState } from "@/providers/chatAtom"
 import { Chat, ChatUser } from "@/types/chat.types"
 import { userState } from "@/providers/userAtom"
+import {
+  publishChat,
+  subscribeChatRoomBackground,
+  subscribeChatRoomForeground,
+  unsubscribeChatRoomBackground,
+  unsubscribeChatRoomForeground,
+} from "@/utils/chat.utils"
+import { IMessage } from "@stomp/stompjs"
+import { jsonifyStompMessage } from "@/utils/stomp"
 
 export interface ChatRoomProps {
+  id: string
   name: string
   time: string
   jsonNotice: string
@@ -43,21 +51,17 @@ export interface ChatRoomProps {
  *
  * @export
  * @client
- * @param {ChatRoomProps} {
- *   name,
- *   time,
- *   jsonUsers,
- *   children, // server chat list
- * }
+ * @param {ChatRoomProps}
  * @return {JSX.Element}
  */
-export default function ChatRoomUI({
+export default function ChatRoomWrapper({
+  id: chatRoomId,
   name,
   time,
   jsonNotice,
   jsonUsers,
   currPage,
-  children, // server chat list
+  children,
 }: ChatRoomProps): JSX.Element {
   const user = useRecoilValue(userState)
   const users: { [key: string]: ChatUser } = {}
@@ -65,22 +69,29 @@ export default function ChatRoomUI({
   parse.forEach(user => (users[user.id] = user))
   users[user.userData.userId.toString()].currUser = true // 로그인된 유저 마크
 
-  // 상태
-  const SERVER_URI = process.env.NEXT_PUBLIC_CHAT_SERVER_URI as string
   const [sidebar, setSidebar] = useState<boolean>(false)
   const [input, setInput] = useState<string>("")
-  const { socket, connect } = useSocket(SERVER_URI)
-  const { chats } = useChats(socket)
+  const [chats, setChats] = useState<Chat[]>([])
+
+  useEffect(() => {
+    onChatRoomMounted(chatRoomId, (newChat: Chat) => {
+      setChats(prevChat => [newChat, ...prevChat])
+    })
+
+    return () => {
+      onChatRoomUnmounted(chatRoomId)
+    }
+  }, [chatRoomId])
 
   // 현재 보고 있는 채팅방의 공지 상태 업데이트
   const notice: Chat | null = JSON.parse(jsonNotice)
   const setChatNotice = useSetRecoilState(chatNoticeState)
   useEffect(() => {
     setChatNotice(notice)
-  })
+  }, [notice, setChatNotice])
 
   // 사이드바 토글 함수
-  const toggle = () => {
+  const onToggleSidebar = () => {
     if (sidebar === true) {
       setSidebar(false)
     } else {
@@ -89,16 +100,11 @@ export default function ChatRoomUI({
   }
 
   // 채팅 발송
-  const sendChat = () => {
-    // socket
-    if (input === "") return
-    const chat = new Chat(
-      user.userData.userId.toString(),
-      null,
-      input,
-      new Date().getTime(),
-    )
-    socket?.emit("send-chat", chat)
+  const onClickSendChat = () => {
+    if (input === "") {
+      return
+    }
+    publishChat(chatRoomId, input)
     setInput("")
   }
 
@@ -114,7 +120,7 @@ export default function ChatRoomUI({
         <ChatRoomAppBar
           title={name}
           onBackClick={() => {}}
-          onMenuClick={toggle}
+          onMenuClick={onToggleSidebar}
         />
         <ChatRoomContentArea {...{ chats, users, currPage }}>
           <ChatRoomNotice />
@@ -123,26 +129,45 @@ export default function ChatRoomUI({
         <ChatRoomInput
           message={input}
           onChange={e => setInput(e.target.value)}
-          sendChat={sendChat}
+          sendChat={onClickSendChat}
         />
       </Stack>
-      <Drawer anchor='right' open={sidebar} onClose={toggle}>
+      <Drawer anchor='right' open={sidebar} onClose={onToggleSidebar}>
         <ChatRoomSidebar users={Object.values(users)} />
       </Drawer>
     </>
   )
 }
 
+const onChatRoomMounted = (
+  chatRoomId: string,
+  onChatReceived: (chat: Chat) => void,
+) => {
+  unsubscribeChatRoomBackground(chatRoomId)
+  subscribeChatRoomForeground(chatRoomId, (message: IMessage) => {
+    try {
+      const chat: Chat = jsonifyStompMessage<Chat>(message)
+      onChatReceived(chat)
+    } catch (error) {
+      const errorMsg = `Failed to receive chat mesage: ${JSON.stringify(
+        message,
+      )}`
+      console.error(errorMsg)
+      return
+    }
+  })
+}
+
+const onChatRoomUnmounted = (chatRoomId: string) => {
+  unsubscribeChatRoomForeground(chatRoomId)
+  subscribeChatRoomBackground(chatRoomId, (message: IMessage) => {
+    console.info(`[CHAT] Background chat: ${JSON.stringify(message)}`)
+  })
+}
+
 /* ===== Sub Components ===== */
 // TODO: 코드가 길어지면 파일을 나눕니다
 
-/**
- * 공지로 설정된 채팅이 있으면
- * 상단에 표시합니다.
- *
- * @param {{ chat: Chat }} { chat }
- * @return {JSX.Element}
- */
 function ChatRoomNotice(): JSX.Element {
   const chat = useRecoilValue(chatNoticeState)
   if (chat === null) {
