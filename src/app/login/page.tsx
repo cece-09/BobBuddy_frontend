@@ -9,7 +9,13 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { isValidEmail } from "../../utils/validation"
-import { MIN_PASSWORD_LENGTH, SIGNIN_API, SIGNIN_KAKAO_API, SIGNIN_NAVER_API } from "../../constants/user.constants"
+import {
+  MIN_PASSWORD_LENGTH,
+  SIGNIN_API,
+  SIGNIN_KAKAO_API,
+  SIGNIN_NAVER_API,
+} from "../../constants/user.constants"
+import { requestSignIn } from "@/server/auth"
 
 export default function SigninPage() {
   const [email, setEmail] = useState("")
@@ -20,29 +26,43 @@ export default function SigninPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    try {
-      const res = await fetch(SIGNIN_API, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    const body = {
           userEmail: email,
           pwd: password,
-        }),
-      })
+    }
 
-      if (res.ok) {
-        // 로그인 성공 (메인페이지 리다이렉트)
+    const response = await requestSignIn(body)
+    if (response) {
         window.location.href = "/home"
+    } else if (response === false) {
+      alert("올바른 로그인 정보를 입력하세요")
       } else {
-        // 로그인 실패
-        alert("올바른 로그인 정보를 입력하세요")
-      }
-    } catch (error) {
-      // 네트워크 오류 등
       alert("로그인 요청 중 오류가 발생했습니다. 다시 시도하세요")
     }
+
+    // try {
+    //   const res = await fetch(SIGNIN_API, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       userEmail: email,
+    //       pwd: password,
+    //     }),
+    //   })
+
+    //   if (res.ok) {
+    //     // 로그인 성공 (메인페이지 리다이렉트)
+    //     window.location.href = "/home"
+    //   } else {
+    //     // 로그인 실패
+    //     alert("올바른 로그인 정보를 입력하세요")
+    //   }
+    // } catch (error) {
+    //   // 네트워크 오류 등
+    //   alert("로그인 요청 중 오류가 발생했습니다. 다시 시도하세요")
+    // }
   }
 
   // 로그인 버튼 활성화 여부 판단
