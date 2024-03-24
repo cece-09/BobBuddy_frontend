@@ -19,9 +19,12 @@ import { useEffect, useState } from "react"
 import { ModalBackdrop } from "@/components/common/ModalBackdrop"
 import { TextQueryResult } from "@/types/home.types"
 import { theme } from "@/styles/theme"
-import { createInterceptor } from "@/utils/interceptor"
+import { useMatchButton } from "../../hooks/useMatchButton"
+import { requestMatch } from "@/server/match"
+import { MatchRequest } from "@/types/server"
 
 export default function HomePage() {
+  const { location, setLocation, size, setSize } = useMatchButton({})
   return (
     <Stack
       direction='column'
@@ -58,9 +61,11 @@ const MatchButton = () => {
 
   // 버튼 클릭 시 실행
   const handleClick = async () => {
-    // TODO: match api 연결
-    const interceptor = createInterceptor<any>()
-    const data = interceptor({ url: `/match/request`, method: "POST" })
+    const body: MatchRequest = {
+      location: "",
+    }
+    const response = await requestMatch(body)
+    console.log(response)
   }
   return (
     <Button

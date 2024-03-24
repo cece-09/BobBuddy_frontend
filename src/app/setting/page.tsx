@@ -1,13 +1,12 @@
 "use client"
 
-import { getAccessToken } from "@/utils/interceptor"
+import { requestSignOut } from "@/server/auth"
+import { getAccessToken, removeAccessToken } from "@/server/fetch/request"
 import { Button, Stack, Typography } from "@mui/material"
 
 export default function SettingPage() {
-  const handleLogout = () => {
-    signout()
-    window.location.href = "/login"
-  }
+  const handleLogout = () => signout()
+
   return (
     <Stack
       sx={{
@@ -26,7 +25,12 @@ export default function SettingPage() {
   )
 }
 
-const signout = () => {
-  if (!getAccessToken()) return
-  document.cookie = "token=;max-age=-1;path=/"
+const signout = async () => {
+  if (!getAccessToken()) {
+    return
+  }
+
+  await requestSignOut().then(ret => {
+    if (ret) removeAccessToken()
+  })
 }

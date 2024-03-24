@@ -8,8 +8,14 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { isValidEmail } from "../../utils/validation"
-import { MIN_PASSWORD_LENGTH, SIGNUP_API, SIGNUP_SEND_API, SIGNUP_VERIFY_API } from "../../constants/user.constants"
+import {
+  MIN_PASSWORD_LENGTH,
+  SIGNUP_API,
+  SIGNUP_SEND_API,
+  SIGNUP_VERIFY_API,
+} from "../../constants/user.constants"
 import Timer from "../../components/create-account/Timer"
+import { requestSignUp, requestVerify, requestSendEmail } from "@/server/auth"
 
 export default function SignupPage() {
   // 상태 변수 선언
@@ -79,30 +85,40 @@ export default function SignupPage() {
 
   // 인증 버튼 클릭 시
   const handleVerifyClick = async () => {
-    try {
-      const response = await fetch(
-        SIGNUP_SEND_API,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userEmail: email }),
-        },
-      )
-
-      setTimerActive(true) // 타이머 활성화
-      console.log("타이머 활성화됨")
-
-      if (response.ok) {
-        setIsVerificationSent(true)
-        alert("인증번호를 입력하세요")
-      } else {
-        alert("이메일 인증 요청에 실패했습니다.")
-      }
-    } catch (error) {
+    const body = { userEmail: email }
+    const response = await requestSendEmail(body)
+    if (response) {
+      setIsVerificationSent(true)
+      alert("인증번호를 입력하세요")
+    } else if (response === false) {
+      alert("이메일 인증 요청에 실패했습니다.")
+    } else {
       alert("네트워크 오류가 발생했습니다.")
     }
+    // try {
+    //   const response = await fetch(
+    //     SIGNUP_SEND_API,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({ userEmail: email }),
+    //     },
+    //   )
+
+    //   setTimerActive(true) // 타이머 활성화
+    //   console.log("타이머 활성화됨")
+
+    //   if (response.ok) {
+    //     setIsVerificationSent(true)
+    //     alert("인증번호를 입력하세요")
+    //   } else {
+    //     alert("이메일 인증 요청에 실패했습니다.")
+    //   }
+    // } catch (error) {
+    //   alert("네트워크 오류가 발생했습니다.")
+    // }
   }
 
   const handleTimeExpired = () => {
@@ -119,55 +135,78 @@ export default function SignupPage() {
 
   // 확인 버튼 클릭 시
   const handleConfirmClick = async () => {
-    try {
-      const response = await fetch(
-        SIGNUP_VERIFY_API,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, authNumber: verify }),
-        },
-      )
-
-      if (response.ok) {
-        setTimerActive(false)
-        alert("이메일 인증이 성공했습니다")
-      } else {
-        alert("인증 요청에 실패했습니다.")
-      }
-    } catch (error) {
+    const body = { email, authNumber: verify }
+    const response = await requestVerify(body)
+    if (response) {
+      setTimerActive(false)
+      alert("이메일 인증이 성공했습니다")
+    } else if (response === false) {
+      alert("인증 요청에 실패했습니다.")
+    } else {
       alert("네트워크 오류가 발생했습니다.")
     }
+    // try {
+    //   const response = await fetch(SIGNUP_VERIFY_API, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ email, authNumber: verify }),
+    //   })
+
+    //   if (response.ok) {
+    //     setTimerActive(false)
+    //     alert("이메일 인증이 성공했습니다")
+    //   } else {
+    //     alert("인증 요청에 실패했습니다.")
+    //   }
+    // } catch (error) {
+    //   alert("네트워크 오류가 발생했습니다.")
+    // }
   }
 
   // 회원가입 버튼 클릭 시
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    try {
-      const res = await fetch(SIGNUP_API, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userEmail: email,
-          userName: name,
-          pwd: password,
-        }),
-      })
+    const body = {
+      userEmail: email,
+      userName: name,
+      pwd: password,
+    }
 
-      if (res.ok) {
-        alert("회원가입 성공!")
-        window.location.href = "/login"
-      } else {
-        alert("올바른 회원가입 정보를 입력하세요")
-      }
-    } catch (error) {
+    const response = await requestSignUp(body)
+    if (response) {
+      alert("회원가입 성공!")
+      window.location.href = "/login"
+    } else if (response === false) {
+      alert("올바른 회원가입 정보를 입력하세요")
+    } else {
       alert("로그인 요청 중 오류가 발생했습니다. 다시 시도하세요")
     }
+
+    // try {
+    //   const res = await fetch(SIGNUP_API, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       userEmail: email,
+    //       userName: name,
+    //       pwd: password,
+    //     }),
+    //   })
+
+    //   if (res.ok) {
+    //     alert("회원가입 성공!")
+    //     window.location.href = "/login"
+    //   } else {
+    //     alert("올바른 회원가입 정보를 입력하세요")
+    //   }
+    // } catch (error) {
+    //   alert("로그인 요청 중 오류가 발생했습니다. 다시 시도하세요")
+    // }
   }
 
   return (

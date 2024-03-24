@@ -9,6 +9,7 @@ import Container from "@mui/material/Container"
 import { Link } from "@mui/material"
 import { isValidEmail } from "../../utils/validation"
 import { FORGOT_PASSWORD_API } from "../../constants/user.constants"
+import { requestFindPassword } from "@/server/auth"
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("")
@@ -22,30 +23,44 @@ export default function ForgotPassword() {
   // 이메일 전송 버튼 클릭 시
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (isEmailValid) {
-      try {
-        const res = await fetch(FORGOT_PASSWORD_API, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        })
-
-        if (res.ok) {
-          // 이메일 전송 성공
-          alert("가입 이메일을 확인하세요")
-        } else {
-          // 이메일 전송 실패
-          alert("올바른 이메일을 입력하세요")
-        }
-      } catch (error) {
-        // 네트워크 오류 등
-        alert("이메일 요청 중 오류가 발생했습니다. 다시 시도하세요")
-      }
-    } else {
+    if (!isEmailValid) {
       alert("올바른 이메일을 입력하세요")
+      return
     }
+
+    const response = await requestFindPassword({ email })
+    if (response) {
+      alert("가입 이메일을 확인하세요")
+    } else if (response === false) {
+      alert("올바른 이메일을 입력하세요")
+    } else {
+      alert("이메일 요청 중 오류가 발생했습니다. 다시 시도하세요")
+    }
+
+    // if (isEmailValid) {
+    //   try {
+    //     const res = await fetch(FORGOT_PASSWORD_API, {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({ email }),
+    //     })
+
+    //     if (res.ok) {
+    //       // 이메일 전송 성공
+    //       alert("가입 이메일을 확인하세요")
+    //     } else {
+    //       // 이메일 전송 실패
+    //       alert("올바른 이메일을 입력하세요")
+    //     }
+    //   } catch (error) {
+    //     // 네트워크 오류 등
+    //     alert("이메일 요청 중 오류가 발생했습니다. 다시 시도하세요")
+    //   }
+    // } else {
+    //   alert("올바른 이메일을 입력하세요")
+    // }
   }
 
   // 사용자 입력 시 이메일 상태 업데이트

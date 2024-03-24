@@ -1,11 +1,16 @@
 "use client"
-import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { Button, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { MIN_PASSWORD_LENGTH, PASSWORD_VALIDATE_API, PASSWORD_UPDATE_API } from '../../constants/user.constants';
+import CssBaseline from "@mui/material/CssBaseline"
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
+import Container from "@mui/material/Container"
+import { Button, TextField } from "@mui/material"
+import { useEffect, useState } from "react"
+import {
+  MIN_PASSWORD_LENGTH,
+  PASSWORD_VALIDATE_API,
+  PASSWORD_UPDATE_API,
+} from "../../constants/user.constants"
+import { requestUpdatePassword, requestValidatePassword } from "@/server/user"
 
 export default function ChangePassword() {
   const [password, setPassword] = useState('');
@@ -33,33 +38,49 @@ export default function ChangePassword() {
 
   // 공통 요청 처리 함수
   const handlePasswordRequest = async (apiUrl: string, password: string) => {
-    try {
-      const res = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          typedPwd: password,
-        }),
-      });
+    const response =
+      apiUrl === PASSWORD_VALIDATE_API
+        ? await requestValidatePassword({ typedPwd: password })
+        : await requestUpdatePassword({ updatePwd: password })
 
-      if (res.ok) {
-        if (apiUrl === PASSWORD_VALIDATE_API) {
-          setIsNewPasswordVerified(true);
-          setIsOldPasswordVerified(false);
-        } else if (apiUrl === PASSWORD_UPDATE_API) {
-          window.location.href = '/profile';
-        }
+    if (response && apiUrl === PASSWORD_VALIDATE_API) {
+      setIsNewPasswordVerified(true)
+      setIsOldPasswordVerified(false)
+    } else if (response && apiUrl === PASSWORD_UPDATE_API) {
+      window.location.href = "/profile"
       } else {
-        throw new Error('서버 에러');
-      }
-    } catch (error) {
-      setIsNewPasswordVerified(true);
-      setIsOldPasswordVerified(false);
-      alert('요청 중 오류가 발생했습니다. 다시 시도하세요');
+      setIsNewPasswordVerified(true)
+      setIsOldPasswordVerified(false)
+      alert("요청 중 오류가 발생했습니다. 다시 시도하세요")
     }
-  };
+
+    // try {
+    //   const res = await fetch(apiUrl, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       typedPwd: password,
+    //     }),
+    //   });
+
+    //   if (res.ok) {
+    //     if (apiUrl === PASSWORD_VALIDATE_API) {
+    //       setIsNewPasswordVerified(true);
+    //       setIsOldPasswordVerified(false);
+    //     } else if (apiUrl === PASSWORD_UPDATE_API) {
+    //       window.location.href = '/profile';
+    //     }
+    //   } else {
+    //     throw new Error('서버 에러');
+    //   }
+    // } catch (error) {
+    //   setIsNewPasswordVerified(true);
+    //   setIsOldPasswordVerified(false);
+    //   alert('요청 중 오류가 발생했습니다. 다시 시도하세요');
+    // }
+  }
   
   // 입력 버튼 클릭 시
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

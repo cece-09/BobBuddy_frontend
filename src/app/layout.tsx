@@ -6,6 +6,7 @@ import BottomNavbar from "@/components/common/BottomNavbar"
 import "@/styles/globals.css"
 import { ThemeProvider } from "@mui/material"
 import { theme } from "@/styles/theme"
+import { AuthBoundary } from "@/components/common/AuthBoundary"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -57,7 +58,9 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <RecoilRootProvider>
             <ThemeProvider theme={theme}>
-              {children} <BottomNavbar />
+              <AuthBoundary>
+                {children} <BottomNavbar />
+              </AuthBoundary>
             </ThemeProvider>
           </RecoilRootProvider>
         </AppRouterCacheProvider>
