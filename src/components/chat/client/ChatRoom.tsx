@@ -27,7 +27,8 @@ import useInfiniteScroll from "../../../hooks/usePrevChat"
 import { fetchPrevChats } from "../../../server-actions/chat.actions"
 import { chatNoticeState, chatLoadingState } from "@/providers/chatAtom"
 import { Chat, ChatUser } from "@/types/chat.types"
-import { userState } from "@/providers/userAtom"
+import { User, userState } from "@/providers/userAtom"
+import { RecordUtil } from "@/utils/record"
 
 export interface ChatRoomProps {
   name: string
@@ -57,15 +58,9 @@ export default function ChatRoomUI({
   jsonNotice,
   jsonUsers,
   currPage,
-  children, // server chat list
+  children,
 }: ChatRoomProps): JSX.Element {
   const user = useRecoilValue(userState)
-  const users: { [key: string]: ChatUser } = {}
-  const parse: ChatUser[] = JSON.parse(jsonUsers)
-  parse.forEach(user => (users[user.id] = user))
-  users[user.userData.userId.toString()].currUser = true // 로그인된 유저 마크
-
-  // 상태
   const SERVER_URI = process.env.NEXT_PUBLIC_CHAT_SERVER_URI as string
   const [sidebar, setSidebar] = useState<boolean>(false)
   const [input, setInput] = useState<string>("")
@@ -78,6 +73,27 @@ export default function ChatRoomUI({
   useEffect(() => {
     setChatNotice(notice)
   })
+
+  const userId = user.userData.userId.toString()
+  const users: Record<string, ChatUser> = {}
+
+  const chatUsers: ChatUser[] | undefined = JSON.parse(jsonUsers)
+  if (chatUsers === undefined || chatUsers.length === 0) {
+    // TODO: navigate fallback page
+    window.location.href = "/home"
+    return <></>
+  }
+  if (chatUsers.findIndex(chatUser => chatUser.id === userId) < 0) {
+    // TODO: navigate fallback page
+    window.location.href = "/home"
+    return <></>
+  }
+  chatUsers.forEach(chatUser =>
+    RecordUtil.set(users, chatUser.id, {
+      ...chatUser,
+      currUser: chatUser.id === userId,
+    }),
+  )
 
   // 사이드바 토글 함수
   const toggle = () => {
