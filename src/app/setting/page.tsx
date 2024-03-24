@@ -1,7 +1,7 @@
 "use client"
 
 import { requestSignOut } from "@/server/auth"
-import { getAccessToken, removeAccessToken } from "@/server/fetch/request"
+import { getAccessToken, removeAccessToken } from "@/utils/server"
 import { Button, Stack, Typography } from "@mui/material"
 
 export default function SettingPage() {

@@ -5,7 +5,7 @@ import {
 } from "@/types/server"
 import { serverFetch } from "./server"
 import { clientFetch } from "./client"
-import { ACCESS_TOKEN_KEY, ACCESS_TOKEN_MAX_AGE } from "./constants"
+import { getAccessToken } from "@/utils/server"
 
 const DEFAULT_HEADER: HeadersInit = {
   "Content-Type": "application/json",
@@ -65,21 +65,4 @@ export const getServerUri = (): string => {
 
 export const getNextUri = (): string => {
   return `http://localhost:3000`
-}
-
-export const getAccessToken = (): string | undefined => {
-  const value = `; ${document.cookie}`
-  const parts = value.split(`; ${ACCESS_TOKEN_KEY}=`)
-  if (parts.length === 2) {
-    return parts.pop()?.split(`;`).shift()
-  }
-  return undefined
-}
-
-export const setAccessToken = (token: string): void => {
-  document.cookie = `${ACCESS_TOKEN_KEY}=${token};max-age=${ACCESS_TOKEN_MAX_AGE}`
-}
-
-export const removeAccessToken = (): void => {
-  document.cookie = `${ACCESS_TOKEN_KEY}=;max-age=-1`
 }
