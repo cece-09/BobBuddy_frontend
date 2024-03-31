@@ -6,6 +6,7 @@ import {
 import { serverFetch } from "./server"
 import { clientFetch } from "./client"
 import { getAccessToken } from "@/utils/server"
+import { BuddyError, ErrorCode } from "@/utils/error"
 
 const DEFAULT_HEADER: HeadersInit = {
   "Content-Type": "application/json",
@@ -34,15 +35,8 @@ const request = async (
     return { ...init, headers: { ...init.headers, ...newHeader } }
   })()
 
-  const requesetUri: string = (() => {
-    if (uri.includes(getServerUri())) {
-      return uri
-    } else {
-      return prefix + uri
-    }
-  })()
-
-  console.debug(`[${init.method}] ${uri}`)
+  const requesetUri: string = prefix + uri
+  console.debug(`[${init.method}] ${requesetUri}`)
 
   if (process.env.NODE_ENV === "development") {
     const result: SeverFetchResponse = await serverFetch(requesetUri, newInit)

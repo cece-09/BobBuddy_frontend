@@ -2,11 +2,12 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter"
 import RecoilRootProvider from "../providers/recoilRootProvider"
-import BottomNavbar from "@/components/common/BottomNavbar"
 import "@/styles/globals.css"
 import { ThemeProvider } from "@mui/material"
 import { theme } from "@/styles/theme"
 import { AuthBoundary } from "@/components/common/AuthBoundary"
+import React from "react"
+import PageLayout from "@/components/common/PageLayout"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -59,7 +60,7 @@ export default function RootLayout({
           <RecoilRootProvider>
             <ThemeProvider theme={theme}>
               <AuthBoundary>
-                {children} <BottomNavbar />
+                <PageLayout>{children}</PageLayout>
               </AuthBoundary>
             </ThemeProvider>
           </RecoilRootProvider>

@@ -1,21 +1,24 @@
-import { MatchRequest } from "@/types/server"
+import { BaseResponse, MatchRequest, MatchResponse } from "@/types/server"
 import request from "./fetch/request"
 import { jsonifyResponse } from "@/utils/server"
-import { ErrorCode } from "@/utils/error"
+import { BuddyError, ErrorCode, handleError } from "@/utils/error"
 
-export const requestMatch = async (body: MatchRequest): Promise<any> => {
+export const requestMatch = async (
+  body: MatchRequest,
+): Promise<MatchResponse> => {
   try {
-    const result = await request("/match", {
+    const result: MatchResponse = await request("/match", {
       method: "PUT",
     }).then(r => {
-      return jsonifyResponse<any>(r, ErrorCode.MATCH_GENERAL_ERROR)
+      return jsonifyResponse<MatchResponse>(r, ErrorCode.MATCH_GENERAL_ERROR)
     })
-    console.log(result)
+    if (result === undefined) {
+      throw new BuddyError(ErrorCode.MATCH_GENERAL_ERROR, "result is empty")
+    }
     return result
   } catch (error) {
-    const errorMsg = `request match fail: ${JSON.stringify(error)}`
-    console.error(errorMsg)
-    return undefined
+    const errorMsg = `request match fail`
+    return await handleError(error, errorMsg)
   }
 }
 
@@ -27,8 +30,8 @@ export const requestMatchJoin = async (): Promise<any> => {
     console.log(result)
     return result
   } catch (error) {
-    const errorMsg = `request match join fail: ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `request match join fail`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -41,8 +44,8 @@ export const requestMatchExit = async (): Promise<any> => {
     console.log(result)
     return result
   } catch (error) {
-    const errorMsg = `request match exit fail: ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `request match exit fail`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -55,8 +58,8 @@ export const requestMatchCancel = async (): Promise<any> => {
     console.log(result)
     return result
   } catch (error) {
-    const errorMsg = `request match cancel fail: ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `request match cancel fail`
+    await handleError(error, errorMsg)
     return undefined
   }
 }

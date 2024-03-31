@@ -22,6 +22,7 @@ import { theme } from "@/styles/theme"
 import { useMatchButton } from "../../hooks/useMatchButton"
 import { requestMatch } from "@/server/match"
 import { MatchRequest } from "@/types/server"
+import useToast from "@/hooks/useToast"
 
 export default function HomePage() {
   const { location, setLocation, size, setSize } = useMatchButton({})
@@ -52,20 +53,17 @@ export default function HomePage() {
 }
 
 const MatchButton = () => {
+  const { showErrorToast } = useToast()
   const GRADIENT_COLOR = `linear-gradient(95deg, #5E1EE7 13.09%, #7718C1 100%)`
-  // 버튼 클릭에서 에러 발생시 실행
-  const handleError = (msg?: string) => {
-    alert(msg ?? "match error!")
-    // window.location.href = "/"
-  }
-
   // 버튼 클릭 시 실행
   const handleClick = async () => {
     const body: MatchRequest = {
       location: "",
     }
     const response = await requestMatch(body)
-    console.log(response)
+    if (response.result !== "success") {
+      showErrorToast(response.code, { closeMS: 3000 })
+    }
   }
   return (
     <Button

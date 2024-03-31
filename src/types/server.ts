@@ -1,3 +1,5 @@
+import { ErrorCode } from "@/utils/error"
+
 export interface FetchResponse {
   ok: boolean
   status: number
@@ -60,3 +62,10 @@ export interface UserUpdateResponse {
   userName: string
   gender: string
 }
+
+export interface ErrorResponse extends BaseResponse {
+  code: ErrorCode
+  result: "error"
+}
+
+export type MatchResponse = { result: "success" } | ErrorResponse
