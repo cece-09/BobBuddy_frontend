@@ -1,11 +1,12 @@
 import { jsonifyResponse } from "@/utils/server"
-import request, { getAccessToken } from "./fetch/request"
+import request from "./fetch/request"
 import {
   UserInfoResponse,
   UserUpdateRequest,
   UserUpdateResponse,
 } from "@/types/server"
 import { User } from "@/providers/userAtom"
+import { ErrorCode } from "@/utils/error"
 
 export const requestUserInfo = async (): Promise<
   UserInfoResponse | undefined
@@ -13,7 +14,7 @@ export const requestUserInfo = async (): Promise<
   try {
     const result = await request("/user/info", {
       method: "GET",
-    }).then(r => jsonifyResponse<UserInfoResponse>(r))
+    }).then(r => jsonifyResponse<UserInfoResponse>(r, ErrorCode.NETWORK_ERROR))
 
     return result
   } catch (error) {
@@ -30,7 +31,9 @@ export const requestUserUpdate = async (
     const result = await request("/user/update", {
       method: "PATCH",
       body: JSON.stringify(body),
-    }).then(r => jsonifyResponse<UserUpdateResponse>(r))
+    }).then(r =>
+      jsonifyResponse<UserUpdateResponse>(r, ErrorCode.NETWORK_ERROR),
+    )
     return result
   } catch (error) {
     const errorMsg = `Failed to update user info ${JSON.stringify(error)}`
@@ -88,7 +91,7 @@ export const requestProfile = async () => {
   try {
     const result = await request("/profile", {
       method: "GET",
-    }).then(r => jsonifyResponse<any>(r))
+    }).then(r => jsonifyResponse<any>(r, ErrorCode.NETWORK_ERROR))
     console.log(result)
     return result
   } catch (error) {
@@ -105,7 +108,7 @@ export const requestProfileUpdate = async (
     const result = await request("/profile/update", {
       method: "PATCH",
       body: JSON.stringify(body),
-    }).then(r => jsonifyResponse<any>(r))
+    }).then(r => jsonifyResponse<any>(r, ErrorCode.NETWORK_ERROR))
     console.log(result)
     return result
   } catch (error) {

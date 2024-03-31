@@ -4,9 +4,10 @@ import {
   SignInResponse,
   SignUpRequest,
 } from "@/types/server"
-import request, { getAccessToken, setAccessToken } from "./fetch/request"
-import { jsonifyResponse } from "@/utils/server"
+import request from "./fetch/request"
+import { getAccessToken, jsonifyResponse, setAccessToken } from "@/utils/server"
 import { ServerCode } from "./code"
+import { BuddyError, ErrorCode } from "@/utils/error"
 
 export const requestSignIn = async (
   body: SignInRequest,
@@ -15,16 +16,17 @@ export const requestSignIn = async (
     const result = await request("/auth/sign-in", {
       method: "POST",
       body: JSON.stringify(body),
-    }).then(r => jsonifyResponse<SignInResponse>(r))
+    }).then(r => jsonifyResponse<SignInResponse>(r, ErrorCode.SIGN_IN_ERROR))
 
-    if (result.code === ServerCode.SIGN_IN_SUCCESS && result.token) {
-      setAccessToken(result.token)
-      return true
+    if (result.code !== ServerCode.SIGN_IN_SUCCESS || !result.token) {
+      throw new BuddyError(ErrorCode.SIGN_IN_ERROR, JSON.stringify(request))
     }
 
-    throw new Error(`${result.msg} code: ${result.code}`)
+    setAccessToken(result.token)
+    return true
   } catch (error) {
-    console.error(`Failed to request sign in: `, error)
+    const errorMsg = `request sign in fail: ${JSON.stringify(error)}`
+    console.error(errorMsg)
     return undefined
   }
 }
@@ -39,8 +41,8 @@ export const requestSignUp = async (
       body,
     })
     return result.ok
-  } catch (e) {
-    console.error(`Failed to request sign-up`)
+  } catch (error) {
+    console.error(`request sign up fail: ${JSON.stringify(error)}`)
     return undefined
   }
 }
@@ -48,14 +50,14 @@ export const requestSignUp = async (
 export const requestSignOut = async (): Promise<boolean> => {
   try {
     const result = await request("/auth/sign-out", { method: "POST" }).then(r =>
-      jsonifyResponse<BaseResponse>(r),
+      jsonifyResponse<BaseResponse>(r, ErrorCode.SIGN_OUT_ERROR),
     )
-    if (result.code === ServerCode.SIGN_OUT_SUCCESS) {
-      return true
+    if (result.code !== ServerCode.SIGN_OUT_SUCCESS) {
+      throw new BuddyError(ErrorCode.SIGN_OUT_ERROR, JSON.stringify(result))
     }
-    throw new Error(`${result.msg} code: ${result.code}`)
+    return true
   } catch (error) {
-    const errorMsg = `Failed to sign out ${JSON.stringify(error)}`
+    const errorMsg = `request sign out fail: ${JSON.stringify(error)}`
     console.error(errorMsg)
     return false
   }
@@ -71,7 +73,8 @@ export const requestSendEmail = async (body: {
     })
     return result.ok
   } catch (error) {
-    console.error(`Faile to request sending email ${JSON.stringify(error)}`)
+    const errorMsg = `request send email fail: ${JSON.stringify(error)}`
+    console.error(errorMsg)
     return false
   }
 }
@@ -87,9 +90,8 @@ export const requestVerify = async (body: {
     })
     return result.ok
   } catch (error) {
-    console.error(
-      `Failed to request email verificaiton ${JSON.stringify(error)}`,
-    )
+    const errorMsg = `request email verificaiton fail: ${JSON.stringify(error)}`
+    console.error(errorMsg)
     return false
   }
 }
@@ -104,7 +106,7 @@ export const requestFindPassword = async (body: {
     })
     return result.ok
   } catch (error) {
-    const errorMsg = `Failed to request find password ${JSON.stringify(error)}`
+    const errorMsg = `request find password fail: ${JSON.stringify(error)}`
     console.error(errorMsg)
     return undefined
   }
@@ -123,7 +125,8 @@ export const requestValidateToken = async (): Promise<boolean> => {
   //     })
   //     return result.ok
   //   } catch (error) {
-  //     const errorMsg = `Failed to validate token ${JSON.stringify(error)}`
+  //     const errorMsg = `request validate token fail: ${JSON.stringify(error)}`
+  //     console.error(errorMsg)
   //     return undefined
   //   }
 }

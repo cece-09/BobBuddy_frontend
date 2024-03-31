@@ -1,5 +1,6 @@
 import { OpenGraph } from "@/types/chat.types"
 import { ParsedChatMessage } from "@/types/chat.types"
+import { BuddyError, ErrorCode } from "./error"
 
 /**
  * text로부터 open graph 태그를 찾아
@@ -16,7 +17,7 @@ export function findOpenGraph(text: string): OpenGraph {
   let headStart = text.indexOf("<meta")
   let headEnd = text.indexOf("/head>")
   if (headStart < 0 || headEnd < 0) {
-    throw new Error("failed to find <meta> tag")
+    throw new BuddyError(ErrorCode.THUMBNAIL_ERROR, "failed to find <meta> tag")
   }
 
   // head 태그부터 og:로 시작하는 오픈그래프 메타 태그를 찾습니다.
@@ -71,7 +72,7 @@ export function findOpenGraph(text: string): OpenGraph {
 
   // title, image 는 필수 필드입니다.
   if (metadata.title === null || metadata.image === null) {
-    throw new Error("can't find title tag.")
+    throw new BuddyError(ErrorCode.THUMBNAIL_ERROR, "can't find title tag.")
   }
 
   return {
