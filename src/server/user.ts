@@ -6,7 +6,7 @@ import {
   UserUpdateResponse,
 } from "@/types/server"
 import { User } from "@/providers/userAtom"
-import { ErrorCode } from "@/utils/error"
+import { ErrorCode, handleError } from "@/utils/error"
 
 export const requestUserInfo = async (): Promise<
   UserInfoResponse | undefined
@@ -18,8 +18,8 @@ export const requestUserInfo = async (): Promise<
 
     return result
   } catch (error) {
-    const errorMsg = `Failed to fetch user info ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `Failed to fetch user info`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -36,8 +36,8 @@ export const requestUserUpdate = async (
     )
     return result
   } catch (error) {
-    const errorMsg = `Failed to update user info ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `Failed to update user info`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -52,8 +52,8 @@ export const requestValidatePassword = async (body: {
     }).then(r => r.ok)
     return result
   } catch (error) {
-    const errorMsg = `Failed to validate password ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `Failed to validate password`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -68,8 +68,8 @@ export const requestUpdatePassword = async (body: {
     }).then(r => r.ok)
     return result
   } catch (error) {
-    const errorMsg = `Failed to update password ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `Failed to update password`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -81,7 +81,8 @@ export const requestUserWithdraw = async (): Promise<boolean | undefined> => {
     }).then(r => r.ok)
     return result
   } catch (error) {
-    const errorMsg = `Failed to withdraw user ${JSON.stringify(error)}`
+    const errorMsg = `Failed to withdraw user`
+    await handleError(error, errorMsg)
     console.error(errorMsg)
     return undefined
   }
@@ -95,8 +96,8 @@ export const requestProfile = async () => {
     console.log(result)
     return result
   } catch (error) {
-    const errorMsg = `Failed to get user profile ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `Failed to get user profile`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -112,8 +113,8 @@ export const requestProfileUpdate = async (
     console.log(result)
     return result
   } catch (error) {
-    const errorMsg = `Failed to update profile ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `Failed to update profile`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -131,8 +132,8 @@ export const requestProfileImageUpload = async (
     }).then(r => r.ok)
     return result
   } catch (error) {
-    const errorMsg = `Failed to upload profile image ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `Failed to upload profile image`
+    await handleError(error, errorMsg)
     return undefined
   }
 }

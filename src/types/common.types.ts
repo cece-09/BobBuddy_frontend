@@ -5,3 +5,5 @@ export type BottomNavbarItem = {
   text: string
   link: string
 }
+
+export type MS = number

@@ -7,7 +7,7 @@ import {
 import request from "./fetch/request"
 import { getAccessToken, jsonifyResponse, setAccessToken } from "@/utils/server"
 import { ServerCode } from "./code"
-import { BuddyError, ErrorCode } from "@/utils/error"
+import { BuddyError, ErrorCode, handleError } from "@/utils/error"
 
 export const requestSignIn = async (
   body: SignInRequest,
@@ -25,8 +25,8 @@ export const requestSignIn = async (
     setAccessToken(result.token)
     return true
   } catch (error) {
-    const errorMsg = `request sign in fail: ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `request sign in fail:`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -42,7 +42,8 @@ export const requestSignUp = async (
     })
     return result.ok
   } catch (error) {
-    console.error(`request sign up fail: ${JSON.stringify(error)}`)
+    const errorMsg = `request sign up fail`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
@@ -57,8 +58,8 @@ export const requestSignOut = async (): Promise<boolean> => {
     }
     return true
   } catch (error) {
-    const errorMsg = `request sign out fail: ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `request sign out fail`
+    await handleError(error, errorMsg)
     return false
   }
 }
@@ -73,8 +74,8 @@ export const requestSendEmail = async (body: {
     })
     return result.ok
   } catch (error) {
-    const errorMsg = `request send email fail: ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `request send email fail`
+    await handleError(error, errorMsg)
     return false
   }
 }
@@ -90,8 +91,8 @@ export const requestVerify = async (body: {
     })
     return result.ok
   } catch (error) {
-    const errorMsg = `request email verificaiton fail: ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `request email verificaiton fail`
+    await handleError(error, errorMsg)
     return false
   }
 }
@@ -106,8 +107,8 @@ export const requestFindPassword = async (body: {
     })
     return result.ok
   } catch (error) {
-    const errorMsg = `request find password fail: ${JSON.stringify(error)}`
-    console.error(errorMsg)
+    const errorMsg = `request find password fail`
+    await handleError(error, errorMsg)
     return undefined
   }
 }
