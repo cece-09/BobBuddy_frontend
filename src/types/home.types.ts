@@ -1,6 +1,6 @@
 export type TextQueryResult = {
-  formattedAddress: string
+  formattedAddress: string;
   displayName: {
-    text: string
-  }
-}
+    text: string;
+  };
+};

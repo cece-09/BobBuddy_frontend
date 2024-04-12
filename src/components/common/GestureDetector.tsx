@@ -1,12 +1,12 @@
-"use client"
+'use client';
 
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from 'react';
 
-type GestureOption = "longPress" | "swipeLeft" | "swipeRight"
+type GestureOption = 'longPress' | 'swipeLeft' | 'swipeRight';
 
 interface DetectorProp {
-  children: ReactNode
-  callback: () => void
+  children: ReactNode;
+  callback: () => void;
 }
 
 /**
@@ -29,19 +29,19 @@ export default function GestureDetector({
   option,
   callback,
 }: {
-  children: ReactNode
-  option: GestureOption
-  callback: () => void
+  children: ReactNode;
+  option: GestureOption;
+  callback: () => void;
 }): JSX.Element {
   switch (option) {
-    case "longPress":
-      return <LongPressDetector {...{ callback, children }} />
-    case "swipeLeft":
-      return <SwipeLeftDetector {...{ callback, children }} />
-    case "swipeRight":
-      return <SwipeRightDetector {...{ callback, children }} />
+    case 'longPress':
+      return <LongPressDetector {...{ callback, children }} />;
+    case 'swipeLeft':
+      return <SwipeLeftDetector {...{ callback, children }} />;
+    case 'swipeRight':
+      return <SwipeRightDetector {...{ callback, children }} />;
     default:
-      return <>{children}</>
+      return <>{children}</>;
   }
 }
 
@@ -50,48 +50,48 @@ const LongPressDetector = ({
   children,
   callback,
 }: {
-  children: ReactNode
-  callback: () => void
+  children: ReactNode;
+  callback: () => void;
 }) => {
-  const LONG_PRESS_TIME: number = 1000
-  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
+  const LONG_PRESS_TIME: number = 1000;
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
   const handleTouchStart = () => {
     const newTimer = setTimeout(() => {
-      console.log("long press detected")
-      callback()
-    }, LONG_PRESS_TIME)
-    setTimer(newTimer)
-  }
+      console.log('long press detected');
+      callback();
+    }, LONG_PRESS_TIME);
+    setTimer(newTimer);
+  };
 
   const handleTouchEnd = () => {
     if (timer) {
-      clearTimeout(timer)
-      setTimer(null)
+      clearTimeout(timer);
+      setTimer(null);
     }
-  }
+  };
 
   useEffect(() => {
     return () => {
       if (timer) {
-        clearTimeout(timer)
+        clearTimeout(timer);
       }
-    }
-  }, [timer])
+    };
+  }, [timer]);
 
   return (
     <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       {children}
     </div>
-  )
-}
+  );
+};
 
 const SwipeLeftDetector = ({ children, callback }: DetectorProp) => {
-  console.error("not implemented!")
-  return <div>{children}</div>
-}
+  console.error('not implemented!');
+  return <div>{children}</div>;
+};
 
 const SwipeRightDetector = ({ children, callback }: DetectorProp) => {
-  console.error("not implemented!")
-  return <div>{children}</div>
-}
+  console.error('not implemented!');
+  return <div>{children}</div>;
+};

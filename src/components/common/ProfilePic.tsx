@@ -1,33 +1,33 @@
-"use client"
+'use client';
 
-import { Box } from "@mui/material"
-import { StaticImport } from "next/dist/shared/lib/get-img-props"
-import Image from "next/image"
-import { useState } from "react"
+import { Box } from '@mui/material';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import Image from 'next/image';
+import { useState } from 'react';
 
 export default function ProfilePic({
   src,
-  alt = "profile",
+  alt = 'profile',
   width = 45,
   height = 45,
 }: {
-  src: string
-  alt?: string
-  width?: number
-  height?: number
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
 }) {
-  const defaultSrc = "/assets/image/profile.jpeg"
+  const defaultSrc = '/assets/image/profile.jpeg';
   const [imgSrc, setImgSrc] = useState<string | StaticImport>(
-    src === "" ? defaultSrc : src,
-  )
+    src === '' ? defaultSrc : src,
+  );
   const handleError = () => {
-    setImgSrc(defaultSrc)
-  }
+    setImgSrc(defaultSrc);
+  };
   return (
     <Box
       sx={{
-        overflow: "hidden",
-        borderRadius: "100%",
+        overflow: 'hidden',
+        borderRadius: '100%',
         width: width,
         height: height,
       }}
@@ -40,5 +40,5 @@ export default function ProfilePic({
         onError={handleError}
       />
     </Box>
-  )
+  );
 }

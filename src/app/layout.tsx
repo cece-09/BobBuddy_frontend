@@ -1,21 +1,19 @@
-import type { Metadata, Viewport } from "next"
-import { Inter } from "next/font/google"
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter"
-import RecoilRootProvider from "../providers/recoilRootProvider"
-import "@/styles/globals.css"
-import { ThemeProvider } from "@mui/material"
-import { theme } from "@/styles/theme"
-import { AuthBoundary } from "@/components/common/AuthBoundary"
-import React from "react"
-import PageLayout from "@/components/common/PageLayout"
+import type { Metadata, Viewport } from 'next';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+import RecoilRootProvider from '../providers/recoilRootProvider';
+import '@/styles/globals.css';
+import { ThemeProvider } from '@mui/material';
+import { theme } from '@/styles/theme';
+import { AuthBoundary } from '@/components/common/AuthBoundary';
+import React from 'react';
+import PageLayout from '@/components/common/PageLayout';
 
-const inter = Inter({ subsets: ["latin"] })
 
 // app metadata
-const APP_NAME = "밥버디"
-const APP_DEFAULT_TITLE = "밥버디"
-const APP_TITLE_TEMPLATE = "%s-app"
-const APP_DESCRIPTION = "점심시간에 잠깐 만날 수 있는 매칭 서비스"
+const APP_NAME = '밥버디';
+const APP_DEFAULT_TITLE = '밥버디';
+const APP_TITLE_TEMPLATE = '%s-app';
+const APP_DESCRIPTION = '점심시간에 잠깐 만날 수 있는 매칭 서비스';
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
@@ -24,26 +22,26 @@ export const metadata: Metadata = {
     template: APP_TITLE_TEMPLATE,
   },
   description: APP_DESCRIPTION,
-  manifest: "/manifest.json",
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: 'default',
     title: APP_DEFAULT_TITLE,
     // startupImage: [],
   },
   formatDetection: {
     telephone: false,
   },
-}
+};
 
 export const viewport: Viewport = {
-  themeColor: "white",
-}
+  themeColor: 'white',
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang='en'>
@@ -55,7 +53,7 @@ export default function RootLayout({
           href='https://fonts.googleapis.com/icon?family=Material+Icons'
         />
       </head>
-      <body className={inter.className}>
+      <body>
         <AppRouterCacheProvider>
           <RecoilRootProvider>
             <ThemeProvider theme={theme}>
@@ -67,5 +65,5 @@ export default function RootLayout({
         </AppRouterCacheProvider>
       </body>
     </html>
-  )
+  );
 }

@@ -3,5 +3,5 @@ export default function NotFound() {
     <>
       <div>Not Found</div>
     </>
-  )
+  );
 }

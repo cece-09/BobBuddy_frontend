@@ -1,40 +1,40 @@
-"use client"
-import { useState, useEffect } from "react"
-import TextField from "@mui/material/TextField"
-import Button from "@mui/material/Button"
-import CssBaseline from "@mui/material/CssBaseline"
-import Box from "@mui/material/Box"
-import Typography from "@mui/material/Typography"
-import Container from "@mui/material/Container"
-import { Link } from "@mui/material"
-import { isValidEmail } from "../../utils/validation"
-import { FORGOT_PASSWORD_API } from "../../constants/user.constants"
-import { requestFindPassword } from "@/server/auth"
+'use client';
+import { useState, useEffect } from 'react';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { Link } from '@mui/material';
+import { isValidEmail } from '../../utils/validation';
+import { FORGOT_PASSWORD_API } from '../../constants/user.constants';
+import { requestFindPassword } from '@/server/auth';
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("")
-  const [isEmailValid, setIsEmailValid] = useState(false)
+  const [email, setEmail] = useState('');
+  const [isEmailValid, setIsEmailValid] = useState(false);
 
   // 이메일 상태가 변경될 때마다 유효성 검사
   useEffect(() => {
-    setIsEmailValid(isValidEmail(email))
-  }, [email])
+    setIsEmailValid(isValidEmail(email));
+  }, [email]);
 
   // 이메일 전송 버튼 클릭 시
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+    event.preventDefault();
     if (!isEmailValid) {
-      alert("올바른 이메일을 입력하세요")
-      return
+      alert('올바른 이메일을 입력하세요');
+      return;
     }
 
-    const response = await requestFindPassword({ email })
+    const response = await requestFindPassword({ email });
     if (response) {
-      alert("가입 이메일을 확인하세요")
+      alert('가입 이메일을 확인하세요');
     } else if (response === false) {
-      alert("올바른 이메일을 입력하세요")
+      alert('올바른 이메일을 입력하세요');
     } else {
-      alert("이메일 요청 중 오류가 발생했습니다. 다시 시도하세요")
+      alert('이메일 요청 중 오류가 발생했습니다. 다시 시도하세요');
     }
 
     // if (isEmailValid) {
@@ -61,12 +61,12 @@ export default function ForgotPassword() {
     // } else {
     //   alert("올바른 이메일을 입력하세요")
     // }
-  }
+  };
 
   // 사용자 입력 시 이메일 상태 업데이트
   const handleEmailChange = (event: { target: { value: any } }) => {
-    setEmail(event.target.value)
-  }
+    setEmail(event.target.value);
+  };
 
   return (
     <Container component='main' maxWidth='xs'>
@@ -74,9 +74,9 @@ export default function ForgotPassword() {
       <Box
         sx={{
           marginTop: 10,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
         <Typography component='h1' variant='h5'>
@@ -97,8 +97,8 @@ export default function ForgotPassword() {
             error={!isEmailValid && email.length > 0}
             helperText={
               !isEmailValid && email.length > 0
-                ? "올바른 이메일을 입력하세요."
-                : ""
+                ? '올바른 이메일을 입력하세요.'
+                : ''
             }
           />
           <Button
@@ -112,9 +112,9 @@ export default function ForgotPassword() {
           </Button>
           <Box
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 3,
-              justifyContent: "center",
+              justifyContent: 'center',
               marginTop: 3,
             }}
           >
@@ -128,5 +128,5 @@ export default function ForgotPassword() {
         </Box>
       </Box>
     </Container>
-  )
+  );
 }

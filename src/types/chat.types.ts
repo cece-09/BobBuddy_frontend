@@ -1,10 +1,10 @@
-import { Paged } from "./paged.types"
+import { Paged } from './paged.types';
 
 export class Chat {
-  userId: string
-  chatId: string | null
-  content: string
-  timestamp: number
+  userId: string;
+  chatId: string | null;
+  content: string;
+  timestamp: number;
 
   // 생성자
   constructor(
@@ -13,25 +13,25 @@ export class Chat {
     content: string,
     timestamp: number,
   ) {
-    this.userId = userId
-    this.chatId = chatId
-    this.content = content
-    this.timestamp = timestamp
+    this.userId = userId;
+    this.chatId = chatId;
+    this.content = content;
+    this.timestamp = timestamp;
   }
 
   static fromContent(content: string): Chat {
-    return new Chat("1", null, content, new Date().getTime())
+    return new Chat('1', null, content, new Date().getTime());
   }
 
   // json string으로부터 Chat 객체 생성
   static fromJson(json: string) {
-    const obj = JSON.parse(json)
+    const obj = JSON.parse(json);
     return new Chat(
-      obj["userId"],
-      obj["chatId"],
-      obj["content"],
-      obj["timestamp"],
-    )
+      obj['userId'],
+      obj['chatId'],
+      obj['content'],
+      obj['timestamp'],
+    );
   }
 }
 
@@ -41,12 +41,12 @@ export class Chat {
  * @class ChatUser
  */
 export class ChatUser {
-  id: string
-  name: string
-  profile: string
-  currUser?: boolean
-  createdAt: string
-  deletedAt: string | null
+  id: string;
+  name: string;
+  profile: string;
+  currUser?: boolean;
+  createdAt: string;
+  deletedAt: string | null;
 
   constructor(
     id: string,
@@ -55,12 +55,12 @@ export class ChatUser {
     createdAt: string = new Date().toISOString(),
     deletedAt: string | null = null,
   ) {
-    this.id = id
-    this.name = name
-    this.profile = profile
-    this.currUser = false
-    this.createdAt = createdAt
-    this.deletedAt = deletedAt
+    this.id = id;
+    this.name = name;
+    this.profile = profile;
+    this.currUser = false;
+    this.createdAt = createdAt;
+    this.deletedAt = deletedAt;
   }
 }
 
@@ -69,12 +69,12 @@ export class ChatUser {
  * @class ChatRoom
  */
 export class ChatRoom {
-  title: string
-  time: string
-  users: ChatUser[]
-  chats: Paged<Chat>[]
-  userId: string
-  notice: Chat | null
+  title: string;
+  time: string;
+  users: ChatUser[];
+  chats: Paged<Chat>[];
+  userId: string;
+  notice: Chat | null;
 
   constructor(
     title: string,
@@ -83,28 +83,28 @@ export class ChatRoom {
     chats: Paged<Chat>[],
     notice?: Chat | null,
   ) {
-    this.title = title
-    this.time = time
-    this.users = users
-    this.chats = chats
-    this.userId = "1"
-    this.notice = null
+    this.title = title;
+    this.time = time;
+    this.users = users;
+    this.chats = chats;
+    this.userId = '1';
+    this.notice = null;
   }
 }
 
-export type ChatMessageType = "text" | "link"
+export type ChatMessageType = 'text' | 'link';
 
 export type ParsedChatMessage = {
-  thumb: string | null
+  thumb: string | null;
   data: {
-    index: number
-    length: number
-    type: ChatMessageType
-  }[]
-}
+    index: number;
+    length: number;
+    type: ChatMessageType;
+  }[];
+};
 
 export interface OpenGraph {
-  title: string
-  image: string
-  descr: string | null
+  title: string;
+  image: string;
+  descr: string | null;
 }

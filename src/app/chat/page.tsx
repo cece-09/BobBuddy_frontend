@@ -3,5 +3,5 @@ export default async function ChatPage({ params }: { params: { id: string } }) {
     <>
       <div>Chat</div>
     </>
-  )
+  );
 }
