@@ -1,5 +1,5 @@
-import { ParsedChatMessage } from "@/types/chat.types"
-import { Typography } from "@mui/material"
+import { ParsedChatMessage } from '@/types/chat.types';
+import { Typography } from '@mui/material';
 
 /**
  * 채팅 엔트리의 텍스트 부분을 렌더링합니다
@@ -20,8 +20,8 @@ export function ChatText({
   content,
   parsed,
 }: {
-  content: string
-  parsed: ParsedChatMessage
+  content: string;
+  parsed: ParsedChatMessage;
 }): JSX.Element {
   return (
     <>
@@ -29,27 +29,27 @@ export function ChatText({
         ? content // 파싱이 null일 경우 원래 텍스트 렌더링
         : parsed.data.map(({ index, length, type }, idx) => {
             // plain text 또는 link 타입에 따라 렌더링
-            const substr = content.substring(index, index + length)
+            const substr = content.substring(index, index + length);
             switch (type) {
-              case "link":
+              case 'link':
                 return (
                   <Typography
                     key={idx}
                     sx={{
-                      color: "blue",
-                      textDecoration: "underline",
+                      color: 'blue',
+                      textDecoration: 'underline',
                     }}
                   >
                     <a href={substr} target='_blank'>
                       {substr}
                     </a>
                   </Typography>
-                )
-              case "text":
+                );
+              case 'text':
               default:
-                return <span key={idx}>{substr}</span>
+                return <span key={idx}>{substr}</span>;
             }
           })}
     </>
-  )
+  );
 }

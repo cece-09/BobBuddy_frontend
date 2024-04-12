@@ -1,19 +1,19 @@
-import { ErrorCode } from "@/utils/error"
-import { MS } from "./common.types"
+import { ErrorCode } from '@/utils/error';
+import { MS } from './common.types';
 
 export enum ToastType {
-  ERROR = "ERROR",
+  ERROR = 'ERROR',
 }
 
 export interface ToastTypeState {
-  [ToastType.ERROR]: ErrorCode
+  [ToastType.ERROR]: ErrorCode;
 }
 
 export type ToastState<T extends ToastType> = {
-  toastType: T
-  payload: ToastTypeState[T]
-}
+  toastType: T;
+  payload: ToastTypeState[T];
+};
 
 export type ToastProps = {
-  closeMS?: MS
-}
+  closeMS?: MS;
+};

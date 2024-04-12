@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import {
   ChangeEvent,
@@ -7,8 +7,8 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-} from "react"
-import { useRecoilValue, useSetRecoilState } from "recoil"
+} from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   Box,
   Chip,
@@ -18,25 +18,25 @@ import {
   Stack,
   TextareaAutosize,
   Typography,
-} from "@mui/material"
-import ChatList from "../server/ChatList"
-import ProfilePic from "../../common/ProfilePic"
-import useChats from "../../../hooks/useChat"
-import useSocket from "../../../hooks/useSocket"
-import useInfiniteScroll from "../../../hooks/usePrevChat"
-import { fetchPrevChats } from "../../../server-actions/chat.actions"
-import { chatNoticeState, chatLoadingState } from "@/providers/chatAtom"
-import { Chat, ChatUser } from "@/types/chat.types"
-import { User, userState } from "@/providers/userAtom"
-import { RecordUtil } from "@/utils/record"
+} from '@mui/material';
+import ChatList from '../server/ChatList';
+import ProfilePic from '../../common/ProfilePic';
+import useChats from '../../../hooks/useChat';
+import useSocket from '../../../hooks/useSocket';
+import useInfiniteScroll from '../../../hooks/usePrevChat';
+import { fetchPrevChats } from '../../../server-actions/chat.actions';
+import { chatNoticeState, chatLoadingState } from '@/providers/chatAtom';
+import { Chat, ChatUser } from '@/types/chat.types';
+import { User, userState } from '@/providers/userAtom';
+import { RecordUtil } from '@/utils/record';
 
 export interface ChatRoomProps {
-  name: string
-  time: string
-  jsonNotice: string
-  jsonUsers: string // json
-  currPage: number // 현재 로드된 페이지 번호
-  children: ReactNode
+  name: string;
+  time: string;
+  jsonNotice: string;
+  jsonUsers: string; // json
+  currPage: number; // 현재 로드된 페이지 번호
+  children: ReactNode;
 }
 
 /**
@@ -60,68 +60,68 @@ export default function ChatRoomUI({
   currPage,
   children,
 }: ChatRoomProps): JSX.Element {
-  const user = useRecoilValue(userState)
-  const SERVER_URI = process.env.NEXT_PUBLIC_CHAT_SERVER_URI as string
-  const [sidebar, setSidebar] = useState<boolean>(false)
-  const [input, setInput] = useState<string>("")
-  const { socket, connect } = useSocket(SERVER_URI)
-  const { chats } = useChats(socket)
+  const user = useRecoilValue(userState);
+  const SERVER_URI = process.env.NEXT_PUBLIC_CHAT_SERVER_URI as string;
+  const [sidebar, setSidebar] = useState<boolean>(false);
+  const [input, setInput] = useState<string>('');
+  const { socket, connect } = useSocket(SERVER_URI);
+  const { chats } = useChats(socket);
 
   // 현재 보고 있는 채팅방의 공지 상태 업데이트
-  const notice: Chat | null = JSON.parse(jsonNotice)
-  const setChatNotice = useSetRecoilState(chatNoticeState)
+  const notice: Chat | null = JSON.parse(jsonNotice);
+  const setChatNotice = useSetRecoilState(chatNoticeState);
   useEffect(() => {
-    setChatNotice(notice)
-  })
+    setChatNotice(notice);
+  });
 
-  const userId = user.userData.userId.toString()
-  const users: Record<string, ChatUser> = {}
+  const userId = user.userData.userId.toString();
+  const users: Record<string, ChatUser> = {};
 
-  const chatUsers: ChatUser[] | undefined = JSON.parse(jsonUsers)
+  const chatUsers: ChatUser[] | undefined = JSON.parse(jsonUsers);
   if (chatUsers === undefined || chatUsers.length === 0) {
     // TODO: navigate fallback page
-    window.location.href = "/home"
-    return <></>
+    window.location.href = '/home';
+    return <></>;
   }
   if (chatUsers.findIndex(chatUser => chatUser.id === userId) < 0) {
     // TODO: navigate fallback page
-    window.location.href = "/home"
-    return <></>
+    window.location.href = '/home';
+    return <></>;
   }
   chatUsers.forEach(chatUser =>
     RecordUtil.set(users, chatUser.id, {
       ...chatUser,
       currUser: chatUser.id === userId,
     }),
-  )
+  );
 
   // 사이드바 토글 함수
   const toggle = () => {
     if (sidebar === true) {
-      setSidebar(false)
+      setSidebar(false);
     } else {
-      setSidebar(true)
+      setSidebar(true);
     }
-  }
+  };
 
   // 채팅 발송
   const sendChat = () => {
     // socket
-    if (input === "") return
+    if (input === '') return;
     const chat = new Chat(
       user.userData.userId.toString(),
       null,
       input,
       new Date().getTime(),
-    )
-    socket?.emit("send-chat", chat)
-    setInput("")
-  }
+    );
+    socket?.emit('send-chat', chat);
+    setInput('');
+  };
 
   // 나의 채팅방이 아닙니다.
   if (!(user.userData.userId.toString() in Object.keys(users))) {
-    console.error(`not my chatroom!`)
-    return <div>unauthorized</div>
+    console.error(`not my chatroom!`);
+    return <div>unauthorized</div>;
   }
 
   return (
@@ -146,7 +146,7 @@ export default function ChatRoomUI({
         <ChatRoomSidebar users={Object.values(users)} />
       </Drawer>
     </>
-  )
+  );
 }
 
 /* ===== Sub Components ===== */
@@ -160,40 +160,40 @@ export default function ChatRoomUI({
  * @return {JSX.Element}
  */
 function ChatRoomNotice(): JSX.Element {
-  const chat = useRecoilValue(chatNoticeState)
+  const chat = useRecoilValue(chatNoticeState);
   if (chat === null) {
-    return <></>
+    return <></>;
   } else {
     // TODO: onclick 전체보기 기능 추가해야함
     return (
       <Box
         sx={{
-          width: "100%",
-          position: "fixed",
-          padding: "0.5rem",
-          top: "5vh",
+          width: '100%',
+          position: 'fixed',
+          padding: '0.5rem',
+          top: '5vh',
           left: 0,
         }}
       >
         <Stack
           direction='row'
           sx={{
-            width: "100%",
-            maxHeight: "10vh",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: "white",
-            borderRadius: "0.5rem",
-            padding: "0.5rem",
-            gap: "0.5rem",
+            width: '100%',
+            maxHeight: '10vh',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            backgroundColor: 'white',
+            borderRadius: '0.5rem',
+            padding: '0.5rem',
+            gap: '0.5rem',
           }}
         >
           <Chip size='small' label='공지' />
-          <Icon sx={{ color: "gray" }}>campaign_rounded</Icon>
+          <Icon sx={{ color: 'gray' }}>campaign_rounded</Icon>
           <div>{chat.content}</div>
         </Stack>
       </Box>
-    )
+    );
   }
 }
 
@@ -204,7 +204,7 @@ function ChatRoomNotice(): JSX.Element {
  * @return {JSX.Element}
  */
 function ChatRoomSidebar({ users }: { users: ChatUser[] }): JSX.Element {
-  const me = useRecoilValue(userState)
+  const me = useRecoilValue(userState);
 
   return (
     <Stack height='100vh' width='80vw' minWidth='300px'>
@@ -234,12 +234,12 @@ function ChatRoomSidebar({ users }: { users: ChatUser[] }): JSX.Element {
       </Box>
       <Stack
         direction='row'
-        sx={{ backgroundColor: "#eee", padding: "0.5rem" }}
+        sx={{ backgroundColor: '#eee', padding: '0.5rem' }}
       >
         <Icon>logout_rounded</Icon>
       </Stack>
     </Stack>
-  )
+  );
 }
 
 /**
@@ -264,52 +264,52 @@ function ChatRoomContentArea({
   currPage,
   users,
 }: {
-  children: ReactNode
-  chats: Chat[] // 클라이언트에 새로 추가되는 채팅
-  currPage: number
-  users: { [key: string]: ChatUser }
+  children: ReactNode;
+  chats: Chat[]; // 클라이언트에 새로 추가되는 채팅
+  currPage: number;
+  users: { [key: string]: ChatUser };
 }): JSX.Element {
-  const [enterTime, setEnterTime] = useState<number>(0)
-  const [pageNo, setPageNo] = useState<number>(currPage)
+  const [enterTime, setEnterTime] = useState<number>(0);
+  const [pageNo, setPageNo] = useState<number>(currPage);
   useEffect(() => {
     // 마운트 시 현재 시각 정보 저장
-    setEnterTime(new Date().getTime())
-  }, [])
+    setEnterTime(new Date().getTime());
+  }, []);
 
   // 역방향 스크롤시 불러오는 이전 채팅 데이터
   const {
     loadingRef,
     data: prevChats,
     isLoading: prevChatLoading,
-  } = useInfiniteScroll(enterTime, fetchPrevChats)
+  } = useInfiniteScroll(enterTime, fetchPrevChats);
 
-  const scroll = useRef<HTMLDivElement>(null)
-  const container = useRef<HTMLDivElement>(null)
-  const loading = useRecoilValue(chatLoadingState)
+  const scroll = useRef<HTMLDivElement>(null);
+  const container = useRef<HTMLDivElement>(null);
+  const loading = useRecoilValue(chatLoadingState);
   useLayoutEffect(() => {
     if (container.current) {
-      container.current.scrollTop = container.current.scrollHeight
+      container.current.scrollTop = container.current.scrollHeight;
     }
-  }, [])
+  }, []);
   useEffect(() => {
     if (scroll.current != null) {
       scroll.current.scrollIntoView({
         // behavior: "smooth",
-      })
+      });
     }
-  }, [loading, chats])
+  }, [loading, chats]);
 
   return (
     <Box
       ref={container}
       sx={{
-        height: "100%",
-        overflowY: "auto",
-        overflowX: "hidden",
-        padding: "0rem 0.5rem",
+        height: '100%',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        padding: '0rem 0.5rem',
       }}
     >
-      <div style={{ height: "50px" }} ref={loadingRef} />
+      <div style={{ height: '50px' }} ref={loadingRef} />
       {prevChatLoading ? (
         <CircularProgress />
       ) : (
@@ -319,7 +319,7 @@ function ChatRoomContentArea({
       <ChatList chats={chats} users={users} />
       <div ref={scroll} />
     </Box>
-  )
+  );
 }
 
 /**
@@ -341,26 +341,26 @@ function ChatRoomAppBar({
   onBackClick,
   onMenuClick,
 }: {
-  title: string
-  onBackClick: () => void
-  onMenuClick: () => void
+  title: string;
+  onBackClick: () => void;
+  onMenuClick: () => void;
 }): JSX.Element {
   return (
     <Stack
       direction='row'
       sx={{
-        backgroundColor: "white",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "0.5rem",
-        height: "5vh",
+        backgroundColor: 'white',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '0.5rem',
+        height: '5vh',
       }}
     >
       <Icon onClick={() => onBackClick()}>arrow_back_ios_rounded</Icon>
       <Typography>{title}</Typography>
       <Icon onClick={() => onMenuClick()}>menu_rounded</Icon>
     </Stack>
-  )
+  );
 }
 
 /**
@@ -382,50 +382,50 @@ function ChatRoomInput({
   onChange,
   sendChat,
 }: {
-  message: string
-  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-  sendChat: () => void
+  message: string;
+  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  sendChat: () => void;
 }): JSX.Element {
   return (
     <Box
       sx={{
-        backgroundColor: "white",
-        padding: "0.5rem",
-        width: "100%",
+        backgroundColor: 'white',
+        padding: '0.5rem',
+        width: '100%',
       }}
     >
       <Stack
         direction='row'
         sx={{
-          border: "1px solid black",
-          borderRadius: "1em",
-          width: "100%",
-          minHeight: "5vh",
-          alignItems: "center",
-          padding: "0.5rem",
-          gap: "0.3rem",
+          border: '1px solid black',
+          borderRadius: '1em',
+          width: '100%',
+          minHeight: '5vh',
+          alignItems: 'center',
+          padding: '0.5rem',
+          gap: '0.3rem',
         }}
       >
         <TextareaAutosize
           maxRows={4}
           style={{
-            width: "100%",
-            backgroundColor: "transparent",
-            outline: "none",
+            width: '100%',
+            backgroundColor: 'transparent',
+            outline: 'none',
           }}
           value={message}
           onChange={onChange}
           onKeyDown={e => {
-            if (e.key !== "Enter") return
+            if (e.key !== 'Enter') return;
             if (!e.shiftKey && !e.nativeEvent.isComposing) {
-              e.preventDefault()
-              e.stopPropagation()
-              sendChat()
+              e.preventDefault();
+              e.stopPropagation();
+              sendChat();
             }
           }}
         ></TextareaAutosize>
         <Icon onClick={() => sendChat()}>send_rounded</Icon>
       </Stack>
     </Box>
-  )
+  );
 }

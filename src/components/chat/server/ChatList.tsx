@@ -1,12 +1,12 @@
-import ChatEntry from "./ChatEntry"
+import ChatEntry from './ChatEntry';
 import {
   CHAT_SHOW_MINE,
   CHAT_SHOW_NOTI,
   CHAT_SHOW_TIME,
   CHAT_SHOW_USER,
   CHAT_STD_TIME,
-} from "../../../constants/chat.constants"
-import { Chat, ChatUser } from "@/types/chat.types"
+} from '../../../constants/chat.constants';
+import { Chat, ChatUser } from '@/types/chat.types';
 
 /**
  * 채팅 목록을 렌더링합니다
@@ -27,25 +27,25 @@ export default function ChatList({
   chats,
   users,
 }: {
-  chats: Chat[]
-  users: { [_: string]: ChatUser }
+  chats: Chat[];
+  users: { [_: string]: ChatUser };
 }): JSX.Element {
   // 채팅에 적용되는 옵션값을 계산하여 반환합니다.
   function configure(idx: number) {
-    const curr = chats[idx]
-    let option = 0
+    const curr = chats[idx];
+    let option = 0;
 
     const timeOut = (target: Chat) => {
-      const abs = (num: number) => (num < 0 ? -1 * num : num)
-      return abs(target.timestamp - curr.timestamp) > CHAT_STD_TIME
-    }
+      const abs = (num: number) => (num < 0 ? -1 * num : num);
+      return abs(target.timestamp - curr.timestamp) > CHAT_STD_TIME;
+    };
 
     if (curr.userId && users[curr.userId].currUser) {
       // 내가 작성한 채팅입니다.
-      option |= CHAT_SHOW_MINE
+      option |= CHAT_SHOW_MINE;
     }
 
-    let prev, next
+    let prev, next;
     if (
       idx === 0 ||
       ((prev = chats[idx - 1]) && (prev.userId != curr.userId || timeOut(prev)))
@@ -53,7 +53,7 @@ export default function ChatList({
       // 첫 번째 메시지입니다, 또는
       // 이전 채팅 메시지와 작성자가 다르거나
       // 타임스탬프가 60초 초과입니다.
-      option |= CHAT_SHOW_USER
+      option |= CHAT_SHOW_USER;
     }
 
     if (
@@ -62,9 +62,9 @@ export default function ChatList({
     ) {
       // 마지막 메시지입니다, 또는
       // 이후 채팅 메시지와 타임스탬프가 60초 초과입니다.
-      option |= CHAT_SHOW_TIME
+      option |= CHAT_SHOW_TIME;
     }
-    return option
+    return option;
   }
 
   // 렌더링
@@ -72,7 +72,7 @@ export default function ChatList({
     <>
       {chats.map(({ content, timestamp, userId, chatId }, idx) => {
         if (!userId || users[userId] === undefined) {
-          return <></>
+          return <></>;
         }
         return (
           <ChatEntry
@@ -83,8 +83,8 @@ export default function ChatList({
             user={users[userId]}
             options={configure(idx)}
           />
-        )
+        );
       })}
     </>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-"use client"
-import { ReactNode, useState } from "react"
-import GestureDetector from "../../common/GestureDetector"
+'use client';
+import { ReactNode, useState } from 'react';
+import GestureDetector from '../../common/GestureDetector';
 import {
   Box,
   Button,
@@ -10,12 +10,12 @@ import {
   ListItemButton,
   Stack,
   Typography,
-} from "@mui/material"
-import { useRecoilState } from "recoil"
-import { setChatNotice } from "../../../server-actions/chat.actions"
-import { ModalBackdrop } from "../../common/ModalBackdrop"
-import { chatNoticeState } from "@/providers/chatAtom"
-import { Chat } from "@/types/chat.types"
+} from '@mui/material';
+import { useRecoilState } from 'recoil';
+import { setChatNotice } from '../../../server-actions/chat.actions';
+import { ModalBackdrop } from '../../common/ModalBackdrop';
+import { chatNoticeState } from '@/providers/chatAtom';
+import { Chat } from '@/types/chat.types';
 
 /**
  * 길게 누르면 메뉴를 보여주는
@@ -31,12 +31,12 @@ export default function ChatShowOptionModal({
   options,
   children,
 }: {
-  chatId: string
-  content: string
-  options: number
-  children: ReactNode
+  chatId: string;
+  content: string;
+  options: number;
+  children: ReactNode;
 }) {
-  const [open, setOpen] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -53,7 +53,7 @@ export default function ChatShowOptionModal({
         <></>
       )}
     </>
-  )
+  );
 }
 
 // TODO: 코드 정리 필요
@@ -62,19 +62,19 @@ const ChatOptionModalContent = ({
   content,
   callback,
 }: {
-  chatId: string
-  content: string
-  callback: () => void
+  chatId: string;
+  content: string;
+  callback: () => void;
 }) => {
   // 공지등록, 이미 등록된 공지라면 공지해제
-  const [confirmMsg, setConfirmMsg] = useState<ReactNode | null>(null)
-  const [notice, setNotice] = useRecoilState(chatNoticeState)
-  const isNotice = notice?.chatId === chatId
+  const [confirmMsg, setConfirmMsg] = useState<ReactNode | null>(null);
+  const [notice, setNotice] = useRecoilState(chatNoticeState);
+  const isNotice = notice?.chatId === chatId;
 
   const menu = [
     {
-      icon: "campaign_rounded",
-      text: isNotice ? "공지 해제" : "공지 등록",
+      icon: 'campaign_rounded',
+      text: isNotice ? '공지 해제' : '공지 등록',
       onClick: () => {
         if (isNotice) {
           setConfirmMsg(
@@ -83,24 +83,24 @@ const ChatOptionModalContent = ({
               <Stack direction='row' justifyContent='space-evenly'>
                 <Button
                   onClick={() => {
-                    setConfirmMsg(null)
-                    callback()
+                    setConfirmMsg(null);
+                    callback();
                   }}
                 >
                   취소
                 </Button>
                 <Button
                   onClick={() => {
-                    setNotice(null)
-                    setConfirmMsg(null)
-                    callback()
+                    setNotice(null);
+                    setConfirmMsg(null);
+                    callback();
                   }}
                 >
                   해제
                 </Button>
               </Stack>
             </Stack>,
-          )
+          );
         } else if (notice !== null) {
           setConfirmMsg(
             <Stack direction='column' width='100%'>
@@ -110,8 +110,8 @@ const ChatOptionModalContent = ({
               <Stack direction='row' justifyContent='space-evenly'>
                 <Button
                   onClick={() => {
-                    setConfirmMsg(null)
-                    callback()
+                    setConfirmMsg(null);
+                    callback();
                   }}
                 >
                   취소
@@ -120,48 +120,48 @@ const ChatOptionModalContent = ({
                   onClick={() => {
                     setChatNotice(chatId).then(res => {
                       if (res.status === 200) {
-                        const newNotice: Chat = JSON.parse(res.json())
-                        setNotice(newNotice)
-                        setConfirmMsg(null)
-                        callback()
+                        const newNotice: Chat = JSON.parse(res.json());
+                        setNotice(newNotice);
+                        setConfirmMsg(null);
+                        callback();
                       }
-                    })
+                    });
                   }}
                 >
                   등록
                 </Button>
               </Stack>
             </Stack>,
-          )
+          );
         } else {
           setChatNotice(chatId).then(res => {
             if (res.status === 200) {
-              const newNotice: Chat = JSON.parse(res.json())
-              setNotice(newNotice)
-              setConfirmMsg(null)
-              callback()
+              const newNotice: Chat = JSON.parse(res.json());
+              setNotice(newNotice);
+              setConfirmMsg(null);
+              callback();
             }
-          })
+          });
         }
       },
     },
     {
-      icon: "content_copy",
-      text: "내용 복사",
+      icon: 'content_copy',
+      text: '내용 복사',
       onClick: () => {
-        navigator.clipboard.writeText(content)
-        callback()
+        navigator.clipboard.writeText(content);
+        callback();
       },
     },
-  ]
+  ];
   return (
     <>
-      <List sx={{ backgroundColor: "white", borderRadius: "0.5rem" }}>
+      <List sx={{ backgroundColor: 'white', borderRadius: '0.5rem' }}>
         {menu.map(({ icon, text, onClick }, idx) => (
           <ListItem key={idx}>
             <ListItemButton onClick={onClick}>
               <Stack direction='row' gap='0.5rem'>
-                <Icon sx={{ color: "gray" }}>{icon}</Icon>
+                <Icon sx={{ color: 'gray' }}>{icon}</Icon>
                 <Typography>{text}</Typography>
               </Stack>
             </ListItemButton>
@@ -172,11 +172,11 @@ const ChatOptionModalContent = ({
         <ModalBackdrop onClick={() => setConfirmMsg(null)}>
           <Box
             sx={{
-              alignSelf: "center",
-              backgroundColor: "white",
-              borderRadius: "0.5rem",
-              width: "80vw",
-              padding: "0.5rem",
+              alignSelf: 'center',
+              backgroundColor: 'white',
+              borderRadius: '0.5rem',
+              width: '80vw',
+              padding: '0.5rem',
             }}
           >
             {confirmMsg}
@@ -186,5 +186,5 @@ const ChatOptionModalContent = ({
         <></>
       )}
     </>
-  )
-}
+  );
+};

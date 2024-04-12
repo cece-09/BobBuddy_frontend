@@ -1,6 +1,6 @@
-"use server"
+'use server';
 
-import { SeverFetchResponse } from "@/types/server"
+import { SeverFetchResponse } from '@/types/server';
 
 export const serverFetch = async (
   route: string,
@@ -11,8 +11,8 @@ export const serverFetch = async (
       ok: r.ok,
       status: r.status,
       text: await r.text(),
-    }
-  })
-  console.debug(route, init, ret)
-  return ret
-}
+    };
+  });
+  console.debug(route, init, ret);
+  return ret;
+};

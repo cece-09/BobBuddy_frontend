@@ -38,7 +38,7 @@ export const userState = atom<{
     auth: {
       isLoggedIn: false,
       password: '',
-      repassword: ''
-    }
+      repassword: '',
+    },
   },
 });

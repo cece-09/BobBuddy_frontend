@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from "react"
-import Drawer from "@mui/material/Drawer"
-import { Box, Button, TextField } from "@mui/material"
-import { useRecoilState } from "recoil"
-import { userState } from "../../providers/userAtom"
+import React, { useState, useEffect } from 'react';
+import Drawer from '@mui/material/Drawer';
+import { Box, Button, TextField } from '@mui/material';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../providers/userAtom';
 
 interface BottomSheetProps {
-  open: boolean
-  onClose: () => void
-  item: keyof User | null
-  onSaveButtonClick: (updatedData: User) => void
+  open: boolean;
+  onClose: () => void;
+  item: keyof User | null;
+  onSaveButtonClick: (updatedData: User) => void;
 }
 
 export interface User {
-  userId: number
-  userImg: string
-  username: string
-  email: string
-  birth: string
-  gender: string
-  mbti: string
-  favoriteFood: string
-  dislikedFood: string
+  userId: number;
+  userImg: string;
+  username: string;
+  email: string;
+  birth: string;
+  gender: string;
+  mbti: string;
+  favoriteFood: string;
+  dislikedFood: string;
 }
 
-const PROFILE_UPDATE_API = "http://yousayrun:8080/user/profile/update"
+const PROFILE_UPDATE_API = 'http://yousayrun:8080/user/profile/update';
 
 const BottomSheet: React.FC<BottomSheetProps> = ({
   open,
@@ -32,66 +32,66 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   onSaveButtonClick,
 }) => {
   // Recoil을 사용하여 사용자 상태 관리
-  const [user, setUser] = useRecoilState(userState)
+  const [user, setUser] = useRecoilState(userState);
   // 수정 모드 여부를 관리하는 상태
-  const [isEditing, setIsEditing] = useState<boolean>(false)
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   // 입력값을 관리하는 상태
-  const [inputValue, setInputValue] = useState<string>("")
+  const [inputValue, setInputValue] = useState<string>('');
 
   // 컴포넌트가 마운트되거나 선택된 아이템이 변경될 때 실행되는 효과
   useEffect(() => {
     if (item) {
-      const value = user.userData[item]
-      setInputValue(typeof value === "number" ? value.toString() : value || "")
+      const value = user.userData[item];
+      setInputValue(typeof value === 'number' ? value.toString() : value || '');
     }
-  }, [item, user.userData])
+  }, [item, user.userData]);
 
   const handleSaveClick = async () => {
     if (item) {
       try {
         const dataToUpdate = {
           [item]: inputValue,
-        }
+        };
 
         // 프로필 업데이트를 위해 서버에 PATCH 요청을 보냄
         const response = await fetch(PROFILE_UPDATE_API, {
-          method: "PATCH",
+          method: 'PATCH',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(dataToUpdate),
-        })
+        });
 
         if (response.ok) {
           // 서버에서 업데이트된 데이터를 받아옴
-          const updatedData: User = await response.json()
+          const updatedData: User = await response.json();
 
           // onSaveButtonClick 콜백 함수 호출하여 업데이트된 데이터 전달
-          onSaveButtonClick(updatedData)
+          onSaveButtonClick(updatedData);
 
           // 수정하기 버튼 비활성화
-          setIsEditing(false)
+          setIsEditing(false);
 
           // BottomSheet를 닫음
-          onClose()
+          onClose();
         } else {
-          console.error("서버에서 오류 응답을 받았습니다.")
+          console.error('서버에서 오류 응답을 받았습니다.');
         }
       } catch (error) {
-        console.error("요청을 보내는 중 오류가 발생했습니다.", error)
+        console.error('요청을 보내는 중 오류가 발생했습니다.', error);
       }
     }
-  }
+  };
 
   // 수정 버튼 클릭 시 실행되는 함수
   const handleEditClick = () => {
-    setIsEditing(true)
-  }
+    setIsEditing(true);
+  };
 
   // 입력값 변경 시 실행되는 함수
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value)
-  }
+    setInputValue(event.target.value);
+  };
 
   return (
     <Drawer
@@ -100,23 +100,23 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       onClose={onClose}
       PaperProps={{
         style: {
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "70%",
-          margin: "auto",
-          zIndex: "500",
-          borderRadius: "28px 28px 0 0",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '70%',
+          margin: 'auto',
+          zIndex: '500',
+          borderRadius: '28px 28px 0 0',
         },
       }}
     >
       <Box
         sx={{
           marginTop: 5,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
           gap: 3,
         }}
       >
@@ -128,7 +128,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             onChange={handleChange}
           />
         ) : (
-          <Box>{item ? user.userData[item] : ""}</Box>
+          <Box>{item ? user.userData[item] : ''}</Box>
         )}
 
         {isEditing ? (
@@ -142,7 +142,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
         )}
       </Box>
     </Drawer>
-  )
-}
+  );
+};
 
-export default BottomSheet
+export default BottomSheet;

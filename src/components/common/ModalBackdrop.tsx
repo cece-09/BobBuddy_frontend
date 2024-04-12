@@ -1,12 +1,12 @@
-import { Stack } from "@mui/material"
-import { ReactNode } from "react"
+import { Stack } from '@mui/material';
+import { ReactNode } from 'react';
 
 export const ModalBackdrop = ({
   children,
   onClick,
 }: {
-  children: ReactNode
-  onClick: () => void
+  children: ReactNode;
+  onClick: () => void;
 }) => {
   return (
     <div onClick={onClick}>
@@ -16,8 +16,8 @@ export const ModalBackdrop = ({
         justifyContent='center'
         alignItems='center'
         sx={{
-          backgroundColor: "#00000070",
-          position: "absolute",
+          backgroundColor: '#00000070',
+          position: 'absolute',
           top: 0,
           left: 0,
           zIndex: 10,
@@ -26,5 +26,5 @@ export const ModalBackdrop = ({
         <div onClick={e => e.stopPropagation()}>{children}</div>
       </Stack>
     </div>
-  )
-}
+  );
+};
