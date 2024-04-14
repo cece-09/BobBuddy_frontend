@@ -5,7 +5,7 @@ import {
   UserUpdateRequest,
   UserUpdateResponse,
 } from '@/types/server';
-import { User } from '@/providers/userAtom';
+import { User } from '@/providers/UserProvider';
 import { ErrorCode, handleError } from '@/utils/error';
 
 export const requestUserInfo = async (): Promise<

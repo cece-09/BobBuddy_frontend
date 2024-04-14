@@ -1,7 +1,7 @@
 // 서버 요청 액션들
 'use server';
-import { Chat, ChatRoom, ChatUser } from '@/types/chat.types';
-import { Paged } from '@/types/paged.types';
+import { Chat, ChatRoom, ChatUser } from '@/types/chat';
+import { Paged } from '@/types/common';
 
 /**
  * 개별 채팅방 데이터 가져오기

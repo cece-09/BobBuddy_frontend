@@ -1,10 +1,10 @@
-import { toastState } from '@/providers/toastAtom';
+import { ModalContext } from '@/providers/ModalProvider';
 import { ToastProps, ToastType } from '@/types/toast';
 import { ErrorCode } from '@/utils/error';
-import { useRecoilState } from 'recoil';
+import { useContext } from 'react';
 
 const useToast = () => {
-  const [_, setToast] = useRecoilState(toastState);
+  const { setToast } = useContext(ModalContext);
 
   const showErrorToast = (code: ErrorCode, props?: ToastProps) => {
     setToast({

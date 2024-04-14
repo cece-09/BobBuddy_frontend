@@ -5,8 +5,8 @@ import {
   CHAT_SHOW_TIME,
   CHAT_SHOW_USER,
   CHAT_STD_TIME,
-} from '../../../constants/chat.constants';
-import { Chat, ChatUser } from '@/types/chat.types';
+} from '../../../../../constants/chat';
+import { Chat, ChatUser } from '@/types/chat';
 
 /**
  * 채팅 목록을 렌더링합니다

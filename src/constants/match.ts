@@ -1,4 +1,4 @@
-import { BottomNavbarItem } from '@/types/common.types';
+import { BottomNavbarItem } from '@/types/common';
 
 const BottomNavbarItemList: BottomNavbarItem[] = [
   { icon: 'home_rounded', text: '랜덤매칭', link: '/home' },

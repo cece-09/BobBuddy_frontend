@@ -1,7 +1,7 @@
 'use client';
-import { Paper, Stack, Icon, Typography } from '@mui/material';
+import { Stack, Icon, Typography } from '@mui/material';
 import { usePathname } from 'next/navigation';
-import BottomNavbarItemList from '@/constants/home.constants';
+import BottomNavbarItemList from '@/constants/match';
 import Link from 'next/link';
 
 /**
@@ -17,31 +17,27 @@ export default function BottomNavbar(): JSX.Element {
   if (!found) return <></>;
 
   return (
-    <Paper
-      sx={{ position: 'absolute', bottom: 0, width: '100%', height: '10vh' }}
+    <Stack
+      direction='row'
+      width='100%'
+      height='10vh'
+      position='absolute'
+      bottom={0}
+      padding='0.5rem'
+      justifyContent='space-around'
+      alignItems='center'
+      sx={{ backgroundColor: 'white' }}
     >
-      <Stack
-        direction='row'
-        width='100%'
-        height='100%'
-        padding='0.5rem'
-        justifyContent='space-around'
-        alignItems='center'
-        sx={{ backgroundColor: 'white' }}
-      >
-        {BottomNavbarItemList.map(({ icon, text, link }, idx) => (
-          <Link key={idx} href={link}>
-            <Stack direction='column' alignItems='center'>
-              <Icon color={current === link ? 'primary' : 'inherit'}>
-                {icon}
-              </Icon>
-              <Typography color={current === link ? 'primary' : 'inherit'}>
-                {text}
-              </Typography>
-            </Stack>
-          </Link>
-        ))}
-      </Stack>
-    </Paper>
+      {BottomNavbarItemList.map(({ icon, text, link }, idx) => (
+        <Link key={idx} href={link}>
+          <Stack direction='column' alignItems='center'>
+            <Icon color={current === link ? 'primary' : 'inherit'}>{icon}</Icon>
+            <Typography color={current === link ? 'primary' : 'inherit'}>
+              {text}
+            </Typography>
+          </Stack>
+        </Link>
+      ))}
+    </Stack>
   );
 }

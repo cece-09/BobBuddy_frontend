@@ -23,7 +23,7 @@ export type BaseResponse = {
   msg: string;
 };
 
-export enum AuthProvider {
+export enum OAuthProvider {
   kakao = 'kakao',
   naver = 'naver',
 }

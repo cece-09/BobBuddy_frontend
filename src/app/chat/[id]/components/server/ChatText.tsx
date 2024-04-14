@@ -1,4 +1,4 @@
-import { ParsedChatMessage } from '@/types/chat.types';
+import { ParsedChatMessage } from '@/types/chat';
 import { Typography } from '@mui/material';
 
 /**

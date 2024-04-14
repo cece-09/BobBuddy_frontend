@@ -1,4 +1,4 @@
-import { MS } from '@/types/common.types';
+import { MS } from '@/types/common';
 import { useCallback, useLayoutEffect, useState } from 'react';
 
 export enum AnimationDirection {

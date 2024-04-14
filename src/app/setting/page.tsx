@@ -30,7 +30,8 @@ const signout = async () => {
     return;
   }
 
-  await requestSignOut().then(ret => {
-    if (ret) removeAccessToken();
+  await requestSignOut().then(() => {
+    removeAccessToken();
+    window.location.href = '/';
   });
 };

@@ -13,7 +13,7 @@ import {
   SIGNUP_API,
   SIGNUP_SEND_API,
   SIGNUP_VERIFY_API,
-} from '../../constants/user.constants';
+} from '../../constants/user';
 import Timer from '../../components/create-account/Timer';
 import { requestSignUp, requestVerify, requestSendEmail } from '@/server/auth';
 
