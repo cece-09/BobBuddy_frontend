@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export type BottomNavbarKey = '/home' | 'match' | 'profile' | '/setting';
 
 export type BottomNavbarItem = {
@@ -8,11 +9,8 @@ export type BottomNavbarItem = {
 
 export type MS = number;
 
-/**
- * 페이지네이션 래퍼 클래스
- * @class Paged
- * @template T
- */
+export type ISOString = string;
+
 export class Paged<T> {
   page: number;
   size: number;
@@ -40,4 +38,33 @@ export class Paged<T> {
       data: obj['data'],
     });
   }
+}
+
+export type ActionIcon = { iconName: string; onClick: () => void };
+
+export enum PageType {
+  PLAIN = 'PLAIN',
+  MULTI_STEP = 'MULTI_STEP',
+}
+
+export enum TextType {
+  HEADER = 'HEADER',
+  SUB_HEADER = 'SUB_HEADER',
+  APPBAR_TITLE = 'APPBAR_TITLE',
+}
+
+export enum Language {
+  KOREAN = 'ko',
+}
+
+export interface LatLng {
+  latitude: number;
+  longitude: number;
+}
+
+export interface Address {
+  name?: string;
+  address: string;
+  latitude: number;
+  longitude: number;
 }

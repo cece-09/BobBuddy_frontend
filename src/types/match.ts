@@ -1,6 +1,7 @@
-export type TextQueryResult = {
-  formattedAddress: string;
-  displayName: {
-    text: string;
-  };
-};
+export interface Match {
+  id: string;
+  title: string;
+  time: string;
+  userprofiles: string[];
+  recentChatMsg: string;
+}

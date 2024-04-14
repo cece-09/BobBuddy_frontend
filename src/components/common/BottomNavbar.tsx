@@ -1,8 +1,8 @@
 'use client';
-import { Stack, Icon, Typography } from '@mui/material';
-import { usePathname } from 'next/navigation';
 import BottomNavbarItemList from '@/constants/match';
+import { Icon, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 /**
  * 하단 내비게이션바입니다.
@@ -21,8 +21,6 @@ export default function BottomNavbar(): JSX.Element {
       direction='row'
       width='100%'
       height='10vh'
-      position='absolute'
-      bottom={0}
       padding='0.5rem'
       justifyContent='space-around'
       alignItems='center'

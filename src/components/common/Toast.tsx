@@ -1,13 +1,38 @@
-import { Icon, IconButton, Stack } from '@mui/material';
-import React from 'react';
 import {
-  useAnimatedRender,
   AnimationDirection,
+  useAnimatedRender,
 } from '@/hooks/useAnimatedRender';
+import { ToastType } from '@/types/modal';
+import { Icon, IconButton, Stack } from '@mui/material';
+import React, { useContext } from 'react';
+
+import { ModalContext } from '@/providers/ModalProvider';
+import { ErrorCode, getErrorCodeMsg } from '@/utils/error';
+
+const ToastResolver = () => {
+  const { toast, setToast } = useContext(ModalContext);
+  const close = () => setToast(undefined);
+
+  switch (toast?.toastType) {
+    case ToastType.ERROR:
+      const message = getErrorCodeMsg(toast.payload as ErrorCode);
+      return (
+        <Toast
+          message={message}
+          isOpen={true}
+          closeToast={close}
+          animationDirection={AnimationDirection.TOP_TO_BOTTOM}
+        />
+      );
+    default:
+      return null;
+  }
+};
+export default ToastResolver;
 
 interface ToastProps {
-  message: string;
   isOpen: boolean;
+  message: string;
   closeToast: () => void;
   animationDirection: AnimationDirection;
 }
@@ -58,5 +83,3 @@ const Toast = ({
     </Stack>
   );
 };
-
-export default Toast;

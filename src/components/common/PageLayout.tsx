@@ -1,44 +1,33 @@
 'use client';
-import React, { useContext } from 'react';
+import React from 'react';
+
+import { Stack, styled } from '@mui/material';
+import { ReactNode } from 'react';
 import BottomNavbar from './BottomNavbar';
-import Toast from './Toast';
-import { ToastType } from '@/types/toast';
-import { AnimationDirection } from '@/hooks/useAnimatedRender';
-import { getErrorCodeMsg } from '@/utils/error';
-import { ModalContext } from '@/providers/ModalProvider';
+import ToastResolver from './Toast';
 
 interface PageProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const PageLayout = ({ children }: PageProps) => {
   return (
-    <React.Fragment>
+    <PageLayoutStyle>
       {children}
       <BottomNavbar />
       <ToastResolver />
-    </React.Fragment>
+    </PageLayoutStyle>
   );
 };
 
 export default PageLayout;
 
-const ToastResolver = () => {
-  const { toast, setToast } = useContext(ModalContext);
-  const close = () => setToast(undefined);
-
-  switch (toast?.toastType) {
-    case ToastType.ERROR:
-      const message = getErrorCodeMsg(toast.payload);
-      return (
-        <Toast
-          message={message}
-          isOpen={true}
-          closeToast={close}
-          animationDirection={AnimationDirection.TOP_TO_BOTTOM}
-        />
-      );
-    default:
-      return null;
-  }
-};
+const PageLayoutStyle: React.FC<{ children: ReactNode }> = styled(Stack)(
+  ({ theme }) => ({
+    flexDirection: 'column',
+    height: '100vh',
+    overflowX: 'hidden',
+    flexShrink: 0,
+    backgroundColor: theme.palette.background.default,
+  }),
+);

@@ -1,5 +1,5 @@
 import { ModalContext } from '@/providers/ModalProvider';
-import { ToastProps, ToastType } from '@/types/toast';
+import { ToastProps, ToastType } from '@/types/modal';
 import { ErrorCode } from '@/utils/error';
 import { useContext } from 'react';
 
@@ -19,7 +19,20 @@ const useToast = () => {
     }
   };
 
-  return { showErrorToast };
+  const showToast = (message: string, props?: ToastProps) => {
+    setToast({
+      toastType: ToastType.INFO,
+      payload: message,
+    });
+
+    if (props?.closeMS) {
+      setTimeout(() => {
+        setToast(undefined);
+      }, props.closeMS);
+    }
+  };
+
+  return { showErrorToast, showToast };
 };
 
 export default useToast;

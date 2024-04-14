@@ -1,12 +1,12 @@
-import type { Metadata, Viewport } from 'next';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import '@/styles/globals.css';
-import { ThemeProvider } from '@mui/material';
-import { theme } from '@/styles/theme';
-import React from 'react';
 import PageLayout from '@/components/common/PageLayout';
-import { AuthProvider } from '@/providers/UserProvider';
 import { ModalProvider } from '@/providers/ModalProvider';
+import { AuthProvider } from '@/providers/UserProvider';
+import '@/styles/globals.css';
+import { theme } from '@/styles/theme';
+import { ThemeProvider } from '@mui/material';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+import type { Metadata, Viewport } from 'next';
+import React from 'react';
 
 // app metadata
 const APP_NAME = '밥버디';

@@ -37,3 +37,17 @@ export const setAccessToken = (token: string): void => {
 export const removeAccessToken = (): void => {
   document.cookie = `${ACCESS_TOKEN_KEY}=;max-age=-1`;
 };
+
+export const getAddressString = (region: Record<string, any>): string => {
+  let addrString = '';
+  Object.keys(region).forEach((key, idx) => {
+    if (key === 'area0') return;
+    if (idx === Object.keys(region).length - 1) {
+      addrString += region[key].name;
+    } else {
+      addrString += region[key].name + ' ';
+    }
+  });
+  addrString.trim();
+  return addrString;
+};
