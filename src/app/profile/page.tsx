@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -11,10 +11,9 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import { useRecoilState } from 'recoil';
-import { userState } from '../../providers/userAtom';
 import { User } from '../../components/profile/UpdateSheet';
 import BottomSheet from '../../components/profile/UpdateSheet';
+import { UserContext } from '@/providers/UserProvider';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#BDBDBD',
@@ -47,7 +46,7 @@ const UpdateItem: any = styled(Paper)(({ theme }) => ({
 }));
 
 const ProfilePage = () => {
-  const [user, setUser] = useRecoilState(userState);
+  const { user, setUserData } = useContext(UserContext);
   const [bottomSheetOpen, setBottomSheetOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<keyof User | null>(null);
   const [updatedProfileData, setUpdatedProfileData] = useState<User | null>(
@@ -65,82 +64,84 @@ const ProfilePage = () => {
     setUpdatedProfileData(updatedData);
 
     // Recoil 상태 업데이트
-    setUser(prevUser => ({
+    setUserData(prevUser => ({
       ...prevUser,
-      userData: { ...prevUser.userData, ...updatedData },
+      ...updatedData,
     }));
   };
 
   return (
-    <Container component='main' maxWidth='xs'>
-      <CssBaseline />
-      <Box
-        sx={{
-          my: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '30px',
-        }}
-      >
-        <Typography component='h1' variant='h5'>
-          밥버디 회원정보
-        </Typography>
-        <Avatar
-          alt='프로필 사진'
-          src=''
-          sx={{
-            width: '60px',
-            height: '60px',
-            '&:hover': {
-              transform: 'scale(1.1)',
-              cursor: 'pointer',
-            },
-          }}
-        ></Avatar>
-        <Box sx={{ width: '90%' }}>
-          <Stack spacing={3}>
-            <Item>{user.userData.username}</Item>
-            <Item>{user.userData.email}</Item>
-            <UpdateItem onClick={() => handleUpdateItemClick('birth')}>
-              생년월일: {user.userData.birth}
-            </UpdateItem>
-            <UpdateItem onClick={() => handleUpdateItemClick('gender')}>
-              성별: {user.userData.gender}
-            </UpdateItem>
-            <UpdateItem onClick={() => handleUpdateItemClick('mbti')}>
-              MBTI: {user.userData.mbti}
-            </UpdateItem>
-            <UpdateItem onClick={() => handleUpdateItemClick('favoriteFood')}>
-              좋아하는 음식: {user.userData.favoriteFood}
-            </UpdateItem>
-            <UpdateItem onClick={() => handleUpdateItemClick('dislikedFood')}>
-              싫어하는 음식: {user.userData.dislikedFood}
-            </UpdateItem>
-          </Stack>
-        </Box>
+    user.userData && (
+      <Container component='main' maxWidth='xs'>
+        <CssBaseline />
         <Box
           sx={{
-            marginTop: 5,
+            my: 10,
             display: 'flex',
             flexDirection: 'column',
+            justifyContent: 'center',
             alignItems: 'center',
-            gap: 3,
+            gap: '30px',
           }}
         >
-          <Link href='/change-password' variant='body2'>
-            비밀번호 수정
-          </Link>
+          <Typography component='h1' variant='h5'>
+            밥버디 회원정보
+          </Typography>
+          <Avatar
+            alt='프로필 사진'
+            src=''
+            sx={{
+              width: '60px',
+              height: '60px',
+              '&:hover': {
+                transform: 'scale(1.1)',
+                cursor: 'pointer',
+              },
+            }}
+          ></Avatar>
+          <Box sx={{ width: '90%' }}>
+            <Stack spacing={3}>
+              <Item>{user.userData.username}</Item>
+              <Item>{user.userData.email}</Item>
+              <UpdateItem onClick={() => handleUpdateItemClick('birth')}>
+                생년월일: {user.userData.birth}
+              </UpdateItem>
+              <UpdateItem onClick={() => handleUpdateItemClick('gender')}>
+                성별: {user.userData.gender}
+              </UpdateItem>
+              <UpdateItem onClick={() => handleUpdateItemClick('mbti')}>
+                MBTI: {user.userData.mbti}
+              </UpdateItem>
+              <UpdateItem onClick={() => handleUpdateItemClick('favoriteFood')}>
+                좋아하는 음식: {user.userData.favoriteFood}
+              </UpdateItem>
+              <UpdateItem onClick={() => handleUpdateItemClick('dislikedFood')}>
+                싫어하는 음식: {user.userData.dislikedFood}
+              </UpdateItem>
+            </Stack>
+          </Box>
+          <Box
+            sx={{
+              marginTop: 5,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 3,
+            }}
+          >
+            <Link href='/change-password' variant='body2'>
+              비밀번호 수정
+            </Link>
+          </Box>
         </Box>
-      </Box>
-      <BottomSheet
-        open={bottomSheetOpen}
-        onClose={() => setBottomSheetOpen(false)}
-        item={selectedItem}
-        onSaveButtonClick={handleSaveProfileData}
-      />
-    </Container>
+        <BottomSheet
+          open={bottomSheetOpen}
+          onClose={() => setBottomSheetOpen(false)}
+          item={selectedItem}
+          onSaveButtonClick={handleSaveProfileData}
+        />
+      </Container>
+    )
   );
 };
 

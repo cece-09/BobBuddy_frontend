@@ -3,6 +3,7 @@
 import { BuddyError, ErrorCode } from '@/utils/error';
 import { removeAccessToken } from '@/utils/server';
 import { Stack } from '@mui/material';
+import LoadingPage from './loading';
 
 const ErrorPage = ({
   error,
@@ -28,14 +29,6 @@ const ErrorPage = ({
 };
 
 export default ErrorPage;
-
-const LoadingPage = () => {
-  return (
-    <Stack direction='column' padding='2rem 1rem' height='100vh' pb='10vh'>
-      <div>loading..</div>
-    </Stack>
-  );
-};
 
 const UnknownErrorPage = () => {
   return (

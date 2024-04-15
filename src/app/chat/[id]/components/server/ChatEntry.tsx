@@ -1,15 +1,15 @@
 import { Box, Typography, Stack } from '@mui/material';
-import ProfilePic from '../../common/ProfilePic';
+import ProfilePic from '../../../../../components/common/ProfilePic';
 import ChatLinkThumb from '../client/ChatLinkThumb';
 import { ChatText } from './ChatText';
 import {
   CHAT_SHOW_TIME,
   CHAT_SHOW_USER,
   CHAT_SHOW_MINE,
-} from '../../../constants/chat.constants';
+} from '../../../../../constants/chat';
 import ChatShowOptionModal from '../client/ChatOptionModal';
-import { parseChatLinks } from '@/utils/chat.utils';
-import { ChatUser } from '@/types/chat.types';
+import { parseChatLinks } from '@/utils/chat';
+import { ChatUser } from '@/types/chat';
 
 /**
  * 하나의 채팅 엔트리를 렌더링하는 레이아웃 컴포넌트

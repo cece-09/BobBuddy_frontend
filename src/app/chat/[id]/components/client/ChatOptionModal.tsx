@@ -1,6 +1,6 @@
 'use client';
-import { ReactNode, useState } from 'react';
-import GestureDetector from '../../common/GestureDetector';
+import { ReactNode, useContext, useState } from 'react';
+import GestureDetector from '../../../../../components/common/GestureDetector';
 import {
   Box,
   Button,
@@ -11,11 +11,10 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useRecoilState } from 'recoil';
-import { setChatNotice } from '../../../server-actions/chat.actions';
-import { ModalBackdrop } from '../../common/ModalBackdrop';
-import { chatNoticeState } from '@/providers/chatAtom';
-import { Chat } from '@/types/chat.types';
+import { setChatNotice } from '../../../../../server-actions/chat.actions';
+import { ModalBackdrop } from '../../../../../components/common/ModalBackdrop';
+import { Chat } from '@/types/chat';
+import { ChatRoomContext } from '@/app/chat/[id]/components/ChatRoomProvider';
 
 /**
  * 길게 누르면 메뉴를 보여주는
@@ -68,8 +67,8 @@ const ChatOptionModalContent = ({
 }) => {
   // 공지등록, 이미 등록된 공지라면 공지해제
   const [confirmMsg, setConfirmMsg] = useState<ReactNode | null>(null);
-  const [notice, setNotice] = useRecoilState(chatNoticeState);
-  const isNotice = notice?.chatId === chatId;
+  const { noticeId, setNoticeId } = useContext(ChatRoomContext);
+  const isNotice = noticeId === chatId;
 
   const menu = [
     {
@@ -91,7 +90,7 @@ const ChatOptionModalContent = ({
                 </Button>
                 <Button
                   onClick={() => {
-                    setNotice(null);
+                    setNoticeId(undefined);
                     setConfirmMsg(null);
                     callback();
                   }}
@@ -101,7 +100,7 @@ const ChatOptionModalContent = ({
               </Stack>
             </Stack>,
           );
-        } else if (notice !== null) {
+        } else if (noticeId !== undefined) {
           setConfirmMsg(
             <Stack direction='column' width='100%'>
               <Typography>
@@ -121,7 +120,7 @@ const ChatOptionModalContent = ({
                     setChatNotice(chatId).then(res => {
                       if (res.status === 200) {
                         const newNotice: Chat = JSON.parse(res.json());
-                        setNotice(newNotice);
+                        setNoticeId(newNotice.chatId);
                         setConfirmMsg(null);
                         callback();
                       }
@@ -137,7 +136,7 @@ const ChatOptionModalContent = ({
           setChatNotice(chatId).then(res => {
             if (res.status === 200) {
               const newNotice: Chat = JSON.parse(res.json());
-              setNotice(newNotice);
+              setNoticeId(newNotice.chatId);
               setConfirmMsg(null);
               callback();
             }

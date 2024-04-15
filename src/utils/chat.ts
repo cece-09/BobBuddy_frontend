@@ -1,5 +1,5 @@
-import { OpenGraph } from '@/types/chat.types';
-import { ParsedChatMessage } from '@/types/chat.types';
+import { OpenGraph } from '@/types/chat';
+import { ParsedChatMessage } from '@/types/chat';
 import { BuddyError, ErrorCode } from './error';
 
 /**

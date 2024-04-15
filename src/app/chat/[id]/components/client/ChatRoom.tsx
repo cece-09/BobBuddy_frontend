@@ -3,12 +3,12 @@
 import {
   ChangeEvent,
   ReactNode,
+  useContext,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   Box,
   Chip,
@@ -20,15 +20,18 @@ import {
   Typography,
 } from '@mui/material';
 import ChatList from '../server/ChatList';
-import ProfilePic from '../../common/ProfilePic';
-import useChats from '../../../hooks/useChat';
-import useSocket from '../../../hooks/useSocket';
-import useInfiniteScroll from '../../../hooks/usePrevChat';
-import { fetchPrevChats } from '../../../server-actions/chat.actions';
-import { chatNoticeState, chatLoadingState } from '@/providers/chatAtom';
-import { Chat, ChatUser } from '@/types/chat.types';
-import { User, userState } from '@/providers/userAtom';
+import ProfilePic from '../../../../../components/common/ProfilePic';
+import useChats from '../../../../../hooks/useChat';
+import useSocket from '../../../../../hooks/useSocket';
+import useInfiniteScroll from '../../../../../hooks/usePrevChat';
+import { fetchPrevChats } from '../../../../../server-actions/chat.actions';
+import { Chat, ChatUser } from '@/types/chat';
 import { RecordUtil } from '@/utils/record';
+import {
+  ChatRoomContext,
+  ChatRoomProvider,
+} from '@/app/chat/[id]/components/ChatRoomProvider';
+import { UserContext } from '@/providers/UserProvider';
 
 export interface ChatRoomProps {
   name: string;
@@ -52,7 +55,7 @@ export interface ChatRoomProps {
  * }
  * @return {JSX.Element}
  */
-export default function ChatRoomUI({
+export default function ChatRoomLayout({
   name,
   time,
   jsonNotice,
@@ -60,20 +63,19 @@ export default function ChatRoomUI({
   currPage,
   children,
 }: ChatRoomProps): JSX.Element {
-  const user = useRecoilValue(userState);
+  const { user } = useContext(UserContext);
   const SERVER_URI = process.env.NEXT_PUBLIC_CHAT_SERVER_URI as string;
+
+  // ui logic
   const [sidebar, setSidebar] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
+
+  // data logic
   const { socket, connect } = useSocket(SERVER_URI);
   const { chats } = useChats(socket);
 
   // 현재 보고 있는 채팅방의 공지 상태 업데이트
   const notice: Chat | null = JSON.parse(jsonNotice);
-  const setChatNotice = useSetRecoilState(chatNoticeState);
-  useEffect(() => {
-    setChatNotice(notice);
-  });
-
   const userId = user.userData.userId.toString();
   const users: Record<string, ChatUser> = {};
 
@@ -110,7 +112,7 @@ export default function ChatRoomUI({
     if (input === '') return;
     const chat = new Chat(
       user.userData.userId.toString(),
-      null,
+      undefined,
       input,
       new Date().getTime(),
     );
@@ -125,7 +127,12 @@ export default function ChatRoomUI({
   }
 
   return (
-    <>
+    <ChatRoomProvider
+      name={name}
+      time={time}
+      pageNo={currPage}
+      defaultNoticeId={notice?.chatId}
+    >
       <Stack direction='column' height='100vh'>
         <ChatRoomAppBar
           title={name}
@@ -145,7 +152,7 @@ export default function ChatRoomUI({
       <Drawer anchor='right' open={sidebar} onClose={toggle}>
         <ChatRoomSidebar users={Object.values(users)} />
       </Drawer>
-    </>
+    </ChatRoomProvider>
   );
 }
 
@@ -160,8 +167,12 @@ export default function ChatRoomUI({
  * @return {JSX.Element}
  */
 function ChatRoomNotice(): JSX.Element {
-  const chat = useRecoilValue(chatNoticeState);
-  if (chat === null) {
+  const context = useContext(ChatRoomContext);
+  const chats = context?.newChats;
+  const noticeId = context?.noticeId;
+  const notice = chats?.find(chat => chat.chatId === noticeId);
+
+  if (notice === undefined) {
     return <></>;
   } else {
     // TODO: onclick 전체보기 기능 추가해야함
@@ -190,7 +201,7 @@ function ChatRoomNotice(): JSX.Element {
         >
           <Chip size='small' label='공지' />
           <Icon sx={{ color: 'gray' }}>campaign_rounded</Icon>
-          <div>{chat.content}</div>
+          <div>{notice.content}</div>
         </Stack>
       </Box>
     );
@@ -203,8 +214,12 @@ function ChatRoomNotice(): JSX.Element {
  * @param {{ users: ChatUser[] }} { users }
  * @return {JSX.Element}
  */
-function ChatRoomSidebar({ users }: { users: ChatUser[] }): JSX.Element {
-  const me = useRecoilValue(userState);
+function ChatRoomSidebar({
+  users: members,
+}: {
+  users: ChatUser[];
+}): JSX.Element {
+  const { user } = useContext(UserContext);
 
   return (
     <Stack height='100vh' width='80vw' minWidth='300px'>
@@ -213,7 +228,7 @@ function ChatRoomSidebar({ users }: { users: ChatUser[] }): JSX.Element {
 
         {
           // TODO: 프로필 누르면 유저 정보창으로 바로가기
-          users.map((user, idx) => (
+          members.map((member, idx) => (
             <Stack
               key={idx}
               direction='row'
@@ -221,9 +236,9 @@ function ChatRoomSidebar({ users }: { users: ChatUser[] }): JSX.Element {
               alignItems='center'
               padding='0.3rem 0rem'
             >
-              <ProfilePic src={user.profile} />
-              <div>{user.name}</div>
-              {user.id === me.userData.userId.toString() ? (
+              <ProfilePic src={member.profile} />
+              <div>{member.name}</div>
+              {member.id === user.userData.userId.toString() ? (
                 <div>나</div>
               ) : (
                 <></>
@@ -270,7 +285,6 @@ function ChatRoomContentArea({
   users: { [key: string]: ChatUser };
 }): JSX.Element {
   const [enterTime, setEnterTime] = useState<number>(0);
-  const [pageNo, setPageNo] = useState<number>(currPage);
   useEffect(() => {
     // 마운트 시 현재 시각 정보 저장
     setEnterTime(new Date().getTime());
@@ -285,7 +299,7 @@ function ChatRoomContentArea({
 
   const scroll = useRef<HTMLDivElement>(null);
   const container = useRef<HTMLDivElement>(null);
-  const loading = useRecoilValue(chatLoadingState);
+  const loading = useContext(ChatRoomContext);
   useLayoutEffect(() => {
     if (container.current) {
       container.current.scrollTop = container.current.scrollHeight;

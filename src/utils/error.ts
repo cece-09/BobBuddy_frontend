@@ -1,4 +1,4 @@
-import request, { getServerUri } from '@/server/fetch/request';
+import { getServerUri } from '@/server/fetch/request';
 import { serverFetch } from '@/server/fetch/server';
 import { isObject } from './common';
 import { ErrorResponse } from '@/types/server';
@@ -19,10 +19,7 @@ export enum ErrorCode {
 }
 
 export class BuddyError extends Error {
-  constructor(
-    private readonly _code: ErrorCode,
-    message: string,
-  ) {
+  constructor(private readonly _code: ErrorCode, message: string) {
     super(message);
   }
   public get code() {

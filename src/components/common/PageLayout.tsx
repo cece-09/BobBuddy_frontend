@@ -1,12 +1,11 @@
 'use client';
-import { toastState } from '@/providers/toastAtom';
-import React from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useContext } from 'react';
 import BottomNavbar from './BottomNavbar';
 import Toast from './Toast';
 import { ToastType } from '@/types/toast';
 import { AnimationDirection } from '@/hooks/useAnimatedRender';
 import { getErrorCodeMsg } from '@/utils/error';
+import { ModalContext } from '@/providers/ModalProvider';
 
 interface PageProps {
   children: React.ReactNode;
@@ -25,7 +24,7 @@ const PageLayout = ({ children }: PageProps) => {
 export default PageLayout;
 
 const ToastResolver = () => {
-  const [toast, setToast] = useRecoilState(toastState);
+  const { toast, setToast } = useContext(ModalContext);
   const close = () => setToast(undefined);
 
   switch (toast?.toastType) {

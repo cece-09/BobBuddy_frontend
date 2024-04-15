@@ -1,4 +1,4 @@
-import { Chat } from '@/types/chat.types';
+import { Chat } from '@/types/chat';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 

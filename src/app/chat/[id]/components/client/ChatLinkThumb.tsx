@@ -1,12 +1,11 @@
 'use client';
 
-import { chatLoadingState } from '@/providers/chatAtom';
+import { ChatRoomContext } from '@/app/chat/[id]/components/ChatRoomProvider';
 import { fetchHTMLFromURL } from '@/server-actions/chat.actions';
-import { OpenGraph } from '@/types/chat.types';
-import { findOpenGraph } from '@/utils/chat.utils';
+import { OpenGraph } from '@/types/chat';
+import { findOpenGraph } from '@/utils/chat';
 import { Box, Stack, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useContext, useEffect, useState } from 'react';
 
 /**
  * 채팅 메시지에 포함된 링크를
@@ -16,7 +15,7 @@ import { useRecoilState } from 'recoil';
  * @return {JSX.Element}
  */
 const ChatLinkThumb = React.memo(({ url }: { url: string }) => {
-  const [_, setLoading] = useRecoilState(chatLoadingState);
+  const { setLoading } = useContext(ChatRoomContext);
   const [thumb, setThumb] = useState<null | OpenGraph>(null);
 
   useEffect(() => {
@@ -31,7 +30,7 @@ const ChatLinkThumb = React.memo(({ url }: { url: string }) => {
       setThumb(opengraph);
       setLoading(false);
     });
-  }, []);
+  }, [setLoading, url]);
 
   const UI = (
     <Stack

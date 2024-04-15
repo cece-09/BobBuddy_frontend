@@ -1,15 +1,15 @@
-import { Paged } from './paged.types';
+import { Paged } from './common';
 
 export class Chat {
   userId: string;
-  chatId: string | null;
+  chatId: string | undefined;
   content: string;
   timestamp: number;
 
   // 생성자
   constructor(
     userId: string,
-    chatId: string | null,
+    chatId: string | undefined,
     content: string,
     timestamp: number,
   ) {
@@ -20,7 +20,7 @@ export class Chat {
   }
 
   static fromContent(content: string): Chat {
-    return new Chat('1', null, content, new Date().getTime());
+    return new Chat('1', undefined, content, new Date().getTime());
   }
 
   // json string으로부터 Chat 객체 생성
@@ -74,21 +74,21 @@ export class ChatRoom {
   users: ChatUser[];
   chats: Paged<Chat>[];
   userId: string;
-  notice: Chat | null;
+  notice: Chat | undefined;
 
   constructor(
     title: string,
     time: string,
     users: ChatUser[] = [],
     chats: Paged<Chat>[],
-    notice?: Chat | null,
+    notice?: Chat | undefined,
   ) {
     this.title = title;
     this.time = time;
     this.users = users;
     this.chats = chats;
     this.userId = '1';
-    this.notice = null;
+    this.notice = notice;
   }
 }
 

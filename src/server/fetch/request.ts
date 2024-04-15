@@ -38,14 +38,27 @@ const request = async (
   const requesetUri: string = prefix + uri;
   console.debug(`[${init.method}] ${requesetUri}`);
 
+  const getTimeoutPromise = <T>() =>
+    new Promise<T>((_, reject) => {
+      setTimeout(() => {
+        reject(new BuddyError(ErrorCode.NETWORK_ERROR, 'Request timeout'));
+      }, 5000);
+    });
+
   if (process.env.NODE_ENV === 'development') {
-    const result: SeverFetchResponse = await serverFetch(requesetUri, newInit);
+    const result: SeverFetchResponse = await Promise.race([
+      serverFetch(requesetUri, newInit),
+      getTimeoutPromise<SeverFetchResponse>(),
+    ]);
     return {
       ...result,
       json: () => (result.text ? JSON.parse(result.text) : undefined),
     };
   } else {
-    const result: ClientFetchReponse = await clientFetch(requesetUri, newInit);
+    const result: ClientFetchReponse = await Promise.race([
+      clientFetch(requesetUri, newInit),
+      getTimeoutPromise<ClientFetchReponse>(),
+    ]);
     return result;
   }
 };

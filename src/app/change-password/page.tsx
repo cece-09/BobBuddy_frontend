@@ -9,7 +9,7 @@ import {
   MIN_PASSWORD_LENGTH,
   PASSWORD_VALIDATE_API,
   PASSWORD_UPDATE_API,
-} from '../../constants/user.constants';
+} from '../../constants/user';
 import { requestUpdatePassword, requestValidatePassword } from '@/server/user';
 
 export default function ChangePassword() {

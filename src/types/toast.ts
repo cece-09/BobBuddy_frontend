@@ -1,5 +1,5 @@
 import { ErrorCode } from '@/utils/error';
-import { MS } from './common.types';
+import { MS } from './common';
 
 export enum ToastType {
   ERROR = 'ERROR',

@@ -17,7 +17,7 @@ import {
 } from '@/server-actions/home.actions';
 import { useEffect, useState } from 'react';
 import { ModalBackdrop } from '@/components/common/ModalBackdrop';
-import { TextQueryResult } from '@/types/home.types';
+import { TextQueryResult } from '@/types/match';
 import { theme } from '@/styles/theme';
 import { useMatchButton } from '../../hooks/useMatchButton';
 import { requestMatch } from '@/server/match';
@@ -296,7 +296,7 @@ const LocationSearchModal = ({
         direction='column'
         sx={{
           backgroundColor: 'white',
-          width: '100vw',
+          width: '100%',
           padding: '0.5rem',
           zIndex: 10,
           position: 'absolute',

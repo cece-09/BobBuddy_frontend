@@ -1,13 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import RecoilRootProvider from '../providers/recoilRootProvider';
 import '@/styles/globals.css';
 import { ThemeProvider } from '@mui/material';
 import { theme } from '@/styles/theme';
-import { AuthBoundary } from '@/components/common/AuthBoundary';
 import React from 'react';
 import PageLayout from '@/components/common/PageLayout';
-
+import { AuthProvider } from '@/providers/UserProvider';
+import { ModalProvider } from '@/providers/ModalProvider';
 
 // app metadata
 const APP_NAME = '밥버디';
@@ -55,13 +54,13 @@ export default function RootLayout({
       </head>
       <body>
         <AppRouterCacheProvider>
-          <RecoilRootProvider>
-            <ThemeProvider theme={theme}>
-              <AuthBoundary>
+          <ThemeProvider theme={theme}>
+            <AuthProvider>
+              <ModalProvider>
                 <PageLayout>{children}</PageLayout>
-              </AuthBoundary>
-            </ThemeProvider>
-          </RecoilRootProvider>
+              </ModalProvider>
+            </AuthProvider>
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

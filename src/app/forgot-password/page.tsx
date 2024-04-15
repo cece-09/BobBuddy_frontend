@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Link } from '@mui/material';
 import { isValidEmail } from '../../utils/validation';
-import { FORGOT_PASSWORD_API } from '../../constants/user.constants';
+import { FORGOT_PASSWORD_API } from '../../constants/user';
 import { requestFindPassword } from '@/server/auth';
 
 export default function ForgotPassword() {

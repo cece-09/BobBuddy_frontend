@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Drawer from '@mui/material/Drawer';
 import { Box, Button, TextField } from '@mui/material';
-import { useRecoilState } from 'recoil';
-import { userState } from '../../providers/userAtom';
+import { UserContext } from '@/providers/UserProvider';
 
 interface BottomSheetProps {
   open: boolean;
@@ -32,7 +31,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   onSaveButtonClick,
 }) => {
   // Recoil을 사용하여 사용자 상태 관리
-  const [user, setUser] = useRecoilState(userState);
+  const { user } = useContext(UserContext);
   // 수정 모드 여부를 관리하는 상태
   const [isEditing, setIsEditing] = useState<boolean>(false);
   // 입력값을 관리하는 상태

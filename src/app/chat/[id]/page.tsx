@@ -1,7 +1,9 @@
-import ChatRoomUI, { ChatRoomProps } from '@/components/chat/client/ChatRoom';
-import ChatList from '@/components/chat/server/ChatList';
+import ChatRoomLayout, {
+  ChatRoomProps,
+} from '@/app/chat/[id]/components/client/ChatRoom';
+import ChatList from '@/app/chat/[id]/components/server/ChatList';
 import { getChatRoom } from '@/server-actions/chat.actions';
-import { ChatUser } from '@/types/chat.types';
+import { ChatUser } from '@/types/chat';
 
 /**
  * 개별 채팅방 페이지
@@ -29,12 +31,10 @@ export default async function ChatPage({
   users[chatroom.userId].currUser = true; // 로그인된 유저 마크
 
   return (
-    <>
-      <ChatRoomUI {...room}>
-        {chatroom.chats.map(({ page, data }) => (
-          <ChatList key={page} chats={data} users={users} />
-        ))}
-      </ChatRoomUI>
-    </>
+    <ChatRoomLayout {...room}>
+      {chatroom.chats.map(({ page, data }) => (
+        <ChatList key={page} chats={data} users={users} />
+      ))}
+    </ChatRoomLayout>
   );
 }

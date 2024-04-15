@@ -1,6 +1,6 @@
 'use server';
 
-import { TextQueryResult } from '@/types/home.types';
+import { TextQueryResult } from '@/types/match';
 
 export async function reverseGeocoding(longitude: number, latitude: number) {
   const SERVER_URI = process.env.NEXT_PUBLIC_NAVER_MAP_API;
