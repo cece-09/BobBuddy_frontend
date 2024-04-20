@@ -1,6 +1,6 @@
 'use client';
 
-import { Stack } from '@mui/material';
+import { Stack, Typography, styled } from '@mui/material';
 import { ReactNode } from 'react';
 
 export const ModalBackdrop = ({
@@ -31,7 +31,13 @@ export const ModalBackdrop = ({
       }}
     >
       {children}
-      {message}
+      <BackdropMessage>{message}</BackdropMessage>
     </Stack>
   );
 };
+
+const BackdropMessage = styled(Typography)(({ theme }) => ({
+  color: 'white',
+  position: 'absolute',
+  margin: 'auto',
+}));

@@ -68,3 +68,17 @@ export interface Address {
   latitude: number;
   longitude: number;
 }
+
+export enum ToastType {
+  ERROR = 'ERROR',
+  INFO = 'INFO',
+}
+
+export type ToastState<T extends ToastType> = {
+  toastType: T;
+  payload: string;
+};
+
+export type ToastProps = {
+  closeMS?: MS;
+};

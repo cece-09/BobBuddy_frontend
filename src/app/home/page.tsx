@@ -46,6 +46,7 @@ export default function HomePage() {
           placeholder={SEARCHBAR_PLACEHOLDER}
           closeModal={toggleSearchModal}
           suggestions={toSuggestions(suggestions)}
+          backdropMsg='현재 서울특별시만 서비스됩니다.'
           onSelectSuggestion={onAddressSuggestionClicked}
           onKeywordChange={onAddressKeywrordChanged}
           debounceMs={500}

@@ -1,6 +1,6 @@
 import { ModalContext } from '@/providers/ModalProvider';
-import { ToastProps, ToastType } from '@/types/modal';
-import { ErrorCode } from '@/utils/error';
+import { ToastProps, ToastType } from '@/types/common';
+import { ErrorCode, getErrorCodeMsg } from '@/utils/error';
 import { useContext } from 'react';
 
 const useToast = () => {
@@ -9,7 +9,7 @@ const useToast = () => {
   const showErrorToast = (code: ErrorCode, props?: ToastProps) => {
     setToast({
       toastType: ToastType.ERROR,
-      payload: code,
+      payload: getErrorCodeMsg(code),
     });
 
     if (props?.closeMS) {

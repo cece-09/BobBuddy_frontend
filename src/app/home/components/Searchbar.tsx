@@ -75,6 +75,7 @@ interface SearchModalProps {
   placeholder: string;
   suggestions: { name: string; description: string }[];
   debounceMs?: number;
+  backdropMsg?: string;
   closeModal: () => void;
   onKeywordChange: (keyword: string | undefined) => void;
   onSelectSuggestion: (index: number) => void;
@@ -85,6 +86,7 @@ export const SearchModal = ({
   placeholder,
   suggestions,
   debounceMs = 0,
+  backdropMsg,
   closeModal,
   onKeywordChange,
   onSelectSuggestion,
@@ -94,12 +96,6 @@ export const SearchModal = ({
 
   const onInput = (e: React.ChangeEvent<HTMLInputElement>) =>
     setKeyword(e.target.value);
-
-  const backdropMsg = (
-    <Typography sx={{ color: 'white', position: 'absolute', margin: 'auto' }}>
-      현재 서울특별시만 서비스됩니다
-    </Typography>
-  );
 
   return (
     <ModalBackdrop onClick={closeModal} message={backdropMsg}>

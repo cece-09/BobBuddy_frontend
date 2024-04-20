@@ -2,36 +2,28 @@ import {
   AnimationDirection,
   useAnimatedRender,
 } from '@/hooks/useAnimatedRender';
-import { ToastType } from '@/types/modal';
 import { Icon, IconButton, Stack } from '@mui/material';
 import React, { useContext } from 'react';
 
 import { ModalContext } from '@/providers/ModalProvider';
-import { ErrorCode, getErrorCodeMsg } from '@/utils/error';
 
 const ToastResolver = () => {
   const { toast, setToast } = useContext(ModalContext);
   const close = () => setToast(undefined);
 
-  switch (toast?.toastType) {
-    case ToastType.ERROR:
-      const message = getErrorCodeMsg(toast.payload as ErrorCode);
-      return (
-        <Toast
-          message={message}
-          isOpen={true}
-          closeToast={close}
-          animationDirection={AnimationDirection.TOP_TO_BOTTOM}
-        />
-      );
-    default:
-      return null;
-  }
+  return (
+    toast && (
+      <Toast
+        message={toast.payload}
+        closeToast={close}
+        animationDirection={AnimationDirection.TOP_TO_BOTTOM}
+      />
+    )
+  );
 };
 export default ToastResolver;
 
 interface ToastProps {
-  isOpen: boolean;
   message: string;
   closeToast: () => void;
   animationDirection: AnimationDirection;
@@ -39,12 +31,7 @@ interface ToastProps {
 
 const TOAST_ANIMATION_DURATION = 500;
 
-const Toast = ({
-  message,
-  isOpen,
-  closeToast,
-  animationDirection,
-}: ToastProps) => {
+const Toast = ({ message, closeToast, animationDirection }: ToastProps) => {
   const toastRef = React.createRef<HTMLDivElement>();
 
   const onCloseClick = () => {
