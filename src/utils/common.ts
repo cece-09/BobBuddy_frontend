@@ -3,5 +3,7 @@ export const isObject = (value: unknown): value is Object => {
   return Object.getPrototypeOf(value) === Object.prototype;
 };
 
-export const isPublic = (path: string) =>
+export const isPublicPath = (path: string) =>
   ['/login', '/create-account', '/forgot-password'].includes(path);
+
+export const isRootPath = (path: string) => path === '/';

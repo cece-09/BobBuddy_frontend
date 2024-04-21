@@ -2,7 +2,7 @@
 
 import LoadingPage from '@/app/loading';
 import { requestValidateToken } from '@/server/auth';
-import { isPublic as isPublicPath } from '@/utils/common';
+import { isPublicPath, isRootPath } from '@/utils/common';
 import { usePathname } from 'next/navigation';
 import {
   Dispatch,
@@ -89,6 +89,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   if (isPublicPath(pathname)) {
     return <>{children}</>;
+  }
+
+  if (isRootPath(pathname)) {
+    window.location.href = '/home';
+    return null;
   }
 
   if (userData === undefined) {
