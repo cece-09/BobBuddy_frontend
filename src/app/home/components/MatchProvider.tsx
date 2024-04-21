@@ -1,17 +1,19 @@
 import useToast from '@/hooks/useToast';
 import { requestQueryAddress, requestReverseGeo } from '@/server/geolocation';
 import { requestMatch } from '@/server/match';
-import { ActionIcon, Address } from '@/types/common';
+import { ActionIcon, Address, ModalType } from '@/types/common';
 import { isErrorResponse } from '@/utils/error';
 import {
   Dispatch,
   ReactNode,
   SetStateAction,
   createContext,
+  useContext,
   useEffect,
   useState,
 } from 'react';
 import { SelectSliderOption } from './SelectSlider';
+import { ModalContext } from '@/providers/ModalProvider';
 
 interface MatchContextType {
   address: Address | undefined;
@@ -70,6 +72,7 @@ export const MatchContext = createContext<MatchContextType>({
 });
 
 export const MatchProvider = ({ children }: { children: ReactNode }) => {
+  const { openModal } = useContext(ModalContext);
   const { showToast, showErrorToast } = useToast();
   const [address, setAddress] = useState<Address | undefined>(undefined);
   const [suggestions, setSuggestions] = useState<Address[]>([]);
@@ -102,8 +105,9 @@ export const MatchProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     // 매칭 풀에 들어간 경우
+    // openModal(ModalType.MATCH_PENDING);
     // 즉시 매칭이 이루어진 경우
-    showToast('매칭이 성공적으로 이루어졌습니다');
+    openModal(ModalType.MATCH_SUCCESS);
   };
 
   const toggleSearchModal = () => setShowSearchModal(!showSearchModal);

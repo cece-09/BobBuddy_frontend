@@ -82,3 +82,8 @@ export type ToastState<T extends ToastType> = {
 export type ToastProps = {
   closeMS?: MS;
 };
+
+export enum ModalType {
+  MATCH_SUCCESS = 'MATCH_SUCCESS',
+  MATCH_PENDING = 'MATCH_PENDING',
+}

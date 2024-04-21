@@ -3,15 +3,22 @@
 import { Stack, Typography, styled } from '@mui/material';
 import { ReactNode } from 'react';
 
+export interface ModalBackdropOptions {
+  message?: ReactNode;
+  backgroundColor?: string;
+}
+
+interface ModalBackdropProps extends ModalBackdropOptions {
+  children: ReactNode;
+  onClick?: () => void;
+}
+
 export const ModalBackdrop = ({
   children,
   onClick,
   message,
-}: {
-  children: ReactNode;
-  onClick: () => void;
-  message?: ReactNode;
-}) => {
+  backgroundColor = '#00000070',
+}: ModalBackdropProps) => {
   return (
     <Stack
       width='100%'
@@ -19,14 +26,14 @@ export const ModalBackdrop = ({
       justifyContent='center'
       alignItems='center'
       sx={{
-        backgroundColor: '#00000070',
+        backgroundColor: backgroundColor,
         position: 'absolute',
         top: 0,
         left: 0,
         zIndex: 10,
       }}
       onClick={e => {
-        onClick();
+        onClick?.();
         e.stopPropagation();
       }}
     >

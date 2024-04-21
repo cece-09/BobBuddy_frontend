@@ -13,9 +13,7 @@ interface MatchListWrapperProps {
 
 const MatchListLayout = ({ today, history }: MatchListWrapperProps) => {
   return (
-    <Page type={PageType.PLAIN} showAppbar scrollable>
-      <Text type={TextType.HEADER}>매칭방</Text>
-      <Spacing direction='column' size={2} />
+    <Page type={PageType.PLAIN} showAppbar showNavbar scrollable>
       <Text type={TextType.SUB_HEADER}>참여중인 매칭방</Text>
       <Spacing direction='column' size={1} />
       {today}

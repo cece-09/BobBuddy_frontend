@@ -85,6 +85,7 @@ const Paper = React.forwardRef(
 const PageWrapper = styled(Stack)({
   flexDirection: 'column',
   height: '100vh',
+  width: '100%',
   overflowX: 'hidden',
   flexShrink: 0,
   backgroundColor: theme.palette.background.default,

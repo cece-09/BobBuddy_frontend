@@ -50,7 +50,7 @@ const MatchCard = ({ match }: { match: Match }) => {
           <Text type={TextType.APPBAR_TITLE}>{`${formatDate(time)} 모임`}</Text>
           <Typography fontSize='0.8rem'>{recentChatMsg}</Typography>
         </Stack>
-        <AvatarGroup max={3} total={userprofiles.length}>
+        <AvatarGroup max={3} total={userprofiles.length} spacing='small'>
           {userprofiles.map((url, idx) => (
             <Avatar key={idx} alt={url} src={url} sizes='sm' />
           ))}

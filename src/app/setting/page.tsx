@@ -11,7 +11,7 @@ export default function SettingPage() {
   const handleLogout = () => signout();
 
   return (
-    <Page type={PageType.PLAIN} scrollable>
+    <Page type={PageType.PLAIN} scrollable showNavbar>
       <Text type={TextType.HEADER}>설정</Text>
       <Button onClick={handleLogout}>로그아웃</Button>
     </Page>
