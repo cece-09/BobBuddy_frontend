@@ -1,4 +1,3 @@
-import PageLayout from '@/components/common/PageLayout';
 import { ModalProvider } from '@/providers/ModalProvider';
 import { AuthProvider } from '@/providers/UserProvider';
 import '@/styles/globals.css';
@@ -57,7 +56,7 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <AuthProvider>
               <ModalProvider>
-                <PageLayout>{children}</PageLayout>
+                <main id='buddy-main'>{children}</main>
               </ModalProvider>
             </AuthProvider>
           </ThemeProvider>

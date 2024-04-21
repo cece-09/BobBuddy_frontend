@@ -3,25 +3,7 @@ import {
   useAnimatedRender,
 } from '@/hooks/useAnimatedRender';
 import { Icon, IconButton, Stack } from '@mui/material';
-import React, { useContext } from 'react';
-
-import { ModalContext } from '@/providers/ModalProvider';
-
-const ToastResolver = () => {
-  const { toast, setToast } = useContext(ModalContext);
-  const close = () => setToast(undefined);
-
-  return (
-    toast && (
-      <Toast
-        message={toast.payload}
-        closeToast={close}
-        animationDirection={AnimationDirection.TOP_TO_BOTTOM}
-      />
-    )
-  );
-};
-export default ToastResolver;
+import React from 'react';
 
 interface ToastProps {
   message: string;
@@ -31,8 +13,18 @@ interface ToastProps {
 
 const TOAST_ANIMATION_DURATION = 500;
 
-const Toast = ({ message, closeToast, animationDirection }: ToastProps) => {
+export const Toast = ({
+  message,
+  closeToast,
+  animationDirection,
+}: ToastProps) => {
   const toastRef = React.createRef<HTMLDivElement>();
+
+  const { unmount } = useAnimatedRender({
+    targetRef: toastRef,
+    direction: animationDirection,
+    transitionMs: TOAST_ANIMATION_DURATION,
+  });
 
   const onCloseClick = () => {
     unmount();
@@ -40,12 +32,6 @@ const Toast = ({ message, closeToast, animationDirection }: ToastProps) => {
       closeToast();
     }, TOAST_ANIMATION_DURATION);
   };
-
-  const { unmount } = useAnimatedRender({
-    targetRef: toastRef,
-    direction: animationDirection,
-    transitionMs: TOAST_ANIMATION_DURATION,
-  });
 
   return (
     <Stack

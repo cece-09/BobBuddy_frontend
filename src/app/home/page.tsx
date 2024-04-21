@@ -30,7 +30,7 @@ export default function HomePage() {
   } = useContext(MatchContext);
 
   return (
-    <Page type={PageType.PLAIN} showAppbar={false}>
+    <Page type={PageType.PLAIN} showAppbar={false} showNavbar={true}>
       <Text type={TextType.HEADER}>위치 설정</Text>
       <Spacing direction='column' size={3} />
       <SearchBar

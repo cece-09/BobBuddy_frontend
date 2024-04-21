@@ -1,36 +1,40 @@
 import { theme } from '@/styles/theme';
 import { PageType } from '@/types/common';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, styled } from '@mui/material';
 import React, { ReactNode } from 'react';
 import Appbar, { AppbarProps } from './Appbar';
+import BottomNavbar from './BottomNavbar';
 
 interface PageProps {
   type: PageType;
   children: ReactNode;
   showAppbar?: boolean;
+  showNavbar?: boolean;
   appbarProps?: AppbarProps;
   scrollable?: boolean;
 }
 
 const Page = React.forwardRef(
   (props: PageProps, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const { type, children, appbarProps, showAppbar, scrollable } = props;
+    const { type, children, appbarProps, showAppbar, showNavbar, scrollable } =
+      props;
 
     switch (type) {
       case PageType.PLAIN:
         return (
-          <React.Fragment>
+          <PageWrapper>
             {showAppbar && <Appbar {...appbarProps} />}
             <Paper ref={ref} scrollable={scrollable}>
               {children}
             </Paper>
-          </React.Fragment>
+            {showNavbar && <BottomNavbar />}
+          </PageWrapper>
         );
 
       case PageType.MULTI_STEP:
         const pages = React.Children.toArray(children);
         return (
-          <React.Fragment>
+          <PageWrapper>
             {showAppbar && <Appbar {...appbarProps} />}
             <Stack direction='row' ref={ref}>
               {pages.map((page, index) => (
@@ -39,7 +43,8 @@ const Page = React.forwardRef(
                 </Paper>
               ))}
             </Stack>
-          </React.Fragment>
+            {showNavbar && <BottomNavbar />}
+          </PageWrapper>
         );
     }
   },
@@ -76,5 +81,13 @@ const Paper = React.forwardRef(
     );
   },
 );
+
+const PageWrapper = styled(Stack)({
+  flexDirection: 'column',
+  height: '100vh',
+  overflowX: 'hidden',
+  flexShrink: 0,
+  backgroundColor: theme.palette.background.default,
+});
 
 Paper.displayName = 'Paper';
