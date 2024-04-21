@@ -26,13 +26,13 @@
 }
 
 body {
-  /* margin: 100px auto; */
-  /* padding: 16px; */
-  /* width: 540px; */
-  /* height: 960px; */
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   background-color: var(--color-background);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
+

@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { getServerUri } from '@/server/fetch/request';
 import { serverFetch } from '@/server/fetch/server';
-import { isObject } from './common';
 import { ErrorResponse } from '@/types/server';
+import { isObject } from './common';
 
 export enum ErrorCode {
   UNAUTHORIZED_ERROR = 'E01',
@@ -16,6 +17,8 @@ export enum ErrorCode {
   THUMBNAIL_ERROR = 'E10',
   NOT_FOUND_ERROR = 'E11',
   INTERNEL_SERVER_ERROR = 'E12', // 500
+  GEOLOCATION_INVALID_ERROR = 'E13',
+  GEOLOCATION_PERMISSION_ERROR = 'E14',
 }
 
 export class BuddyError extends Error {
@@ -87,6 +90,10 @@ const ErrorMsg: Record<ErrorCode, string> = {
   [ErrorCode.THUMBNAIL_ERROR]: '링크 썸네일을 가져올 수 없습니다.',
   [ErrorCode.NOT_FOUND_ERROR]: '페이지를 찾을 수 없습니다.',
   [ErrorCode.INTERNEL_SERVER_ERROR]: '서버 오류가 발생했습니다.',
+  [ErrorCode.GEOLOCATION_INVALID_ERROR]:
+    '위치 정보를 가져오는 데 실패했습니다.',
+  [ErrorCode.GEOLOCATION_PERMISSION_ERROR]:
+    '위치 정보를 가져오는 데 실패했습니다.',
 };
 
 const REPORT_ERROR: ErrorCode[] = [
@@ -107,3 +114,9 @@ export const isBuddyError = (error: unknown): error is BuddyError => {
   const code = (error as BuddyError).code;
   return code !== undefined && code in ErrorCode;
 };
+
+export const isErrorResponse = (response: unknown): response is ErrorResponse =>
+  isObject(response) &&
+  response.hasOwnProperty('result') &&
+  response.hasOwnProperty('code') &&
+  response.hasOwnProperty('msg');

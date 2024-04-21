@@ -1,14 +1,23 @@
 'use client';
-import { createTheme } from '@mui/material';
+import { Theme, createTheme } from '@mui/material';
+
+export type PaletteKey =
+  | 'primary'
+  | 'secondary'
+  | 'error'
+  | 'warning'
+  | 'info'
+  | 'success';
 
 /* Custom Theme 정의 */
-export const theme = createTheme({
+export const theme: Theme = createTheme({
   palette: {
     primary: {
       main: '#5E1EE7',
+      contrastText: '#FFFFFF',
     },
-  },
-  typography: {
-    h1: {},
+    background: {
+      default: '#E6EDF3',
+    },
   },
 });

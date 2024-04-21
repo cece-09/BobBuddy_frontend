@@ -1,26 +1,30 @@
+import {
+  AnimationDirection,
+  useAnimatedRender,
+} from '@/hooks/useAnimatedRender';
 import { Icon, IconButton, Stack } from '@mui/material';
 import React from 'react';
-import {
-  useAnimatedRender,
-  AnimationDirection,
-} from '@/hooks/useAnimatedRender';
 
 interface ToastProps {
   message: string;
-  isOpen: boolean;
   closeToast: () => void;
   animationDirection: AnimationDirection;
 }
 
 const TOAST_ANIMATION_DURATION = 500;
 
-const Toast = ({
+export const Toast = ({
   message,
-  isOpen,
   closeToast,
   animationDirection,
 }: ToastProps) => {
   const toastRef = React.createRef<HTMLDivElement>();
+
+  const { unmount } = useAnimatedRender({
+    targetRef: toastRef,
+    direction: animationDirection,
+    transitionMs: TOAST_ANIMATION_DURATION,
+  });
 
   const onCloseClick = () => {
     unmount();
@@ -28,12 +32,6 @@ const Toast = ({
       closeToast();
     }, TOAST_ANIMATION_DURATION);
   };
-
-  const { unmount } = useAnimatedRender({
-    targetRef: toastRef,
-    direction: animationDirection,
-    transitionMs: TOAST_ANIMATION_DURATION,
-  });
 
   return (
     <Stack
@@ -58,5 +56,3 @@ const Toast = ({
     </Stack>
   );
 };
-
-export default Toast;

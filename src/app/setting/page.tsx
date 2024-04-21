@@ -1,27 +1,20 @@
 'use client';
 
+import Page from '@/components/common/Page';
+import Text from '@/components/common/Text';
 import { requestSignOut } from '@/server/auth';
+import { PageType, TextType } from '@/types/common';
 import { getAccessToken, removeAccessToken } from '@/utils/server';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 
 export default function SettingPage() {
   const handleLogout = () => signout();
 
   return (
-    <Stack
-      sx={{
-        padding: '2rem 1rem',
-        height: '100vh',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-        pb: '10vh',
-      }}
-    >
-      <Typography mb={2} sx={{ fontSize: '1.5rem', fontWeight: 600 }}>
-        설정
-      </Typography>
+    <Page type={PageType.PLAIN} scrollable showNavbar>
+      <Text type={TextType.HEADER}>설정</Text>
       <Button onClick={handleLogout}>로그아웃</Button>
-    </Stack>
+    </Page>
   );
 }
 

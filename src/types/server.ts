@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { ErrorCode } from '@/utils/error';
+import { Language, LatLng } from './common';
 
 export interface FetchResponse {
   ok: boolean;
@@ -24,8 +26,8 @@ export type BaseResponse = {
 };
 
 export enum OAuthProvider {
-  kakao = 'kakao',
-  naver = 'naver',
+  KAKAO = 'kakao',
+  NAVER = 'naver',
 }
 
 export interface SignInRequest {
@@ -45,6 +47,7 @@ export interface SignUpRequest {
 
 export interface MatchRequest {
   location: string;
+  matchSize: string;
 }
 
 export interface UserInfoResponse {
@@ -69,3 +72,60 @@ export interface ErrorResponse extends BaseResponse {
 }
 
 export type MatchResponse = { result: 'success' } | ErrorResponse;
+
+enum RegionType {
+  area0 = 'area0',
+  area1 = 'area1',
+  area2 = 'area2',
+  area3 = 'area3',
+  area4 = 'area4',
+}
+
+export interface ReverseGeoResult {
+  name: string;
+  code: {
+    id: string;
+    type: string;
+    mappingId: string;
+  };
+  region: Record<
+    RegionType,
+    {
+      name: string;
+      coords: {
+        center: {
+          // "crs": "EPSG:4326",
+          x: number;
+          y: number;
+        };
+      };
+    }
+  >;
+}
+
+export interface ReverseGeoResponse {
+  results: ReverseGeoResult[];
+}
+
+export interface QueryAddressRequest {
+  textQuery: string;
+  languageCode: Language;
+  maxResultCount: number;
+  locationRestriction: {
+    rectangle: {
+      low: LatLng;
+      high: LatLng;
+    };
+  };
+}
+
+export type QueryAddressResult = {
+  formattedAddress: string;
+  displayName: {
+    text: string;
+  };
+};
+
+export interface QueryAddressResponse {
+  places: QueryAddressResult[];
+}
